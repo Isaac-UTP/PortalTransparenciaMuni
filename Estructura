@@ -1,0 +1,9 @@
+/proyecto
+    /public          <- Archivos accesibles al público (index.php, estilos, scripts).
+        /css         <- Hojas de estilo (style.css, etc.).
+        /js          <- Archivos JavaScript (funciones.js, etc.).
+        /uploads     <- Carpeta para guardar los archivos subidos.
+    /includes        <- Archivos PHP comunes (conexión a BD, funciones, etc.).
+    /templates       <- Vistas HTML que serán incluidas dinámicamente.
+    /config          <- Configuraciones (credenciales de BD, constantes, etc.).
+    index.php        <- Archivo principal (enrutador).
