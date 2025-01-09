@@ -38,6 +38,43 @@ if ($busqueda) {
 
 $stmt->execute();
 $documentos = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+//
+// Verificar si se envió el formulario para subir un archivo
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['archivo'])) {
+    $tipos = $_POST['tipos'] ?? '';
+    $anio = $_POST['anio'] ?? '';
+    $descripcion = $_POST['descripcion'] ?? '';
+    $archivo = $_FILES['archivo'];
+
+    // Verificar si el archivo es válido
+    if ($tipos && $anio && $descripcion && $archivo['error'] === UPLOAD_ERR_OK) {
+        $nombreArchivo = $archivo['name'];
+        $rutaDestino = "../uploads/" . $nombreArchivo;
+
+        // Mover el archivo al directorio 'uploads'
+        if (move_uploadsed_file($archivo['tmp_name'], $rutaDestino)) {
+            // Insertar en la base de datos
+            $sql = "INSERT INTO documentos (tipos, anio, descripcion, nombre_archivo, fecha_subida) 
+                    VALUES (:tipos, :anio, :descripcion, :nombre_archivo, NOW())";
+            $stmt = $pdo->prepare($sql);
+            $stmt->bindParam(':tipos', $tipos);
+            $stmt->bindParam(':anio', $anio);
+            $stmt->bindParam(':descripcion', $descripcion);
+            $stmt->bindParam(':nombre_archivo', $nombreArchivo);
+
+            if ($stmt->execute()) {
+                $mensaje = "Archivo subido con éxito.";
+            } else {
+                $mensaje = "Error al guardar los datos en la base de datos.";
+            }
+        } else {
+            $mensaje = "Error al mover el archivo.";
+        }
+    } else {
+        $mensaje = "Por favor complete todos los campos y asegúrese de subir un archivo válido.";
+    }
+}
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -45,7 +82,7 @@ $documentos = $stmt->fetchAll(PDO::FETCH_ASSOC);
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Documentos Municipales</title>
+    <title>Publicación de ordenanzas</title>
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/modal.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" 
@@ -55,7 +92,7 @@ $documentos = $stmt->fetchAll(PDO::FETCH_ASSOC);
 </head>
 
 <body>
-    <h1>Documentos Municipales</h1>
+    <h1>Publicación de ordenanzas</h1>
     <form method="GET" action="">
         <select name="tipo">
             <option value="">--TIPOS--</option>
@@ -74,6 +111,55 @@ $documentos = $stmt->fetchAll(PDO::FETCH_ASSOC);
         <input type="text" name="busqueda" placeholder="Palabra clave" value="<?= htmlspecialchars($busqueda) ?>">
         <button type="submit">Buscar</button>
     </form>
+
+    <button id="openModalBtn">Subir Archivo</button>
+
+    <!-- Modal -->
+<div id="uploadModal" class="modal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Subir Archivo</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form action="upload.php" method="POST" enctype="multipart/form-data">
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="tipo" class="form-label">Tipo</label>
+                        <select name="tipo" id="tipo" class="form-select" required>
+                            <option value="">-- Selecciona un Tipo --</option>
+                            <?php
+                            // Obtener los tipos desde la base de datos
+                            $sql = "SELECT prefijo, nombre FROM tipos";
+                            $stmt = $pdo->query($sql);
+                            while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+                                echo '<option value="' . htmlspecialchars($row['prefijo']) . '">' . htmlspecialchars($row['nombre']) . '</option>';
+                            }
+                            ?>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="anio" class="form-label">Año</label>
+                        <input type="number" name="anio" id="anio" class="form-control" placeholder="Año" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="descripcion" class="form-label">Descripción</label>
+                        <textarea name="descripcion" id="descripcion" class="form-control" placeholder="Descripción" required></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="archivo" class="form-label">Archivo</label>
+                        <input type="file" name="archivo" id="archivo" class="form-control" required>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary">Subir</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
 
     <!-- Tabla de Documentos -->
     <table class="table table-bordered" style="width: 100%;">

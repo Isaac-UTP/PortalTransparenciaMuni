@@ -3,7 +3,8 @@
         /css         <- Hojas de estilo (style.css, etc.).
         /js          <- Archivos JavaScript (funciones.js, etc.).
         /uploads     <- Carpeta para guardar los archivos subidos.
-    /includes        <- Archivos PHP comunes (conexión a BD, funciones, etc.).
+    /connection        <- Archivos PHP comunes (conexión a BD).
     /templates       <- Vistas HTML que serán incluidas dinámicamente.
     /config          <- Configuraciones (credenciales de BD, constantes, etc.).
+    /uploads         <- archivos subidos a traves de la bd o pagina web?
     index.php        <- Archivo principal (enrutador).
