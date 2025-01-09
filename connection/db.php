@@ -1,7 +1,7 @@
 <?php
 //Archivo de Conexión a la BD
 $host = "localhost";
-$dbname = "MUNI";
+$dbname = "transparenciamun_web";
 $user = "root";
 $password = "";
 
