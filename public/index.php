@@ -1,7 +1,7 @@
 <?php
 //Pagina Principal
 
-require_once '../includes/db.php';
+require_once '../connection/db.php';
 
 // Obtener los documentos desde la base de datos
 $categoria = $_GET['categoria'] ?? '';
@@ -20,31 +20,41 @@ if ($busqueda) {
 }
 $stmt = $pdo->prepare($sql);
 
-if ($categoria) $stmt->bindParam(':categoria', $categoria);
-if ($anio) $stmt->bindParam(':anio', $anio);
-if ($busqueda) $stmt->bindValue(':busqueda', "%$busqueda%");
+if ($categoria)
+    $stmt->bindParam(':categoria', $categoria);
+if ($anio)
+    $stmt->bindParam(':anio', $anio);
+if ($busqueda)
+    $stmt->bindValue(':busqueda', "%$busqueda%");
 
 $stmt->execute();
 $documentos = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Documentos Municipales</title>
     <link rel="stylesheet" href="css/style.css">
 </head>
+
 <body>
     <h1>Documentos Municipales</h1>
     <form method="GET" action="">
         <select name="categoria">
             <option value="">--CATEGORÍAS--</option>
-            <option value="ORDENANZA MUNICIPAL" <?= $categoria === 'ORDENANZA MUNICIPAL' ? 'selected' : '' ?>>ORDENANZA MUNICIPAL</option>
-            <option value="RESOLUCIONES ALCALDIA" <?= $categoria === 'RESOLUCIONES ALCALDIA' ? 'selected' : '' ?>>RESOLUCIONES ALCALDIA</option>
-            <option value="DECRETOS ALCALDIA" <?= $categoria === 'DECRETOS ALCALDIA' ? 'selected' : '' ?>>DECRETOS ALCALDIA</option>
-            <option value="ACUERDOS CONSEJO" <?= $categoria === 'ACUERDOS CONSEJO' ? 'selected' : '' ?>>ACUERDOS CONSEJO</option>
-            <option value="RESOLUCIONES GERENCIALES" <?= $categoria === 'RESOLUCIONES GERENCIALES' ? 'selected' : '' ?>>RESOLUCIONES GERENCIALES</option>
+            <option value="ORDENANZA MUNICIPAL" <?= $categoria === 'ORDENANZA MUNICIPAL' ? 'selected' : '' ?>>ORDENANZA
+                MUNICIPAL</option>
+            <option value="RESOLUCIONES ALCALDIA" <?= $categoria === 'RESOLUCIONES ALCALDIA' ? 'selected' : '' ?>>
+                RESOLUCIONES ALCALDIA</option>
+            <option value="DECRETOS ALCALDIA" <?= $categoria === 'DECRETOS ALCALDIA' ? 'selected' : '' ?>>DECRETOS ALCALDIA
+            </option>
+            <option value="ACUERDOS CONSEJO" <?= $categoria === 'ACUERDOS CONSEJO' ? 'selected' : '' ?>>ACUERDOS CONSEJO
+            </option>
+            <option value="RESOLUCIONES GERENCIALES" <?= $categoria === 'RESOLUCIONES GERENCIALES' ? 'selected' : '' ?>>
+                RESOLUCIONES GERENCIALES</option>
         </select>
         <input type="number" name="anio" placeholder="Año" value="<?= htmlspecialchars($anio) ?>">
         <input type="text" name="busqueda" placeholder="Palabra clave" value="<?= htmlspecialchars($busqueda) ?>">
@@ -76,4 +86,5 @@ $documentos = $stmt->fetchAll(PDO::FETCH_ASSOC);
         </tbody>
     </table>
 </body>
+
 </html>
