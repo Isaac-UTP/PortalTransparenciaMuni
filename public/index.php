@@ -38,10 +38,31 @@ $documentos = $stmt->fetchAll(PDO::FETCH_ASSOC);
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Documentos Municipales</title>
     <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/modal.css">
 </head>
 
 <body>
     <h1>Documentos Municipales</h1>
+    <button id="openModalBtn">Subir Archivo</button>
+
+    <!-- Modal -->
+    <div id="uploadModal" class="modal">
+        <div class="modal-content">
+            <span class="close" id="closeModalBtn">&times;</span>
+            <form action="upload.php" method="POST" enctype="multipart/form-data">
+                <label for="categoria">Categoría:</label>
+                <input type="text" name="categoria" id="categoria" placeholder="Categoría" required><br><br>
+                <label for="anio">Año:</label>
+                <input type="number" name="anio" id="anio" placeholder="Año" required><br><br>
+                <label for="descripcion">Descripción:</label>
+                <textarea name="descripcion" id="descripcion" placeholder="Descripción" required></textarea><br><br>
+                <label for="archivo">Archivo:</label>
+                <input type="file" name="archivo" id="archivo" required><br><br>
+                <button type="submit">Subir</button>
+            </form>
+        </div>
+    </div>
+
     <form method="GET" action="">
         <select name="categoria">
             <option value="">--CATEGORÍAS--</option>
@@ -85,6 +106,8 @@ $documentos = $stmt->fetchAll(PDO::FETCH_ASSOC);
             <?php endforeach; ?>
         </tbody>
     </table>
+
+    <script src="js/modal.js"></script>
 </body>
 
 </html>
