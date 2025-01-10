@@ -1,89 +1,72 @@
-<!--Falta ajustar aca-->
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <title>Subir archivo</title>
-    <link rel="stylesheet" href="css/styles.css">
-</head>
-<body>
-    <h1>Subir archivo</h1>
-    <form action="upload.php" method="post" enctype="multipart/form-data">
-        <div>
-            <label for="tipo">Tipo:</label>
-            <select name="tipo" id="tipo">
-                <option value="Ordenanza">Ordenanza</option>
-                <option value="Resolución">Resolución</option>
-                <option value="Decreto">Decreto</option>
-            </select>
-        </div>
-        <div>
-            <label for="anno">Año:</label>
-            <input type="number" name="anno" id="anno" required>
-        </div>
-        <div>
-            <label for="descripcion">Descripción:</label>
-            <textarea name="descripcion" id="descripcion" required></textarea>
-        </div>
-        <div>
-            <label for="archivo">Archivo:</label>
-            <input type="file" name="archivo" id="archivo" required>
-        </div>
-        <button type="submit">Subir archivo</button>
-    </form>
-</body>
-</html>
-
 <?php
-require_once '../includes/db.php';
+require_once '../connection/db.php';
 
-// Verificar si se envió el formulario
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $tipos = $_POST['tipo'];
-    $anno = $_POST['anno'];
-    $descripcion = $_POST['descripcion'];
-    $numero = uniqid() . "_" . basename($_FILES['archivo']['name']);
-    $archivo = $_FILES['archivo'];
-    $fecha = date('Y-m-d H:i:s');
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    // Verificar si el archivo fue subido sin errores
+    if (isset($_FILES['archivo']) && $_FILES['archivo']['error'] == 0) {
+        $allowed = ['pdf' => 'application/pdf'];
+        $filename = $_FILES['archivo']['name'];
+        $filetype = $_FILES['archivo']['type'];
+        $filesize = $_FILES['archivo']['size'];
 
-    // Verificar si hubo un error al subir el archivo
-    if ($archivo['error'] === UPLOAD_ERR_OK) {
-        // Crear el nombre único para el archivo
-        $numero = uniqid() . "_" . basename($archivo['name']);
-
-        // Definir la ruta al directorio `prueba\uploads`
-        $directorioUploads = '../uploads/';
-
-        // Crear el directorio si no existe
-        if (!is_dir($directorioUploads)) {
-            mkdir($directorioUploads, 0755, true);
+        // Verificar la extensión del archivo
+        $ext = pathinfo($filename, PATHINFO_EXTENSION);
+        if (!array_key_exists($ext, $allowed)) {
+            die("Error: Por favor seleccione un formato de archivo válido.");
         }
 
-        // Ruta completa al archivo
-        $rutaArchivo = $directorioUploads . $numero;
+        // Verificar el tipo MIME del archivo
+        if (in_array($filetype, $allowed)) {
+            // Verificar el tamaño del archivo - 5MB máximo
+            $maxsize = 5 * 1024 * 1024;
+            if ($filesize > $maxsize) {
+                die("Error: El tamaño del archivo es mayor que el límite permitido.");
+            }
 
-        // Mover el archivo subido al directorio `uploads`
-        if (move_uploaded_file($archivo['tmp_name'], $rutaArchivo)) {
-            // Insertar los datos en la base de datos
-            $sql = "INSERT INTO documentos (tipo, anno, descripcion, numero, fecha) 
-                    VALUES (:tipo, :anno, :descripcion, :numero, :fecha)";
-            $stmt = $pdo->prepare($sql);
-            $stmt->bindParam(':tipo', $tipos);
-            $stmt->bindParam(':anno', $anno);
-            $stmt->bindParam(':descripcion', $descripcion);
-            $stmt->bindParam(':numero', $numero);
-            $stmt->bindParam(':fecha', $fecha);
-            $stmt->execute();
+            // Verificar si el archivo ya existe antes de subirlo
+            $uploadDir = "../uploads/";
+            $rutaArchivo = $uploadDir . $filename;
+            if (file_exists($rutaArchivo)) {
+                die("Error: El archivo ya existe en el servidor.");
+            } else {
+                if (move_uploaded_file($_FILES['archivo']['tmp_name'], $rutaArchivo)) {
+                    // Insertar en la base de datos
+                    $tipo = $_POST['tipo'] ?? null;
+                    $anno = $_POST['anno'] ?? null;
+                    $numero = $_POST['numero'] ?? null;
+                    $descripcion = $_POST['descripcion'] ?? null;
+                    $fecha = date('Y-m-d'); // Fecha actual para la columna 'fecha'
+                    $link = $rutaArchivo;  // Ruta del archivo subido
 
-            // Redireccionar al inicio
-            echo '<script>alert("Archivo subido exitosamente."); window.location.href="index.php";</script>';
+                    // Validar los datos antes de insertarlos
+                    if (!$tipo || !$anno || !$descripcion || !$numero) {
+                        die("Error: Todos los campos son obligatorios.");
+                    }
+
+                    $sql = "INSERT INTO documentos (tipo, anno, numero, descripcion, fecha, link)
+                            VALUES (:tipo, :anno, :numero, :descripcion, :fecha, :link)";
+                    $stmt = $pdo->prepare($sql);
+                    $stmt->bindParam(':tipo', $tipo);
+                    $stmt->bindParam(':anno', $anno);
+                    $stmt->bindParam(':numero', $numero);
+                    $stmt->bindParam(':descripcion', $descripcion);
+                    $stmt->bindParam(':fecha', $fecha);
+                    $stmt->bindParam(':link', $link);
+
+                    if ($stmt->execute()) {
+                        echo "El archivo fue subido exitosamente y registrado en la base de datos.";
+                    } else {
+                        echo "Error al guardar los datos en la base de datos.";
+                    }
+                } else {
+                    die("Error: Hubo un problema al subir su archivo. Por favor intente de nuevo.");
+                }
+            }
         } else {
-            // Error al mover el archivo
-            echo '<script>alert("Error al mover el archivo al directorio de destino.");</script>';
+            die("Error: Hubo un problema al subir su archivo. Por favor intente de nuevo.");
         }
     } else {
-        // Error al subir el archivo
-        echo '<script>alert("Error al subir el archivo. Código de error: ' . $archivo['error'] . '");</script>';
+        die("Error: " . $_FILES['archivo']['error']);
     }
 }
 ?>

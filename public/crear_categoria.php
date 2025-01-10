@@ -1,55 +1,90 @@
 <?php
-require_once '../connection/db.php';
+// Initialize the session
+session_start();
 
-// Verificar si se envió el formulario
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $nombre = $_POST['nombre'] ?? '';
-    $prefijo = $_POST['prefijo'] ?? '';
+// coneccion con la base de datos
+require_once "../connection/db.php";
 
-    if ($nombre && $prefijo) {
-        $sql = "INSERT INTO tipos (nombre, prefijo) VALUES (:nombre, :prefijo)";
-        $stmt = $pdo->prepare($sql);
-        $stmt->bindParam(':nombre', $nombre);
-        $stmt->bindParam(':prefijo', $prefijo);
+// Include config file
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    // Verificar si el archivo fue subido sin errores
+    if (isset($_FILES['archivo']) && $_FILES['archivo']['error'] == 0) {
+        $allowed = ['pdf' => 'application/pdf'];
+        $filename = $_FILES['archivo']['name'];
+        $filetype = $_FILES['archivo']['type'];
+        $filesize = $_FILES['archivo']['size'];
 
-        if ($stmt->execute()) {
-            $mensaje = "Categoría creada exitosamente.";
+        // Verificar la extensión del archivo
+        $ext = pathinfo($filename, PATHINFO_EXTENSION);
+        if (!array_key_exists($ext, $allowed)) {
+            die("Error: Por favor seleccione un formato de archivo válido.");
+        }
+
+        // Verificar el tipo MIME del archivo
+        if (in_array($filetype, $allowed)) {
+            // Verificar el tamaño del archivo - 5MB máximo
+            $maxsize = 5 * 1024 * 1024;
+            if ($filesize > $maxsize) {
+                die("Error: El tamaño del archivo es mayor que el límite permitido.");
+            }
+
+            // Verificar si el archivo ya existe antes de subirlo
+            if (file_exists("upload/" . $filename)) {
+                echo "El archivo ya existe y no se ha subido de nuevo.";
+            } else {
+                if (move_uploaded_file($_FILES['archivo']['tmp_name'], "upload/" . $filename)) {
+                    echo "El archivo fue subido exitosamente.";
+                } else {
+                    die("Error: Hubo un problema al subir su archivo. Por favor intente de nuevo.");
+                }
+            }
         } else {
-            $mensaje = "Error al crear la categoría.";
+            die("Error: Hubo un problema al subir su archivo. Por favor intente de nuevo.");
         }
     } else {
-        $mensaje = "Por favor, complete todos los campos.";
+        die("Error: " . $_FILES['archivo']['error']);
     }
 }
 ?>
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Crear Categoría</title>
-    <link rel="stylesheet" href="css/style.css">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <title>Subir archivo</title>
+    <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
-    <div class="container">
-        <h1>Crear Categoría</h1>
-        <?php if (!empty($mensaje)): ?>
-            <div class="alert alert-info"><?= htmlspecialchars($mensaje) ?></div>
-        <?php endif; ?>
-        <form action="" method="POST">
-            <div class="mb-3">
-                <label for="nombre" class="form-label">Nombre de la Categoría:</label>
-                <input type="text" name="nombre" id="nombre" class="form-control" required>
-            </div>
-            <div class="mb-3">
-                <label for="prefijo" class="form-label">Prefijo:</label>
-                <input type="text" name="prefijo" id="prefijo" class="form-control" maxlength="5" required>
-            </div>
-            <button type="submit" class="btn btn-primary">Crear Categoría</button>
-        </form>
-        <a href="index.php" class="btn btn-secondary mt-3">Volver al Inicio</a>
-    </div>
+    <h1>Subir archivo</h1>
+    <form action="upload.php" method="post" enctype="multipart/form-data">
+        <div>
+            <label for="tipo">Tipo:</label>
+            <select name="tipo" id="tipo" required>
+                <option value="">--TIPOS--</option>
+                <?php
+                // Obtener tipos desde la base de datos
+                $sql = "SELECT * FROM tipos";
+                $stmt = $pdo->query($sql);
+                $tipos = $stmt->fetchAll();
+
+                foreach ($tipos as $tipo) {
+                    echo "<option value='{$tipo['id']}'>{$tipo['nombre']}</option>";
+                }
+                ?>
+            </select>
+        </div>
+        <div>
+            <label for="anno">Año:</label>
+            <input type="number" name="anno" id="anno" required>
+        </div>
+        <div>
+            <label for="descripcion">Descripción:</label>
+            <textarea name="descripcion" id="descripcion" required></textarea>
+        </div>
+        <div>
+            <label for="archivo">Archivo:</label>
+            <input type="file" name="archivo" id="archivo" required>
+        </div>
+        <button type="submit">Subir archivo</button>
+    </form>
 </body>
 </html>

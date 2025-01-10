@@ -53,12 +53,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['archivo'])) {
         $rutaDestino = "../uploads/" . $nombreArchivo;
 
         // Mover el archivo al directorio 'uploads'
-        if (move_uploadsed_file($archivo['tmp_name'], $rutaDestino)) {
+        if (move_uploaded_file($archivo['tmp_name'], $rutaDestino)) {
             // Insertar en la base de datos
-            $sql = "INSERT INTO documentos (tipos, anio, descripcion, nombre_archivo, fecha_subida) 
-                    VALUES (:tipos, :anio, :descripcion, :nombre_archivo, NOW())";
+            $sql = "INSERT INTO documentos (tipo, anno, descripcion, nombre_archivo, fecha_subida) 
+                    VALUES (:tipo, :anio, :descripcion, :nombre_archivo, NOW())";
             $stmt = $pdo->prepare($sql);
-            $stmt->bindParam(':tipos', $tipos);
+            $stmt->bindParam(':tipo', $tipos);
             $stmt->bindParam(':anio', $anio);
             $stmt->bindParam(':descripcion', $descripcion);
             $stmt->bindParam(':nombre_archivo', $nombreArchivo);
@@ -75,6 +75,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['archivo'])) {
         $mensaje = "Por favor complete todos los campos y asegúrese de subir un archivo válido.";
     }
 }
+
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -122,10 +123,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['archivo'])) {
                 <h5 class="modal-title">Subir Archivo</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <form action="upload.php" method="POST" enctype="multipart/form-data">
+            <form id="uploadForm" action="upload.php" method="POST" enctype="multipart/form-data">
                 <div class="modal-body">
                     <div class="mb-3">
-                        <label for="tipo" class="form-label">Tipo</label>
+                        <label for="tipo" class="form-label">Tipo:</label>
                         <select name="tipo" id="tipo" class="form-select" required>
                             <option value="">-- Selecciona un Tipo --</option>
                             <?php
@@ -139,13 +140,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['archivo'])) {
                         </select>
                     </div>
                     <div class="mb-3">
-                        <label for="anio" class="form-label">Año</label>
-                        <input type="date" class="form-control limitar-caracteres" id="fecha_gestion_documentos" name="fecha_gestion_documentos" value="2025202520252025-0101-1010" autocomplete="off">
+                        <label for="anio" class="form-label">Fecha</label>
+                        <input type="date" class="form-control limitar-caracteres" id="anno" name="anno" autocomplete="off">
+                    </div>
+                    <div class="mb-3">
+                        <label for="numero">Número:</label>
+                        <input type="number" name="numero" id="numero" required>
                     </div>
                     
                     <div class="mb-3">
-                        <label for="descripcion" class="form-label">Descripción</label>
-                        <textarea name="descripcion" id="descripcion" class="form-control" placeholder="Descripción" required></textarea>
+                        <label for="descripcion">Descripción:</label>
+                        <input type="text" name="descripcion" id="descripcion" required>
                     </div>
                     <div class="mb-3">
                         <label for="archivo" class="form-label">Archivo</label>
@@ -154,7 +159,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['archivo'])) {
                 </div>
                 <div class="modal-footer">
                     <button type="submit" class="btn btn-primary">Subir</button>
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
                 </div>
             </form>
         </div>
@@ -192,3 +196,29 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['archivo'])) {
 </body>
 
 </html>
+
+<script>
+document.getElementById('uploadForm').addEventListener('submit', function(event) {
+    event.preventDefault(); // Evita el envío del formulario por defecto
+    var form = this;
+    var formData = new FormData(form);
+
+    fetch(form.action, {
+        method: form.method,
+        body: formData
+    }).then(response => {
+        if (response.ok) {
+            // Cierra el modal aquí
+            var modal = document.getElementById('myModal'); // Asegúrate de que el id del modal sea 'myModal'
+            var modalInstance = bootstrap.Modal.getInstance(modal);
+            modalInstance.hide();
+        } else {
+            // Maneja el error aquí
+            alert('Error al subir el archivo');
+        }
+    }).catch(error => {
+        console.error('Error:', error);
+        alert('Error al subir el archivo');
+    });
+});
+</script>
