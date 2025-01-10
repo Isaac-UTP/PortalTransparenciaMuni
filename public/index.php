@@ -140,8 +140,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['archivo'])) {
                     </div>
                     <div class="mb-3">
                         <label for="anio" class="form-label">Año</label>
-                        <input type="number" name="anio" id="anio" class="form-control" placeholder="Año" required>
+                        <input type="date" class="form-control limitar-caracteres" id="fecha_gestion_documentos" name="fecha_gestion_documentos" value="2025202520252025-0101-1010" autocomplete="off">
                     </div>
+                    
                     <div class="mb-3">
                         <label for="descripcion" class="form-label">Descripción</label>
                         <textarea name="descripcion" id="descripcion" class="form-control" placeholder="Descripción" required></textarea>
