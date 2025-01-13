@@ -15,7 +15,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             die("Error: Por favor seleccione un formato de archivo válido.");
         }
 
-        // Verificar el tipo MIME del archivo
+        // Verificar el tipos MIME del archivo
         if (in_array($filetype, $allowed)) {
             // Verificar el tamaño del archivo - 5MB máximo
             $maxsize = 5 * 1024 * 1024;
@@ -31,7 +31,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             } else {
                 if (move_uploaded_file($_FILES['archivo']['tmp_name'], $rutaArchivo)) {
                     // Insertar en la base de datos
-                    $tipo = $_POST['tipo'] ?? null;
+                    $tipos = $_POST['tipos'] ?? null;
                     $anno = $_POST['anno'] ?? null;
                     $numero = $_POST['numero'] ?? null;
                     $descripcion = $_POST['descripcion'] ?? null;
@@ -39,18 +39,17 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     $link = $rutaArchivo;  // Ruta del archivo subido
 
                     // Validar los datos antes de insertarlos
-                    if (!$tipo || !$anno || !$descripcion || !$numero) {
+                    if (!$tipos || !$anno || !$descripcion || !$numero) {
                         die("Error: Todos los campos son obligatorios.");
                     }
 
-                    $sql = "INSERT INTO documentos (tipo, anno, numero, descripcion, fecha, link)
-                            VALUES (:tipo, :anno, :numero, :descripcion, :fecha, :link)";
+                    $sql = "INSERT INTO documentos (tipos, anno, numero, descripcion, link)
+                            VALUES (:tipos, :anno, :numero, :descripcion, :link)";
                     $stmt = $pdo->prepare($sql);
-                    $stmt->bindParam(':tipo', $tipo);
+                    $stmt->bindParam(':tipos', $tipos);
                     $stmt->bindParam(':anno', $anno);
                     $stmt->bindParam(':numero', $numero);
                     $stmt->bindParam(':descripcion', $descripcion);
-                    $stmt->bindParam(':fecha', $fecha);
                     $stmt->bindParam(':link', $link);
 
                     if ($stmt->execute()) {
