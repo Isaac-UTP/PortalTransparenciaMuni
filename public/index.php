@@ -41,7 +41,7 @@ $documentos = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 </select>
             </div>
             <div class="mb-3">
-                <label for="anno" class="form-label">Año:</label>
+                <label for="anno" class="form-label">Fecha:</label>
                 <input type="date" name="anno" id="anno" class="form-control" required>
             </div>
             <div class="mb-3">
@@ -67,7 +67,7 @@ $documentos = $stmt->fetchAll(PDO::FETCH_ASSOC);
             <thead>
                 <tr>
                     <th>Tipo</th>
-                    <th>Año</th>
+                    <th>Fecha</th>
                     <th>Número</th>
                     <th>Descripción</th>
                     <th>Enlace</th>
