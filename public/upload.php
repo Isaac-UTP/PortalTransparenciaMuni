@@ -35,7 +35,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     $anno = $_POST['anno'] ?? null;
                     $numero = $_POST['numero'] ?? null;
                     $descripcion = $_POST['descripcion'] ?? null;
-                    $fecha = date('Y-m-d'); // Fecha actual para la columna 'fecha'
                     $link = $rutaArchivo;  // Ruta del archivo subido
 
                     // Validar los datos antes de insertarlos
@@ -43,6 +42,22 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                         die("Error: Todos los campos son obligatorios.");
                     }
 
+                    // Verificar si el año existe en la tabla annos
+                    $sql = "SELECT COUNT(*) FROM annos WHERE anno = :anno";
+                    $stmt = $pdo->prepare($sql);
+                    $stmt->bindParam(':anno', $anno);
+                    $stmt->execute();
+                    $count = $stmt->fetchColumn();
+
+                    if ($count == 0) {
+                        // Insertar el año en la tabla annos
+                        $sql = "INSERT INTO annos (anno) VALUES (:anno)";
+                        $stmt = $pdo->prepare($sql);
+                        $stmt->bindParam(':anno', $anno);
+                        $stmt->execute();
+                    }
+
+                    // Insertar el documento en la tabla documentos
                     $sql = "INSERT INTO documentos (tipos, anno, numero, descripcion, link)
                             VALUES (:tipos, :anno, :numero, :descripcion, :link)";
                     $stmt = $pdo->prepare($sql);

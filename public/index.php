@@ -3,6 +3,14 @@
 
 require_once '../connection/db.php';
 
+// Definir la variable $tipo
+$tipo = '';
+
+// Obtener los tipos desde la base de datos
+$sql = "SELECT prefijo, nombre FROM tipos";
+$stmt = $pdo->query($sql);
+$tipos = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
 // Obtener los documentos desde la base de datos
 $tipos = $_GET['tipos'] ?? '';
 $anno = $_GET['anno'] ?? date('Y');
@@ -95,24 +103,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['archivo'])) {
 
 <body>
     <h1>Publicación de ordenanzas</h1>
-    <form method="GET" action="">
-        <select name="tipo">
-            <option value="">--TIPOS--</option>
-            <?php
-            // Obtener tipos desde la base de datos
-            $tiposQuery = $pdo->query("SELECT prefijo, nombre FROM tipos");
-            $tipos = $tiposQuery->fetchAll(PDO::FETCH_ASSOC);
-            foreach ($tipos as $t):
-                ?>
-                <option value="<?= htmlspecialchars($t['prefijo']) ?>" <?= $tipo === $t['prefijo'] ? 'selected' : '' ?>>
-                    <?= htmlspecialchars($t['nombre']) ?>
-                </option>
-            <?php endforeach; ?>
-        </select>
-        <input type="number" name="anno" placeholder="Año" value="<?= htmlspecialchars($anno) ?>">
-        <input type="text" name="busqueda" placeholder="Palabra clave" value="<?= htmlspecialchars($busqueda) ?>">
-        <button type="submit">Buscar</button>
-    </form>
 
     <button id="openModalBtn">Subir Archivo</button>
 
@@ -125,39 +115,35 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['archivo'])) {
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <form id="uploadForm" action="upload.php" method="POST" enctype="multipart/form-data">
-                    <div class="modal-body">
-                        <div class="mb-3">
-                            <label for="tipo" class="form-label">Tipo:</label>
-                            <select name="tipo" id="tipo" class="form-select" required>
-                                <option value="">-- Selecciona un Tipo --</option>
-                                <?php
-                                // Obtener los tipos desde la base de datos
-                                $sql = "SELECT prefijo, nombre FROM tipos";
-                                $stmt = $pdo->query($sql);
-                                while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-                                    echo '<option value="' . htmlspecialchars($row['prefijo']) . '">' . htmlspecialchars($row['nombre']) . '</option>';
-                                }
-                                ?>
-                            </select>
-                        </div>
-                        <div class="mb-3">
-                            <label for="anio" class="form-label">Fecha</label>
-                            <input type="date" class="form-control limitar-caracteres" id="anno" name="anno"
-                                autocomplete="off">
-                        </div>
-                        <div class="mb-3">
-                            <label for="numero">Número:</label>
-                            <input type="number" name="numero" id="numero" required>
-                        </div>
-
-                        <div class="mb-3">
-                            <label for="descripcion">Descripción:</label>
-                            <input type="text" name="descripcion" id="descripcion" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="archivo" class="form-label">Archivo</label>
-                            <input type="file" name="archivo" id="archivo" class="form-control" required>
-                        </div>
+                    <div class="mb-3">
+                        <label for="tipos" class="form-label">Tipo:</label>
+                        <select name="tipos" id="tipos" class="form-select" required>
+                            <option value="">-- Selecciona un Tipo --</option>
+                            <?php
+                            // Obtener los tipos desde la base de datos
+                            $sql = "SELECT prefijo, nombre FROM tipos";
+                            $stmt = $pdo->query($sql);
+                            while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+                                echo '<option value="' . htmlspecialchars($row['prefijo']) . '">' . htmlspecialchars($row['nombre']) . '</option>';
+                            }
+                            ?>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="anno" class="form-label">Año:</label>
+                        <input type="number" name="anno" id="anno" class="form-control" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="numero">Número:</label>
+                        <input type="number" name="numero" id="numero" class="form-control" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="descripcion">Descripción:</label>
+                        <input type="text" name="descripcion" id="descripcion" class="form-control" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="archivo" class="form-label">Archivo</label>
+                        <input type="file" name="archivo" id="archivo" class="form-control" required>
                     </div>
                     <div class="modal-footer">
                         <button type="submit" class="btn btn-primary">Subir</button>
@@ -211,7 +197,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['archivo'])) {
         }).then(response => {
             if (response.ok) {
                 // Cierra el modal aquí
-                var modal = document.getElementById('myModal'); // Asegúrate de que el id del modal sea 'myModal'
+                var modal = document.getElementById('uploadModal'); // Asegúrate de que el id del modal sea 'myModal'
                 var modalInstance = bootstrap.Modal.getInstance(modal);
                 modalInstance.hide();
             } else {
