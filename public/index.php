@@ -163,18 +163,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['archivo'])) {
                 <th>Año</th>
                 <th>Número</th>
                 <th>Descripción</th>
-                <th>Fecha</th>
             </tr>
         </thead>
         <tbody>
             <?php foreach ($documentos as $doc): ?>
                 <tr>
                     <td><?= htmlspecialchars($doc['id']) ?></td>
-                    <td><?= htmlspecialchars($doc['tipo']) ?></td>
+                    <td><?= htmlspecialchars($doc['tipos']) ?></td>
                     <td><?= htmlspecialchars($doc['anno']) ?></td>
                     <td><?= htmlspecialchars($doc['numero']) ?></td>
                     <td><?= htmlspecialchars($doc['descripcion']) ?></td>
-                    <td><?= htmlspecialchars($doc['fecha']) ?></td>
                 </tr>
             <?php endforeach; ?>
         </tbody>
