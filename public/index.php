@@ -131,7 +131,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['archivo'])) {
                     </div>
                     <div class="mb-3">
                         <label for="anno" class="form-label">Año:</label>
-                        <input type="number" name="anno" id="anno" class="form-control" required>
+                        <input type="date" name="anno" id="anno" class="form-control" required>
                     </div>
                     <div class="mb-3">
                         <label for="numero">Número:</label>
@@ -155,30 +155,29 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['archivo'])) {
 
 
     <!-- Tabla de Documentos -->
-    <table class="table table-bordered" style="width: 100%;">
+    <table class="table table-striped">
         <thead>
             <tr>
-                <th>#</th>
                 <th>Tipo</th>
                 <th>Año</th>
                 <th>Número</th>
                 <th>Descripción</th>
+                <th>Enlace</th>
             </tr>
         </thead>
         <tbody>
-            <?php foreach ($documentos as $doc): ?>
+            <?php foreach ($documentos as $documento): ?>
                 <tr>
-                    <td><?= htmlspecialchars($doc['id']) ?></td>
-                    <td><?= htmlspecialchars($doc['tipos']) ?></td>
-                    <td><?= htmlspecialchars($doc['anno']) ?></td>
-                    <td><?= htmlspecialchars($doc['numero']) ?></td>
-                    <td><?= htmlspecialchars($doc['descripcion']) ?></td>
+                    <td><?= htmlspecialchars($documento['tipos']) ?></td>
+                    <td><?= htmlspecialchars($documento['anno']) ?></td>
+                    <td><?= htmlspecialchars($documento['numero']) ?></td>
+                    <td><?= htmlspecialchars($documento['descripcion']) ?></td>
+                    <td><a href="<?= htmlspecialchars($documento['link']) ?>" target="_blank">Ver</a></td>
                 </tr>
             <?php endforeach; ?>
         </tbody>
-    </table>
 
-    <script src="js/modal.js"></script>
+        <script src="js/modal.js"></script>
 </body>
 
 </html>
