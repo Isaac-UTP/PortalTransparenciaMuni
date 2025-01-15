@@ -42,6 +42,7 @@ $documentos = $stmt->fetchAll(PDO::FETCH_ASSOC);
 </head>
 
 <body>
+    <?php include '../templates/navbar.php'; ?>
     <div class="container">
         <div class="row">
             <div class="col-lg-12 text-left">
