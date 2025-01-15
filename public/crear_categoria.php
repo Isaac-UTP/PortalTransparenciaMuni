@@ -95,7 +95,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <input type="text" name="prefijo" id="prefijo" class="form-control" maxlength="5" required>
             </div>
             <div class="modal-footer d-grid gap-2 d-md-flex justify-content-md-end">
-                <button type="submit" class="btn btn-primary">Crear Categoría</button>
+                <button type="submit" class="btn btn-success">Crear Categoría</button>
                 <a type="button" href="index.php" class="btn btn-warning">Volver al Inicio</a>
             </div>
         </form>
