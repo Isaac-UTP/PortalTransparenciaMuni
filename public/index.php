@@ -35,8 +35,8 @@ $documentos = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 <table class="table table-striped table-bordered" style="font-size:12px;">
                     <thead>
                         <tr>
-                            <th>Tipo</th>
-                            <th>Año</th>
+                            <th>Categoria</th>
+                            <th>Fecha</th>
                             <th>Número</th>
                             <th>Descripción</th>
                             <th>Enlace</th>
