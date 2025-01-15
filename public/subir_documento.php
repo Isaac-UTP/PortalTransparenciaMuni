@@ -87,8 +87,9 @@ $tipos = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 <label for="archivo" class="form-label">Archivo</label>
                 <input type="file" name="archivo" id="archivo" class="form-control" required>
             </div>
-            <div class="modal-footer">
-                <button type="submit" class="btn btn-primary">Subir</button>
+            <div class="modal-footer d-grid gap-2 d-md-flex justify-content-md-end">
+                <button type="submit" class="btn btn-primary">Subir</button> <br>
+                <a type="button" href="index.php" class="btn btn-warning">Volver al Inicio</a>
             </div>
         </form>
     </div>
