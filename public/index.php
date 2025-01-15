@@ -47,7 +47,6 @@ $documentos = $stmt->fetchAll(PDO::FETCH_ASSOC);
         <div class="row">
             <div class="col-lg-12 text-left">
                 <h1>Documentos Subidos</h1>
-                <a href="subir_documento.php" class="btn btn-primary">Subir Documento</a>
                 <form method="GET" action="index.php" class="mb-3">
                     <div class="row">
                         <div class="col-md-3">
