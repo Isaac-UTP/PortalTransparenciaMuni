@@ -33,7 +33,7 @@ $tipos = $stmt->fetchAll(PDO::FETCH_ASSOC);
             </div>
             <div class="mb-3">
                 <label for="anno" class="form-label">Año:</label>
-                <input type="number" name="anno" id="anno" class="form-control" required>
+                <input type="date" name="anno" id="anno" class="form-control" required>
             </div>
             <div class="mb-3">
                 <label for="numero">Número:</label>
