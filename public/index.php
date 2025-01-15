@@ -34,19 +34,22 @@ $documentos = $stmt->fetchAll(PDO::FETCH_ASSOC);
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Documentos Subidos</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="css/styles.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
         crossorigin="anonymous"></script>
+
 </head>
 
 <body>
     <?php include '../templates/navbar.php'; ?>
     <div class="container">
-        <div class="row">
+        <div class="row mt-4">
             <div class="col-lg-12 text-left">
-                <h1>Documentos Subidos</h1>
+                <h1>Publicación de ordenanzas</h1>
                 <form method="GET" action="index.php" class="mb-3">
                     <div class="row">
                         <div class="col-md-3">
@@ -61,15 +64,24 @@ $documentos = $stmt->fetchAll(PDO::FETCH_ASSOC);
                         <div class="col-md-3">
                             <label for="anno" class="form-label">Año:</label>
                             <select name="anno" id="anno" class="form-select">
-                                <option value="">-- Selecciona un Año --</option>
-                                <?php
-                                // Obtener los años desde la base de datos
-                                $sql = "SELECT DISTINCT anno FROM documentos ORDER BY anno DESC";
-                                $stmt = $pdo->query($sql);
-                                $annos = $stmt->fetchAll(PDO::FETCH_ASSOC);
-                                foreach ($annos as $row): ?>
-                                    <option value="<?= htmlspecialchars($row['anno']) ?>" <?= $searchAnno == $row['anno'] ? 'selected' : '' ?>><?= htmlspecialchars($row['anno']) ?></option>
-                                <?php endforeach; ?>
+                                <option value=""  selected>-- Selecciona un Año --</option>
+                                <option value="2025">2025</option>
+                                <option value="2024">2024</option>
+                                <option value="2023">2023</option>
+                                <option value="2022">2022</option>
+                                <option value="2021">2021</option>
+                                <option value="2020">2020</option>
+                                <option value="2019">2019</option>
+                                <option value="2018">2018</option>
+                                <option value="2017">2017</option>
+                                <option value="2016">2016</option>
+                                <option value="2015">2015</option>
+                                <option value="2014">2014</option>
+                                <option value="2013">2013</option>
+                                <option value="2012">2012</option>
+                                <option value="2011">2011</option>
+                                <option value="2010">2010</option>
+                                <option value="2009">2009</option>
                             </select>
                         </div>
                         <div class="col-md-3">
@@ -83,7 +95,9 @@ $documentos = $stmt->fetchAll(PDO::FETCH_ASSOC);
                         <a href=""></a>
                     </div>
                 </form>
-                <table class="table table-striped">
+                <div class="row">
+                    <div class="col-lg-12 text-left">
+                    <table class="table table-striped table-bordered" style="font-size:12px;">
                     <thead>
                         <tr>
                             <th>Tipo</th>
@@ -100,11 +114,14 @@ $documentos = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                 <td><?= htmlspecialchars($documento['anno']) ?></td>
                                 <td><?= htmlspecialchars($documento['numero']) ?></td>
                                 <td><?= htmlspecialchars($documento['descripcion']) ?></td>
-                                <td><a href="<?= htmlspecialchars($documento['link']) ?>" target="_blank">Ver</a></td>
+                                <td><a href="<?= htmlspecialchars($documento['link']) ?>" target="_blank" class="btn btn-warning btn-xs"><i class="fa-solid fa-download"></i></a></td>
                             </tr>
                         <?php endforeach; ?>
                     </tbody>
                 </table>
+                    </div>
+                </div>
+                
             </div>
         </div>
     </div>
