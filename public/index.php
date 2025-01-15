@@ -1,13 +1,29 @@
 <?php
 require_once '../connection/db.php';
 
+// Obtener los tipos desde la base de datos
+$sql = "SELECT prefijo, nombre FROM tipos";
+$stmt = $pdo->query($sql);
+$tipos = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
 // Obtener los documentos desde la base de datos
+$searchTipo = $_GET['tipo'] ?? '';
+$searchAnno = $_GET['anno'] ?? '';
+$searchKeyword = $_GET['keyword'] ?? '';
+
 $sql = "
     SELECT d.id, t.nombre AS tipos, d.anno, d.descripcion, d.numero, d.link 
     FROM documentos d
     INNER JOIN tipos t ON d.tipos = t.prefijo
+    WHERE (:tipo = '' OR d.tipos = :tipo)
+    AND (:anno = '' OR d.anno = :anno)
+    AND (:keyword = '' OR d.descripcion LIKE :keyword)
     ORDER BY d.id DESC";
-$stmt = $pdo->query($sql);
+$stmt = $pdo->prepare($sql);
+$stmt->bindValue(':tipo', $searchTipo);
+$stmt->bindValue(':anno', $searchAnno);
+$stmt->bindValue(':keyword', '%' . $searchKeyword . '%');
+$stmt->execute();
 $documentos = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
 
@@ -31,12 +47,48 @@ $documentos = $stmt->fetchAll(PDO::FETCH_ASSOC);
         <div class="row">
             <div class="col-lg-12 text-left">
                 <h1>Documentos Subidos</h1>
-                <a href="subir_documento.php" class="btn btn-primary mb-3">Subir Documento</a>
-                <table class="table table-striped table-bordered" style="font-size:12px;">
+                <a href="subir_documento.php" class="btn btn-primary">Subir Documento</a>
+                <form method="GET" action="index.php" class="mb-3">
+                    <div class="row">
+                        <div class="col-md-3">
+                            <label for="tipo" class="form-label">Categoría:</label>
+                            <select name="tipo" id="tipo" class="form-select">
+                                <option value="">-- Selecciona una Categoría --</option>
+                                <?php foreach ($tipos as $row): ?>
+                                    <option value="<?= htmlspecialchars($row['prefijo']) ?>" <?= $searchTipo == $row['prefijo'] ? 'selected' : '' ?>><?= htmlspecialchars($row['nombre']) ?></option>
+                                <?php endforeach; ?>
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <label for="anno" class="form-label">Año:</label>
+                            <select name="anno" id="anno" class="form-select">
+                                <option value="">-- Selecciona un Año --</option>
+                                <?php
+                                // Obtener los años desde la base de datos
+                                $sql = "SELECT DISTINCT anno FROM documentos ORDER BY anno DESC";
+                                $stmt = $pdo->query($sql);
+                                $annos = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                                foreach ($annos as $row): ?>
+                                    <option value="<?= htmlspecialchars($row['anno']) ?>" <?= $searchAnno == $row['anno'] ? 'selected' : '' ?>><?= htmlspecialchars($row['anno']) ?></option>
+                                <?php endforeach; ?>
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <label for="keyword" class="form-label">Palabras Clave:</label>
+                            <input type="text" name="keyword" id="keyword" class="form-control"
+                                value="<?= htmlspecialchars($searchKeyword) ?>">
+                        </div>
+                        <div class="col-md-3 d-flex align-items-end">
+                            <button type="submit" class="btn btn-primary">Buscar</button>
+                        </div>
+                        <a href=""></a>
+                    </div>
+                </form>
+                <table class="table table-striped">
                     <thead>
                         <tr>
-                            <th>Categoria</th>
-                            <th>Fecha</th>
+                            <th>Tipo</th>
+                            <th>Año</th>
                             <th>Número</th>
                             <th>Descripción</th>
                             <th>Enlace</th>
@@ -57,7 +109,6 @@ $documentos = $stmt->fetchAll(PDO::FETCH_ASSOC);
             </div>
         </div>
     </div>
-
 
     <script src="path/to/bootstrap.bundle.js"></script>
     <script>

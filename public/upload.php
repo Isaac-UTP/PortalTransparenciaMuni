@@ -1,6 +1,6 @@
 <?php
 require_once '../connection/db.php';
-
+//Los documentos que tengan el mismo nombre y ya esten en la base de datos no se subiran de nuevo y se ignorara la subida
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     // Verificar si el archivo fue subido sin errores
     if (isset($_FILES['archivo']) && $_FILES['archivo']['error'] == 0) {
