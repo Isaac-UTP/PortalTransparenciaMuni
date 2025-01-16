@@ -1,13 +1,28 @@
 <?php
 require_once '../connection/db.php';
 
-// Obtener los documentos desde la base de datos
+// Obtener los parámetros de búsqueda
+$searchKeyword = isset($_GET['keyword']) ? $_GET['keyword'] : '';
+$searchYear = isset($_GET['anno']) ? $_GET['anno'] : '';
+
+// Construir la consulta SQL
 $sql = "
     SELECT d.id, t.nombre AS tipos, d.anno, d.descripcion, d.numero, d.link 
     FROM documentos d
     INNER JOIN tipos t ON d.tipos = t.prefijo
-    ORDER BY d.id DESC";
-$stmt = $pdo->query($sql);
+    WHERE d.descripcion LIKE :keyword";
+
+$params = [':keyword' => '%' . $searchKeyword . '%'];
+
+if (!empty($searchYear)) {
+    $sql .= " AND YEAR(d.anno) = :anno";
+    $params[':anno'] = $searchYear;
+}
+
+$sql .= " ORDER BY d.id DESC";
+
+$stmt = $pdo->prepare($sql);
+$stmt->execute($params);
 $documentos = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 // Devolver los documentos en formato JSON
