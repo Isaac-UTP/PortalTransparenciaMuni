@@ -49,7 +49,7 @@ $documentos = $stmt->fetchAll(PDO::FETCH_ASSOC);
     <div class="container">
         <div class="row mt-4">
             <div class="col-lg-12 text-left">
-                <h1>Publicación de ordenanzas</h1>
+                <h2>Publicación de ordenanzas</h2>
                 <form method="GET" action="index.php" class="mb-3">
                     <div class="row">
                         <div class="col-md-3">
@@ -64,7 +64,7 @@ $documentos = $stmt->fetchAll(PDO::FETCH_ASSOC);
                         <div class="col-md-3">
                             <label for="anno" class="form-label">Año:</label>
                             <select name="anno" id="anno" class="form-select">
-                                <option value=""  selected>-- Selecciona un Año --</option>
+                                <option value="" selected>-- Selecciona un Año --</option>
                                 <option value="2025">2025</option>
                                 <option value="2024">2024</option>
                                 <option value="2023">2023</option>
@@ -97,31 +97,32 @@ $documentos = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 </form>
                 <div class="row">
                     <div class="col-lg-12 text-left">
-                    <table class="table table-striped table-bordered" style="font-size:12px;">
-                    <thead>
-                        <tr>
-                            <th>Tipo</th>
-                            <th>Año</th>
-                            <th>Número</th>
-                            <th>Descripción</th>
-                            <th>Enlace</th>
-                        </tr>
-                    </thead>
-                    <tbody id="documentosTableBody">
-                        <?php foreach ($documentos as $documento): ?>
-                            <tr>
-                                <td><?= htmlspecialchars($documento['tipos']) ?></td>
-                                <td><?= htmlspecialchars($documento['anno']) ?></td>
-                                <td><?= htmlspecialchars($documento['numero']) ?></td>
-                                <td><?= htmlspecialchars($documento['descripcion']) ?></td>
-                                <td><a href="<?= htmlspecialchars($documento['link']) ?>" target="_blank" class="btn btn-warning btn-xs"><i class="fa-solid fa-download"></i></a></td>
-                            </tr>
-                        <?php endforeach; ?>
-                    </tbody>
-                </table>
+                        <table class="table table-striped table-bordered" style="font-size:12px;">
+                            <thead>
+                                <tr>
+                                    <th>Tipo</th>
+                                    <th>Año</th>
+                                    <th>Número</th>
+                                    <th>Descripción</th>
+                                    <th>Enlace</th>
+                                </tr>
+                            </thead>
+                            <tbody id="documentosTableBody">
+                                <?php foreach ($documentos as $documento): ?>
+                                    <tr>
+                                        <td><?= htmlspecialchars($documento['tipos']) ?></td>
+                                        <td><?= htmlspecialchars($documento['anno']) ?></td>
+                                        <td><?= htmlspecialchars($documento['numero']) ?></td>
+                                        <td><?= htmlspecialchars($documento['descripcion']) ?></td>
+                                        <td><a href="<?= htmlspecialchars($documento['link']) ?>" target="_blank"
+                                                class="btn btn-warning btn-xs"><i class="fa-solid fa-download"></i></a></td>
+                                    </tr>
+                                <?php endforeach; ?>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
-                
+
             </div>
         </div>
     </div>

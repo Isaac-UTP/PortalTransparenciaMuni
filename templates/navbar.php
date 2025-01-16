@@ -1,40 +1,52 @@
-<!-- filepath: /c:/xampp/htdocs/PortalTransparenciaMuni/public/navbar.php -->
-<style>
-    .navbar-brand-container {
-        background-color: #000;
-        /* Fondo negro */
-        padding: 10px;
-        /* Padding opcional */
-        display: flex;
-        justify-content: center;
-        align-items: center;
-    }
-</style>
+<!DOCTYPE html>
+<html lang="en">
 
-<nav class="navbar navbar-expand-lg navbar-light bg-light">
-    <div class="container-fluid">
-        <div class="bg-dark p-1 rounded">
-            <a class="navbar-brand" href="index.php">
-                <img src="img/logo_white.ico" alt="" width="24" height="24" class="d-inline-block align-text-top">
-            </a>
-        </div>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nuevo Chimbote</title>
+    <!-- Incluir las fuentes -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Jacquard+12&family=Playwrite+VN:wght@100..400&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap"
+        rel="stylesheet">
+    <style>
+        h1 {
+            font-family: 'Playwrite VN', 'Jacquard 12', 'Roboto', sans-serif;
+        }
 
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
-            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav">
-                <li class="nav-item">
-                    <a class="nav-link" href="index.php">Inicio</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="subir_documento.php">Subir Documento</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="crear_categoria.php">Crear Categoría</a>
-                </li>
-            </ul>
+        .navbar-brand {
+            display: flex;
+            align-items: center;
+        }
+
+        .navbar-brand img {
+            margin-right: 10px;
+        }
+
+        .navbar-text {
+            display: flex;
+            align-items: center;
+        }
+    </style>
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="container-fluid">
+            <div class="navbar-brand">
+                <img src="img/Escudo_de_Nuevo_Chimbote.ico" alt="" width="60" height="70"
+                    class="d-inline-block align-text-top">
+                <h1 name="cursiva">Distrito de Nuevo Chimbote</h1>
+            </div>
+
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
         </div>
-    </div>
-</nav>
+    </nav>
+</body>
+
+</html>
