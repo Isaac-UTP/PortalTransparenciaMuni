@@ -127,9 +127,6 @@ if (!empty($searchYear)) {
         document.getElementById('anno').addEventListener('change', function () {
             this.form.submit();
         });
-        document.getElementById('keyword').addEventListener('input', function () {
-            this.form.submit();
-        });
     </script>
 </body>
 
