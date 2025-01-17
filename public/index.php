@@ -10,28 +10,24 @@ $tipos = $stmt->fetchAll(PDO::FETCH_ASSOC);
 $searchTipo = $_GET['tipo'] ?? '';
 $searchAnno = $_GET['anno'] ?? '';
 $searchKeyword = $_GET['keyword'] ?? '';
-$searchYear = isset($_GET['year']) ? $_GET['year'] : '';
+$searchYear = $_GET['year'] ?? '';
 
 $sql = "
-    SELECT d.id, t.nombre AS tipos, d.anno, d.descripcion, d.numero, d.link 
+    SELECT d.id, t.nombre AS tipos, d.anno, d.descripcion, d.numero, d.link, d.anio 
     FROM documentos d
     INNER JOIN tipos t ON d.tipos = t.prefijo
     WHERE (:tipo = '' OR d.tipos = :tipo)
     AND (:anno = '' OR d.anno = :anno)
     AND (:keyword = '' OR d.descripcion LIKE :keyword)
+    AND (:year = '' OR d.anio = :year)
     ORDER BY d.id DESC";
 $stmt = $pdo->prepare($sql);
 $stmt->bindValue(':tipo', $searchTipo);
 $stmt->bindValue(':anno', $searchAnno);
 $stmt->bindValue(':keyword', '%' . $searchKeyword . '%');
+$stmt->bindValue(':year', $searchYear);
 $stmt->execute();
 $documentos = $stmt->fetchAll(PDO::FETCH_ASSOC);
-if (!empty($searchYear)) {
-    $sql .= " AND YEAR(fecha) = :year";
-    $params[':year'] = $searchYear;
-}
-
-
 ?>
 
 <!DOCTYPE html>
@@ -69,13 +65,13 @@ if (!empty($searchYear)) {
                             </select>
                         </div>
                         <div class="col-md-3">
-                            <label for="anno" class="form-label">Año:</label>
-                            <select name="anno" id="anno" class="form-select">
+                            <label for="anio" class="form-label">Año de Subida:</label>
+                                <select name="year" id="anio" class="form-select">
                                 <option value="" selected>-- Selecciona un Año --</option>
-                                <?php for ($i = date('Y'); $i >= 2000; $i--): ?>
-                                    <option value="<?= $i ?>" <?= $searchYear == $i ? 'selected' : '' ?>><?= $i ?></option>
+                                    <?php for ($i = date('Y'); $i >= 2000; $i--): ?>
+                                <option value="<?= $i ?>" <?= $searchYear == $i ? 'selected' : '' ?>><?= $i ?></option>
                                 <?php endfor; ?>
-                            </select>
+                                </select>
                         </div>
                         <div class="col-md-3">
                             <label for="keyword" class="form-label">Palabras Clave:</label>
@@ -124,9 +120,10 @@ if (!empty($searchYear)) {
         document.getElementById('tipo').addEventListener('change', function () {
             this.form.submit();
         });
-        document.getElementById('anno').addEventListener('change', function () {
+        document.getElementById('anio').addEventListener('change', function () {
             this.form.submit();
         });
+        
     </script>
 </body>
 
