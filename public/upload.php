@@ -27,7 +27,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $uploadDir = "../uploads/";
             $rutaArchivo = $uploadDir . $filename;
             if (file_exists($rutaArchivo)) {
-                die("Error: El archivo ya existe en el servidor.");
+                echo "El archivo ya existe y no se ha subido de nuevo.";
             } else {
                 if (move_uploaded_file($_FILES['archivo']['tmp_name'], $rutaArchivo)) {
                     // Insertar en la base de datos
@@ -41,6 +41,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     if (!$tipos || !$anno || !$descripcion || !$numero) {
                         die("Error: Todos los campos son obligatorios.");
                     }
+
+                    // Extraer el año de la fecha
+                    $anio = date('Y', strtotime($anno));
 
                     // Verificar si el año existe en la tabla annos
                     $sql = "SELECT COUNT(*) FROM annos WHERE anno = :anno";
@@ -58,14 +61,15 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     }
 
                     // Insertar el documento en la tabla documentos
-                    $sql = "INSERT INTO documentos (tipos, anno, numero, descripcion, link)
-                            VALUES (:tipos, :anno, :numero, :descripcion, :link)";
+                    $sql = "INSERT INTO documentos (tipos, anno, numero, descripcion, link, anio)
+                            VALUES (:tipos, :anno, :numero, :descripcion, :link, :anio)";
                     $stmt = $pdo->prepare($sql);
                     $stmt->bindParam(':tipos', $tipos);
                     $stmt->bindParam(':anno', $anno);
                     $stmt->bindParam(':numero', $numero);
                     $stmt->bindParam(':descripcion', $descripcion);
                     $stmt->bindParam(':link', $link);
+                    $stmt->bindParam(':anio', $anio);
 
                     if ($stmt->execute()) {
                         echo "El archivo fue subido exitosamente y registrado en la base de datos.";
@@ -81,40 +85,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         }
     } else {
         die("Error: " . $_FILES['archivo']['error']);
-    }
-
-    // Convertir el año a una fecha válida (por ejemplo, el primer día del año)
-    $anno = $_POST['anno'] . '-01-01';
-
-    // Verificar si el año existe en la tabla annos
-    $sql = "SELECT COUNT(*) FROM annos WHERE anno = :anno";
-    $stmt = $pdo->prepare($sql);
-    $stmt->bindParam(':anno', $anno);
-    $stmt->execute();
-    $count = $stmt->fetchColumn();
-
-    if ($count == 0) {
-        // Insertar el año en la tabla annos
-        $sql = "INSERT INTO annos (anno) VALUES (:anno)";
-        $stmt = $pdo->prepare($sql);
-        $stmt->bindParam(':anno', $anno);
-        $stmt->execute();
-    }
-
-    // Insertar el documento en la tabla documentos
-    $sql = "INSERT INTO documentos (tipos, anno, numero, descripcion, link)
-        VALUES (:tipos, :anno, :numero, :descripcion, :link)";
-    $stmt = $pdo->prepare($sql);
-    $stmt->bindParam(':tipos', $tipos);
-    $stmt->bindParam(':anno', $anno);
-    $stmt->bindParam(':numero', $numero);
-    $stmt->bindParam(':descripcion', $descripcion);
-    $stmt->bindParam(':link', $link);
-
-    if ($stmt->execute()) {
-        echo "El archivo fue subido exitosamente y registrado en la base de datos.";
-    } else {
-        echo "Error al guardar los datos en la base de datos.";
     }
 }
 ?>
