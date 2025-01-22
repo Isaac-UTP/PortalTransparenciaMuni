@@ -24,7 +24,7 @@
         border-radius: 5px;
     }
     .content {
-        margin-left: 250px;
+        margin-left: 250px; /* Ajusta el margen izquierdo para que el contenido no quede oculto */
         padding: 20px;
     }
     .sidebar img {
@@ -68,10 +68,6 @@
             </ul>
         </li>
     </ul>
-</div>
-
-<div class="content">
-    <!-- Aquí va el contenido de la página -->
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>
