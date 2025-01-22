@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 17-01-2025 a las 14:39:15
+-- Tiempo de generación: 22-01-2025 a las 16:00:40
 -- Versión del servidor: 10.4.11-MariaDB
 -- Versión de PHP: 7.4.4
 
@@ -39,6 +39,7 @@ CREATE TABLE `annos` (
 INSERT INTO `annos` (`id`, `anno`) VALUES
 (1, '0000-00-00'),
 (6, '2024-12-17'),
+(7, '2025-01-11'),
 (2, '2025-01-13'),
 (3, '2025-01-14'),
 (4, '2025-01-15'),
@@ -56,24 +57,26 @@ CREATE TABLE `documentos` (
   `anno` date NOT NULL,
   `numero` int(10) UNSIGNED NOT NULL,
   `descripcion` varchar(255) NOT NULL,
-  `link` varchar(255) NOT NULL
+  `link` varchar(255) NOT NULL,
+  `anio` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Volcado de datos para la tabla `documentos`
 --
 
-INSERT INTO `documentos` (`id`, `tipos`, `anno`, `numero`, `descripcion`, `link`) VALUES
-(5, 'RA', '0000-00-00', 1, 'P', '../uploads/Carta para prácticas pre empresa pública.pdf'),
-(6, 'RA', '2025-01-13', 12, 'Articulos de papeleria', '../uploads/S17_s2.pdf'),
-(7, 'RA', '2025-01-13', 2, 'delegar', '../uploads/Carta para prácticas pre empresa pública.pdf'),
-(8, 'RA', '2025-01-14', 3, 'autorizar', '../uploads/S15_s1.pdf'),
-(9, 'RA', '0000-00-00', 4, 'autorizar2', '../uploads/S15_s2.pdf'),
-(10, 'RA', '0000-00-00', 5, 'Articulos de papeleria2', '../uploads/iiii.pdf'),
-(11, 'RA', '0000-00-00', 6, 'Articulos de papeleria3', '../uploads/aaaa.pdf'),
-(12, 'OM', '2025-01-15', 6, 'autorizar3', '../uploads/S17_s1 - Material.pdf'),
-(13, 'RA', '2025-01-16', 16, 'PRORROGAR LA ENCARGATURA DEL PUESTO DE AUXILIAR COACTIVO DE LA GERENCIA DE EJECUTORIA', '../uploads/RA_16_2025_MDNCH.pdf'),
-(14, 'RG', '2024-12-17', 1061, 'APROBAR, EL PLAN DE TRABAJO:\"ECO DORADO FEST 2025\", POR EL MONTO ASCENDENTE', '../uploads/1061.pdf');
+INSERT INTO `documentos` (`id`, `tipos`, `anno`, `numero`, `descripcion`, `link`, `anio`) VALUES
+(5, 'RA', '0000-00-00', 1, 'P', '../uploads/Carta para prácticas pre empresa pública.pdf', NULL),
+(6, 'RA', '2025-01-13', 12, 'Articulos de papeleria', '../uploads/S17_s2.pdf', 2025),
+(7, 'RA', '2025-01-13', 2, 'delegar', '../uploads/Carta para prácticas pre empresa pública.pdf', 2025),
+(8, 'RA', '2025-01-14', 3, 'autorizar', '../uploads/S15_s1.pdf', 2025),
+(9, 'RA', '0000-00-00', 4, 'autorizar2', '../uploads/S15_s2.pdf', NULL),
+(10, 'RA', '0000-00-00', 5, 'Articulos de papeleria2', '../uploads/iiii.pdf', NULL),
+(11, 'RA', '0000-00-00', 6, 'Articulos de papeleria3', '../uploads/aaaa.pdf', NULL),
+(12, 'OM', '2025-01-15', 6, 'autorizar3', '../uploads/S17_s1 - Material.pdf', 2025),
+(13, 'RA', '2025-01-16', 16, 'PRORROGAR LA ENCARGATURA DEL PUESTO DE AUXILIAR COACTIVO DE LA GERENCIA DE EJECUTORIA', '../uploads/RA_16_2025_MDNCH.pdf', 2025),
+(14, 'RG', '2024-12-17', 1061, 'APROBAR, EL PLAN DE TRABAJO:\"ECO DORADO FEST 2025\", POR EL MONTO ASCENDENTE', '../uploads/1061.pdf', 2024),
+(15, 'RG', '2025-01-11', 14, 'APROBAR, EL PLAN DE TRABAJO: \"SERVICIO DE CONSULTORIO EN NUTRICION DIRIGIDO A BENEFICIARIOS DEL PROGRAMA VASO DE LECHE\"', '../uploads/20250113_014.pdf', 2025);
 
 -- --------------------------------------------------------
 
@@ -174,13 +177,13 @@ ALTER TABLE `usuarios`
 -- AUTO_INCREMENT de la tabla `annos`
 --
 ALTER TABLE `annos`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT de la tabla `documentos`
 --
 ALTER TABLE `documentos`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
 
 --
 -- AUTO_INCREMENT de la tabla `mantenimiento`
