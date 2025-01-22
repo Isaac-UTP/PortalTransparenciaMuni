@@ -49,7 +49,7 @@
     <img src="../public/img/logoOficial.png" alt="Logo" width="250" height="70">
     <ul class="nav flex-column">
         <li class="nav-item">
-            <a class="nav-link" href="index.php">Inicio</a>
+            <a class="nav-link" href="indexAdmin.php">Inicio</a>
         </li>
         <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" href="#" id="categoriaDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -65,6 +65,7 @@
             </a>
             <ul class="dropdown-menu" aria-labelledby="documentoDropdown">
                 <li><a class="dropdown-item" href="subir_documento.php">Subir Documento</a></li>
+                <li><a class="dropdown-item" href="VerDocumentos.php">Ver Documento</a></li>
             </ul>
         </li>
     </ul>
