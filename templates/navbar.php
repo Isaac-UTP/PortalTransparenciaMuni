@@ -12,9 +12,6 @@
         href="https://fonts.googleapis.com/css2?family=Jacquard+12&family=Playwrite+VN:wght@100..400&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap"
         rel="stylesheet">
     <style>
-        h1 {
-            font-family: 'Playwrite VN', 'Jacquard 12', 'Roboto', sans-serif;
-        }
 
         .navbar-brand {
             display: flex;
@@ -36,9 +33,8 @@
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <div class="container-fluid">
             <div class="navbar-brand">
-                <img src="img/Escudo_de_Nuevo_Chimbote.ico" alt="" width="60" height="70"
+                <img src="img/logoOficial.png" alt="" width="250" height="70"
                     class="d-inline-block align-text-top">
-                <h1 name="cursiva">Distrito de Nuevo Chimbote</h1>
             </div>
 
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
