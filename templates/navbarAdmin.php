@@ -1,41 +1,49 @@
-<!-- filepath: /c:/xampp/htdocs/PortalTransparenciaMuni/public/navbar.php -->
+<!-- filepath: /c:/xampp/htdocs/PortalTransparenciaMuni/public/navbarAdmin.php -->
 <style>
-    .navbar-brand-container {
-        background-color: #000;
-        /* Fondo negro */
+    .sidebar {
+        width: 250px;
+        background-color: #343a40;
+        color: white;
+        padding: 15px;
+        height: 100vh;
+        position: fixed;
+    }
+    .sidebar h2 {
+        color: white;
+        text-align: center;
+        margin-bottom: 20px;
+    }
+    .sidebar .nav-link {
+        color: white;
+        text-decoration: none;
         padding: 10px;
-        /* Padding opcional */
-        display: flex;
-        justify-content: center;
-        align-items: center;
+        display: block;
+    }
+    .sidebar .nav-link:hover {
+        background-color: #495057;
+        border-radius: 5px;
+    }
+    .content {
+        margin-left: 250px;
+        padding: 20px;
     }
 </style>
 
-<nav class="navbar navbar-expand-lg navbar-light bg-light">
-    <div class="container-fluid">
-        <div class="bg-dark p-1 rounded">
-            <a class="navbar-brand" href="index.php" title="Inicio">
-                <img src="img/logo_white.ico" alt="Logo del sitio" width="24" height="24"
-                    class="d-inline-block align-text-top">
-            </a>
-        </div>
+<div class="sidebar">
+    <h2>Admin Dashboard</h2>
+    <ul class="nav flex-column">
+        <li class="nav-item">
+            <a class="nav-link" href="index.php">Inicio</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="subir_documento.php">Subir Documento</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="crear_categoria.php">Crear Categoría</a>
+        </li>
+    </ul>
+</div>
 
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
-            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav">
-                <li class="nav-item">
-                    <a class="nav-link" href="index.php" title="Inicio">Inicio</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="subir_documento.php" title="Subir Documento">Subir Documento</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="crear_categoria.php" title="Crear Categoría">Crear Categoría</a>
-                </li>
-            </ul>
-        </div>
-    </div>
-</nav>
+<div class="content">
+    <!-- Aquí va el contenido de la página -->
+</div>
