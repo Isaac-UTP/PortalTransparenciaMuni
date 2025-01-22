@@ -9,7 +9,6 @@ $tipos = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 <!DOCTYPE html>
 <html lang="es">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -56,8 +55,8 @@ $tipos = $stmt->fetchAll(PDO::FETCH_ASSOC);
         }
     </style>
 </head>
-
 <body>
+<?php include '../templates/navbarAdmin.php'; ?>
     <div class="container">
         <h1><i class="bi bi-cloud-arrow-up"></i> Subir Documento</h1>
         <form id="uploadForm" action="upload.php" method="post" enctype="multipart/form-data">
@@ -115,5 +114,4 @@ $tipos = $stmt->fetchAll(PDO::FETCH_ASSOC);
         });
     </script>
 </body>
-
 </html>

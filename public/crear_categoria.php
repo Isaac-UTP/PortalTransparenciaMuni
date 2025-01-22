@@ -11,31 +11,33 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stmt->bindParam(':nombre', $nombre);
         $stmt->bindParam(':prefijo', $prefijo);
         if ($stmt->execute()) {
-            $mensaje = "Categoría creada exitosamente.";
+            echo "Categoría creada exitosamente.";
         } else {
-            $mensaje = "Error al crear la categoría.";
+            echo "Error al crear la categoría.";
         }
-    } else {
-        $mensaje = "Por favor, complete todos los campos.";
     }
 }
 ?>
+
 <!DOCTYPE html>
 <html lang="es">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Crear Categoría</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+        crossorigin="anonymous"></script>
     <style>
         body {
-            background-color: #e9ecef;
+            background-color: #f5f5f5;
             font-family: Arial, sans-serif;
         }
 
         .container {
-            background-color: #fff;
+            background-color: #ffffff;
             padding: 20px;
             border-radius: 10px;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
@@ -53,38 +55,31 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             color: #555;
         }
 
-        .btn-primary {
-            background-color: #007bff;
-            border-color: #007bff;
+        .btn-success {
+            background-color: #28a745;
+            border-color: #28a745;
         }
 
-        .btn-primary:hover {
-            background-color: #0056b3;
-            border-color: #0056b3;
+        .btn-success:hover {
+            background-color: #218838;
+            border-color: #1e7e34;
         }
 
-        .btn-secondary {
-            background-color: #6c757d;
-            border-color: #6c757d;
+        .btn-warning {
+            background-color: #ffc107;
+            border-color: #ffc107;
         }
 
-        .btn-secondary:hover {
-            background-color: #5a6268;
-            border-color: #5a6268;
-        }
-
-        .alert {
-            margin-bottom: 20px;
+        .btn-warning:hover {
+            background-color: #e0a800;
+            border-color: #d39e00;
         }
     </style>
 </head>
-
 <body>
+<?php include '../templates/navbarAdmin.php'; ?>
     <div class="container">
         <h1>Crear Categoría</h1>
-        <?php if (!empty($mensaje)): ?>
-            <div class="alert alert-info"><?= htmlspecialchars($mensaje) ?></div>
-        <?php endif; ?>
         <form action="" method="POST">
             <div class="mb-3">
                 <label for="nombre" class="form-label">Nombre de la Categoría:</label>
@@ -101,5 +96,4 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </form>
     </div>
 </body>
-
 </html>
