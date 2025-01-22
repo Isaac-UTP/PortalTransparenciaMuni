@@ -6,12 +6,36 @@ $sql = "SELECT prefijo, nombre FROM tipos";
 $stmt = $pdo->query($sql);
 $tipos = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-// Obtener los documentos desde la base de datos
+// Obtener los parámetros de búsqueda y paginación
 $searchTipo = $_GET['tipo'] ?? '';
 $searchAnno = $_GET['anno'] ?? '';
 $searchKeyword = $_GET['keyword'] ?? '';
 $searchYear = $_GET['year'] ?? '';
+$orderBy = $_GET['order_by'] ?? 'd.id';
+$orderDir = $_GET['order_dir'] ?? 'DESC';
+$page = $_GET['page'] ?? 1;
+$limit = 10;
+$offset = ($page - 1) * $limit;
 
+// Contar el número total de registros
+$sqlCount = "
+    SELECT COUNT(*) 
+    FROM documentos d
+    INNER JOIN tipos t ON d.tipos = t.prefijo
+    WHERE (:tipo = '' OR d.tipos = :tipo)
+    AND (:anno = '' OR d.anno = :anno)
+    AND (:keyword = '' OR d.descripcion LIKE :keyword)
+    AND (:year = '' OR d.anio = :year)";
+$stmtCount = $pdo->prepare($sqlCount);
+$stmtCount->bindValue(':tipo', $searchTipo);
+$stmtCount->bindValue(':anno', $searchAnno);
+$stmtCount->bindValue(':keyword', '%' . $searchKeyword . '%');
+$stmtCount->bindValue(':year', $searchYear);
+$stmtCount->execute();
+$totalRecords = $stmtCount->fetchColumn();
+$totalPages = ceil($totalRecords / $limit);
+
+// Obtener los documentos desde la base de datos con límites y desplazamientos
 $sql = "
     SELECT d.id, t.nombre AS tipos, d.anno, d.descripcion, d.numero, d.link, d.anio 
     FROM documentos d
@@ -20,12 +44,15 @@ $sql = "
     AND (:anno = '' OR d.anno = :anno)
     AND (:keyword = '' OR d.descripcion LIKE :keyword)
     AND (:year = '' OR d.anio = :year)
-    ORDER BY d.id DESC";
+    ORDER BY $orderBy $orderDir
+    LIMIT :limit OFFSET :offset";
 $stmt = $pdo->prepare($sql);
 $stmt->bindValue(':tipo', $searchTipo);
 $stmt->bindValue(':anno', $searchAnno);
 $stmt->bindValue(':keyword', '%' . $searchKeyword . '%');
 $stmt->bindValue(':year', $searchYear);
+$stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
+$stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
 $stmt->execute();
 $documentos = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
@@ -44,7 +71,6 @@ $documentos = $stmt->fetchAll(PDO::FETCH_ASSOC);
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
         crossorigin="anonymous"></script>
-
 </head>
 
 <body>
@@ -66,12 +92,12 @@ $documentos = $stmt->fetchAll(PDO::FETCH_ASSOC);
                         </div>
                         <div class="col-md-3">
                             <label for="anio" class="form-label">Año de Subida:</label>
-                                <select name="year" id="anio" class="form-select">
+                            <select name="year" id="anio" class="form-select">
                                 <option value="" selected>-- Selecciona un Año --</option>
-                                    <?php for ($i = date('Y'); $i >= 2000; $i--): ?>
-                                <option value="<?= $i ?>" <?= $searchYear == $i ? 'selected' : '' ?>><?= $i ?></option>
+                                <?php for ($i = date('Y'); $i >= 2000; $i--): ?>
+                                    <option value="<?= $i ?>" <?= $searchYear == $i ? 'selected' : '' ?>><?= $i ?></option>
                                 <?php endfor; ?>
-                                </select>
+                            </select>
                         </div>
                         <div class="col-md-3">
                             <label for="keyword" class="form-label">Palabras Clave:</label>
@@ -81,7 +107,6 @@ $documentos = $stmt->fetchAll(PDO::FETCH_ASSOC);
                         <div class="col-md-3 d-flex align-items-end">
                             <button type="submit" class="btn btn-primary">Buscar</button>
                         </div>
-                        <a href=""></a>
                     </div>
                 </form>
                 <div class="row">
@@ -89,10 +114,26 @@ $documentos = $stmt->fetchAll(PDO::FETCH_ASSOC);
                         <table class="table table-striped table-bordered" style="font-size:12px;">
                             <thead>
                                 <tr>
-                                    <th>Tipo</th>
-                                    <th>Año</th>
-                                    <th>Número</th>
-                                    <th>Descripción</th>
+                                    <th>
+                                        Tipo
+                                        <a href="?order_by=t.nombre&order_dir=ASC">&#9650;</a>
+                                        <a href="?order_by=t.nombre&order_dir=DESC">&#9660;</a>
+                                    </th>
+                                    <th>
+                                        Año
+                                        <a href="?order_by=d.anno&order_dir=ASC">&#9650;</a>
+                                        <a href="?order_by=d.anno&order_dir=DESC">&#9660;</a>
+                                    </th>
+                                    <th>
+                                        Número
+                                        <a href="?order_by=d.numero&order_dir=ASC">&#9650;</a>
+                                        <a href="?order_by=d.numero&order_dir=DESC">&#9660;</a>
+                                    </th>
+                                    <th>
+                                        Descripción
+                                        <a href="?order_by=d.descripcion&order_dir=ASC">&#9650;</a>
+                                        <a href="?order_by=d.descripcion&order_dir=DESC">&#9660;</a>
+                                    </th>
                                     <th>Enlace</th>
                                 </tr>
                             </thead>
@@ -109,9 +150,18 @@ $documentos = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                 <?php endforeach; ?>
                             </tbody>
                         </table>
+                        <!-- Paginación -->
+                        <nav aria-label="Page navigation">
+                            <ul class="pagination">
+                                <?php for ($i = 1; $i <= $totalPages; $i++): ?>
+                                    <li class="page-item <?= $i == $page ? 'active' : '' ?>">
+                                        <a class="page-link" href="?page=<?= $i ?>&order_by=<?= $orderBy ?>&order_dir=<?= $orderDir ?>&tipo=<?= $searchTipo ?>&anno=<?= $searchAnno ?>&keyword=<?= $searchKeyword ?>&year=<?= $searchYear ?>"><?= $i ?></a>
+                                    </li>
+                                <?php endfor; ?>
+                            </ul>
+                        </nav>
                     </div>
                 </div>
-
             </div>
         </div>
     </div>
@@ -123,7 +173,6 @@ $documentos = $stmt->fetchAll(PDO::FETCH_ASSOC);
         document.getElementById('anio').addEventListener('change', function () {
             this.form.submit();
         });
-        
     </script>
 </body>
 
