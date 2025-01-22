@@ -78,6 +78,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 </head>
 <body>
 <?php include '../templates/navbarAdmin.php'; ?>
+<div class="content">
     <div class="container">
         <h1>Crear Categoría</h1>
         <form action="" method="POST">
@@ -95,5 +96,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             </div>
         </form>
     </div>
+</div>
 </body>
 </html>

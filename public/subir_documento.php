@@ -57,6 +57,7 @@ $tipos = $stmt->fetchAll(PDO::FETCH_ASSOC);
 </head>
 <body>
 <?php include '../templates/navbarAdmin.php'; ?>
+<div class="content">
     <div class="container">
         <h1><i class="bi bi-cloud-arrow-up"></i> Subir Documento</h1>
         <form id="uploadForm" action="upload.php" method="post" enctype="multipart/form-data">
@@ -92,6 +93,7 @@ $tipos = $stmt->fetchAll(PDO::FETCH_ASSOC);
             </div>
         </form>
     </div>
+</div>
 
     <script>
         document.getElementById('uploadForm').addEventListener('submit', function (event) {
