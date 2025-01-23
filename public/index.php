@@ -65,12 +65,16 @@ $documentos = $stmt->fetchAll(PDO::FETCH_ASSOC);
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Documentos Subidos</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="../public/css/styles.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
         crossorigin="anonymous"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Raleway:ital,wght@0,100..900;1,100..900&display=swap"
+        rel="stylesheet">
 </head>
 
 <body>
@@ -82,7 +86,7 @@ $documentos = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 <form method="GET" action="index.php" class="mb-3">
                     <div class="row">
                         <div class="col-md-3">
-                            <label for="tipo" class="form-label">Categoría:</label>
+                            <label for="tipo" class="form-label raleway-font"><b>Categoría:</b></label>
                             <select name="tipo" id="tipo" class="form-select">
                                 <option value="">-- Selecciona una Categoría --</option>
                                 <?php foreach ($tipos as $row): ?>
@@ -91,7 +95,7 @@ $documentos = $stmt->fetchAll(PDO::FETCH_ASSOC);
                             </select>
                         </div>
                         <div class="col-md-3">
-                            <label for="anio" class="form-label">Año de Subida:</label>
+                            <label for="anio" class="form-label raleway-font"><b>Año de Subida:</b></label>
                             <select name="year" id="anio" class="form-select">
                                 <option value="" selected>-- Selecciona un Año --</option>
                                 <?php for ($i = date('Y'); $i >= 2000; $i--): ?>
@@ -100,7 +104,7 @@ $documentos = $stmt->fetchAll(PDO::FETCH_ASSOC);
                             </select>
                         </div>
                         <div class="col-md-3">
-                            <label for="keyword" class="form-label">Palabras Clave:</label>
+                            <label for="keyword" class="form-label raleway-font"><b>Palabras Clave:</b></label>
                             <input type="text" name="keyword" id="keyword" class="form-control"
                                 value="<?= htmlspecialchars($searchKeyword) ?>">
                         </div>
@@ -116,23 +120,30 @@ $documentos = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                 <tr>
                                     <th>
                                         Tipo
-                                        <a href="?order_by=t.nombre&order_dir=ASC">&#9650;</a>
-                                        <a href="?order_by=t.nombre&order_dir=DESC">&#9660;</a>
+                                        <a href="?order_by=t.nombre&order_dir=ASC"><i
+                                                class="fa-solid fa-up-long"></i></a>
+                                        <a href="?order_by=t.nombre&order_dir=DESC"><i
+                                                class="fa-solid fa-down-long"></i></a>
                                     </th>
                                     <th>
                                         Año
-                                        <a href="?order_by=d.anno&order_dir=ASC">&#9650;</a>
-                                        <a href="?order_by=d.anno&order_dir=DESC">&#9660;</a>
+                                        <a href="?order_by=d.anno&order_dir=ASC"><i class="fa-solid fa-up-long"></i></a>
+                                        <a href="?order_by=d.anno&order_dir=DESC"><i
+                                                class="fa-solid fa-down-long"></i></a>
                                     </th>
                                     <th>
                                         Número
-                                        <a href="?order_by=d.numero&order_dir=ASC">&#9650;</a>
-                                        <a href="?order_by=d.numero&order_dir=DESC">&#9660;</a>
+                                        <a href="?order_by=d.numero&order_dir=ASC"><i
+                                                class="fa-solid fa-up-long"></i></a>
+                                        <a href="?order_by=d.numero&order_dir=DESC"><i
+                                                class="fa-solid fa-down-long"></i></a>
                                     </th>
                                     <th>
                                         Descripción
-                                        <a href="?order_by=d.descripcion&order_dir=ASC">&#9650;</a>
-                                        <a href="?order_by=d.descripcion&order_dir=DESC">&#9660;</a>
+                                        <a href="?order_by=d.descripcion&order_dir=ASC"><i
+                                                class="fa-solid fa-up-long"></i></a>
+                                        <a href="?order_by=d.descripcion&order_dir=DESC"><i
+                                                class="fa-solid fa-down-long"></i></a>
                                     </th>
                                     <th>Enlace</th>
                                 </tr>
@@ -155,7 +166,8 @@ $documentos = $stmt->fetchAll(PDO::FETCH_ASSOC);
                             <ul class="pagination">
                                 <?php for ($i = 1; $i <= $totalPages; $i++): ?>
                                     <li class="page-item <?= $i == $page ? 'active' : '' ?>">
-                                        <a class="page-link" href="?page=<?= $i ?>&order_by=<?= $orderBy ?>&order_dir=<?= $orderDir ?>&tipo=<?= $searchTipo ?>&anno=<?= $searchAnno ?>&keyword=<?= $searchKeyword ?>&year=<?= $searchYear ?>"><?= $i ?></a>
+                                        <a class="page-link"
+                                            href="?page=<?= $i ?>&order_by=<?= $orderBy ?>&order_dir=<?= $orderDir ?>&tipo=<?= $searchTipo ?>&anno=<?= $searchAnno ?>&keyword=<?= $searchKeyword ?>&year=<?= $searchYear ?>"><?= $i ?></a>
                                     </li>
                                 <?php endfor; ?>
                             </ul>
@@ -177,3 +189,8 @@ $documentos = $stmt->fetchAll(PDO::FETCH_ASSOC);
 </body>
 
 </html>
+<style>
+    .raleway-font {
+        font-family: 'Raleway', sans-serif;
+    }
+</style>

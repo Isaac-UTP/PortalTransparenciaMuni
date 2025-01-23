@@ -59,6 +59,7 @@ $documentos = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -70,108 +71,131 @@ $documentos = $stmt->fetchAll(PDO::FETCH_ASSOC);
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
         crossorigin="anonymous"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Raleway:ital,wght@0,100..900;1,100..900&display=swap"
+        rel="stylesheet">
     <style>
         .content {
-            margin-left: 250px; /* Ajusta el margen izquierdo para que el contenido no quede oculto */
+            margin-left: 250px;
+            /* Ajusta el margen izquierdo para que el contenido no quede oculto */
             padding: 20px;
+        }
+
+        .raleway-font {
+            font-family: 'Raleway', sans-serif;
         }
     </style>
 </head>
+
 <body>
-<?php include '../templates/navbarAdmin.php'; ?>
-<div class="content">
-<div class="container">
-        <div class="row mt-4">
-            <div class="col-lg-12 text-left">
-                <h2>Publicación de ordenanzas</h2>
-                <form method="GET" action="VerDocumentos.php" class="mb-3">
+    <?php include '../templates/navbarAdmin.php'; ?>
+    <div class="content">
+        <div class="container">
+            <div class="row mt-4">
+                <div class="col-lg-12 text-left">
+                    <h2>Publicación de ordenanzas</h2>
+                    <form method="GET" action="VerDocumentos.php" class="mb-3">
+                        <div class="row">
+                            <div class="col-md-3">
+                                <label for="tipo" class="form-label raleway-font"><b>Categoría:</b></label>
+                                <select name="tipo" id="tipo" class="form-select">
+                                    <option value="">-- Selecciona una Categoría --</option>
+                                    <?php foreach ($tipos as $row): ?>
+                                        <option value="<?= htmlspecialchars($row['prefijo']) ?>"
+                                            <?= $searchTipo == $row['prefijo'] ? 'selected' : '' ?>>
+                                            <?= htmlspecialchars($row['nombre']) ?>
+                                        </option>
+                                    <?php endforeach; ?>
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <label for="anio" class="form-label raleway-font"><b>Año de Subida:</b></label>
+                                <select name="year" id="anio" class="form-select">
+                                    <option value="" selected>-- Selecciona un Año --</option>
+                                    <?php for ($i = date('Y'); $i >= 2000; $i--): ?>
+                                        <option value="<?= $i ?>" <?= $searchYear == $i ? 'selected' : '' ?>><?= $i ?></option>
+                                    <?php endfor; ?>
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <label for="keyword" class="form-label raleway-font"><b>Palabras Clave:</b></label>
+                                <input type="text" name="keyword" id="keyword" class="form-control"
+                                    value="<?= htmlspecialchars($searchKeyword) ?>">
+                            </div>
+                            <div class="col-md-3 d-flex align-items-end">
+                                <button type="submit" class="btn btn-primary">Buscar</button>
+                            </div>
+                        </div>
+                    </form>
                     <div class="row">
-                        <div class="col-md-3">
-                            <label for="tipo" class="form-label">Categoría:</label>
-                            <select name="tipo" id="tipo" class="form-select">
-                                <option value="">-- Selecciona una Categoría --</option>
-                                <?php foreach ($tipos as $row): ?>
-                                    <option value="<?= htmlspecialchars($row['prefijo']) ?>" <?= $searchTipo == $row['prefijo'] ? 'selected' : '' ?>><?= htmlspecialchars($row['nombre']) ?></option>
-                                <?php endforeach; ?>
-                            </select>
-                        </div>
-                        <div class="col-md-3">
-                            <label for="anio" class="form-label">Año de Subida:</label>
-                            <select name="year" id="anio" class="form-select">
-                                <option value="" selected>-- Selecciona un Año --</option>
-                                <?php for ($i = date('Y'); $i >= 2000; $i--): ?>
-                                    <option value="<?= $i ?>" <?= $searchYear == $i ? 'selected' : '' ?>><?= $i ?></option>
-                                <?php endfor; ?>
-                            </select>
-                        </div>
-                        <div class="col-md-3">
-                            <label for="keyword" class="form-label">Palabras Clave:</label>
-                            <input type="text" name="keyword" id="keyword" class="form-control"
-                                value="<?= htmlspecialchars($searchKeyword) ?>">
-                        </div>
-                        <div class="col-md-3 d-flex align-items-end">
-                            <button type="submit" class="btn btn-primary">Buscar</button>
-                        </div>
-                    </div>
-                </form>
-                <div class="row">
-                    <div class="col-lg-12 text-left">
-                        <table class="table table-striped table-bordered" style="font-size:12px;">
-                            <thead>
-                                <tr>
-                                    <th>
-                                        Tipo
-                                        <a href="?order_by=t.nombre&order_dir=ASC">&#9650;</a>
-                                        <a href="?order_by=t.nombre&order_dir=DESC">&#9660;</a>
-                                    </th>
-                                    <th>
-                                        Año
-                                        <a href="?order_by=d.anno&order_dir=ASC">&#9650;</a>
-                                        <a href="?order_by=d.anno&order_dir=DESC">&#9660;</a>
-                                    </th>
-                                    <th>
-                                        Número
-                                        <a href="?order_by=d.numero&order_dir=ASC">&#9650;</a>
-                                        <a href="?order_by=d.numero&order_dir=DESC">&#9660;</a>
-                                    </th>
-                                    <th>
-                                        Descripción
-                                        <a href="?order_by=d.descripcion&order_dir=ASC">&#9650;</a>
-                                        <a href="?order_by=d.descripcion&order_dir=DESC">&#9660;</a>
-                                    </th>
-                                    <th>Enlace</th>
-                                </tr>
-                            </thead>
-                            <tbody id="documentosTableBody">
-                                <?php foreach ($documentos as $documento): ?>
+                        <div class="col-lg-12 text-left">
+                            <table class="table table-striped table-bordered" style="font-size:12px;">
+                                <thead>
                                     <tr>
-                                        <td><?= htmlspecialchars($documento['tipos']) ?></td>
-                                        <td><?= htmlspecialchars($documento['anno']) ?></td>
-                                        <td><?= htmlspecialchars($documento['numero']) ?></td>
-                                        <td><?= htmlspecialchars($documento['descripcion']) ?></td>
-                                        <td><a href="<?= htmlspecialchars($documento['link']) ?>" target="_blank"
-                                                class="btn btn-warning btn-xs"><i class="fa-solid fa-download"></i></a></td>
+                                        <th>
+                                            Tipo
+                                            <a href="?order_by=t.nombre&order_dir=ASC"><i
+                                                    class="fa-solid fa-up-long"></i></a>
+                                            <a href="?order_by=t.nombre&order_dir=DESC"><i
+                                                    class="fa-solid fa-down-long"></i></a>
+                                        </th>
+                                        <th>
+                                            Año
+                                            <a href="?order_by=d.anno&order_dir=ASC"><i
+                                                    class="fa-solid fa-up-long"></i></a>
+                                            <a href="?order_by=d.anno&order_dir=DESC"><i
+                                                    class="fa-solid fa-down-long"></i></a>
+                                        </th>
+                                        <th>
+                                            Número
+                                            <a href="?order_by=d.numero&order_dir=ASC"><i
+                                                    class="fa-solid fa-up-long"></i></a>
+                                            <a href="?order_by=d.numero&order_dir=DESC"><i
+                                                    class="fa-solid fa-down-long"></i></a>
+                                        </th>
+                                        <th>
+                                            Descripción
+                                            <a href="?order_by=d.descripcion&order_dir=ASC"><i
+                                                    class="fa-solid fa-up-long"></i></a>
+                                            <a href="?order_by=d.descripcion&order_dir=DESC"><i
+                                                    class="fa-solid fa-down-long"></i></a>
+                                        </th>
+                                        <th>Enlace</th>
                                     </tr>
-                                <?php endforeach; ?>
-                            </tbody>
-                        </table>
-                        <!-- Paginación -->
-                        <nav aria-label="Page navigation">
-                            <ul class="pagination">
-                                <?php for ($i = 1; $i <= $totalPages; $i++): ?>
-                                    <li class="page-item <?= $i == $page ? 'active' : '' ?>">
-                                        <a class="page-link" href="?page=<?= $i ?>&order_by=<?= $orderBy ?>&order_dir=<?= $orderDir ?>&tipo=<?= $searchTipo ?>&anno=<?= $searchAnno ?>&keyword=<?= $searchKeyword ?>&year=<?= $searchYear ?>"><?= $i ?></a>
-                                    </li>
-                                <?php endfor; ?>
-                            </ul>
-                        </nav>
+                                </thead>
+                                <tbody id="documentosTableBody">
+                                    <?php foreach ($documentos as $documento): ?>
+                                        <tr>
+                                            <td><?= htmlspecialchars($documento['tipos']) ?></td>
+                                            <td><?= htmlspecialchars($documento['anno']) ?></td>
+                                            <td><?= htmlspecialchars($documento['numero']) ?></td>
+                                            <td><?= htmlspecialchars($documento['descripcion']) ?></td>
+                                            <td><a href="<?= htmlspecialchars($documento['link']) ?>" target="_blank"
+                                                    class="btn btn-warning btn-xs"><i class="fa-solid fa-download"></i></a>
+                                            </td>
+                                        </tr>
+                                    <?php endforeach; ?>
+                                </tbody>
+                            </table>
+                            <!-- Paginación -->
+                            <nav aria-label="Page navigation">
+                                <ul class="pagination">
+                                    <?php for ($i = 1; $i <= $totalPages; $i++): ?>
+                                        <li class="page-item <?= $i == $page ? 'active' : '' ?>">
+                                            <a class="page-link"
+                                                href="?page=<?= $i ?>&order_by=<?= $orderBy ?>&order_dir=<?= $orderDir ?>&tipo=<?= $searchTipo ?>&anno=<?= $searchAnno ?>&keyword=<?= $searchKeyword ?>&year=<?= $searchYear ?>"><?= $i ?></a>
+                                        </li>
+                                    <?php endfor; ?>
+                                </ul>
+                            </nav>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
     </div>
-</div>
     <script>
         // Código JavaScript para actualizar la tabla dinámicamente si es necesario
         document.getElementById('tipo').addEventListener('change', function () {
@@ -183,4 +207,5 @@ $documentos = $stmt->fetchAll(PDO::FETCH_ASSOC);
     </script>
 
 </body>
+
 </html>
