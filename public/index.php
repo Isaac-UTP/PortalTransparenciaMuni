@@ -162,16 +162,19 @@ $documentos = $stmt->fetchAll(PDO::FETCH_ASSOC);
                             </tbody>
                         </table>
                         <!-- Paginación -->
-                        <nav aria-label="Page navigation">
-                            <ul class="pagination">
-                                <?php for ($i = 1; $i <= $totalPages; $i++): ?>
-                                    <li class="page-item <?= $i == $page ? 'active' : '' ?>">
-                                        <a class="page-link"
-                                            href="?page=<?= $i ?>&order_by=<?= $orderBy ?>&order_dir=<?= $orderDir ?>&tipo=<?= $searchTipo ?>&anno=<?= $searchAnno ?>&keyword=<?= $searchKeyword ?>&year=<?= $searchYear ?>"><?= $i ?></a>
-                                    </li>
-                                <?php endfor; ?>
-                            </ul>
-                        </nav>
+                        <!-- Paginación -->
+                        <div class="d-flex justify-content-center">
+                            <nav aria-label="Page navigation">
+                                <ul class="pagination">
+                                    <?php for ($i = 1; $i <= $totalPages; $i++): ?>
+                                        <li class="page-item <?= $i == $page ? 'active' : '' ?>">
+                                            <a class="page-link"
+                                                href="?page=<?= $i ?>&order_by=<?= $orderBy ?>&order_dir=<?= $orderDir ?>&tipo=<?= $searchTipo ?>&anno=<?= $searchAnno ?>&keyword=<?= $searchKeyword ?>&year=<?= $searchYear ?>"><?= $i ?></a>
+                                        </li>
+                                    <?php endfor; ?>
+                                </ul>
+                            </nav>
+                        </div>
                     </div>
                 </div>
             </div>

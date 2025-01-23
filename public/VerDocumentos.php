@@ -55,6 +55,42 @@ $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
 $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
 $stmt->execute();
 $documentos = $stmt->fetchAll(PDO::FETCH_ASSOC);
+// Parámetros de paginación
+$totalPaginas = 10; // Total de páginas (esto debería ser calculado dinámicamente)
+$paginaActual = isset($_GET['page']) ? (int) $_GET['page'] : 1;
+$maxPaginas = 6;
+function generarPaginacion($totalPaginas, $paginaActual, $maxPaginas)
+{
+    $paginacion = [];
+
+    if ($totalPaginas <= $maxPaginas) {
+        for ($i = 1; $i <= $totalPaginas; $i++) {
+            $paginacion[] = $i;
+        }
+    } else {
+        $paginacion[] = 1;
+        $paginacion[] = 2;
+        $paginacion[] = 3;
+
+        if ($paginaActual > 4 && $paginaActual < $totalPaginas - 3) {
+            $paginacion[] = '...';
+            $paginacion[] = $paginaActual - 1;
+            $paginacion[] = $paginaActual;
+            $paginacion[] = $paginaActual + 1;
+            $paginacion[] = '...';
+        } else {
+            $paginacion[] = '...';
+        }
+
+        $paginacion[] = $totalPaginas - 2;
+        $paginacion[] = $totalPaginas - 1;
+        $paginacion[] = $totalPaginas;
+    }
+
+    return $paginacion;
+}
+
+$paginacion = generarPaginacion($totalPaginas, $paginaActual, $maxPaginas);
 ?>
 
 <!DOCTYPE html>
@@ -179,16 +215,18 @@ $documentos = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                 </tbody>
                             </table>
                             <!-- Paginación -->
-                            <nav aria-label="Page navigation">
-                                <ul class="pagination">
-                                    <?php for ($i = 1; $i <= $totalPages; $i++): ?>
-                                        <li class="page-item <?= $i == $page ? 'active' : '' ?>">
-                                            <a class="page-link"
-                                                href="?page=<?= $i ?>&order_by=<?= $orderBy ?>&order_dir=<?= $orderDir ?>&tipo=<?= $searchTipo ?>&anno=<?= $searchAnno ?>&keyword=<?= $searchKeyword ?>&year=<?= $searchYear ?>"><?= $i ?></a>
-                                        </li>
-                                    <?php endfor; ?>
-                                </ul>
-                            </nav>
+                            <div class="d-flex justify-content-center">
+                                <nav aria-label="Page navigation">
+                                    <ul class="pagination">
+                                        <?php for ($i = 1; $i <= $totalPages; $i++): ?>
+                                            <li class="page-item <?= $i == $page ? 'active' : '' ?>">
+                                                <a class="page-link"
+                                                    href="?page=<?= $i ?>&order_by=<?= $orderBy ?>&order_dir=<?= $orderDir ?>&tipo=<?= $searchTipo ?>&anno=<?= $searchAnno ?>&keyword=<?= $searchKeyword ?>&year=<?= $searchYear ?>"><?= $i ?></a>
+                                            </li>
+                                        <?php endfor; ?>
+                                    </ul>
+                                </nav>
+                            </div>
                         </div>
                     </div>
                 </div>
