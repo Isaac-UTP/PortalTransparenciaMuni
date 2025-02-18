@@ -54,6 +54,10 @@
     transform-style: preserve-3d;
 }
 
+.flip-card__inner.flipped {
+    transform: rotateY(180deg);
+}
+
 .flip-card__front, .flip-card__back {
     position: absolute;
     width: 100%;

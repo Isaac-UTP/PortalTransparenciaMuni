@@ -1,3 +1,3 @@
 document.querySelector('.toggle').addEventListener('change', function() {
-    document.querySelector('.slider').classList.toggle('flipped');
+    document.querySelector('.flip-card__inner').classList.toggle('flipped');
 });
