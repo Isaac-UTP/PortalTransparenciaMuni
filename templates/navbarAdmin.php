@@ -26,7 +26,8 @@
 
     .sidebar .nav-link:hover {
         background-color: #FFC107;
-        border-radius: 5px; /* Añadir bordes redondeados */
+        border-radius: 5px;
+        /* Añadir bordes redondeados */
     }
 
     .content {
@@ -86,6 +87,9 @@
                 <li><a class="dropdown-item" href="VerDocumentos.php"><i class="fa-solid fa-eye"></i> Ver Documentos</a>
                 </li>
             </ul>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="usuarios.php"><i class="fa-solid fa-users"></i> Usuarios</a>
         </li>
     </ul>
 </div>
