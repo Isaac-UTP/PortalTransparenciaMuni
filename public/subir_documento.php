@@ -37,7 +37,6 @@ $tipos = $stmt->fetchAll(PDO::FETCH_ASSOC);
         h1 {
             text-align: center;
             margin-bottom: 20px;
-            font-weight: bold;
             color: #333;
         }
 
@@ -46,14 +45,24 @@ $tipos = $stmt->fetchAll(PDO::FETCH_ASSOC);
             color: #555;
         }
 
-        .btn-primary {
-            background-color: #4CAF50;
-            border-color: #4CAF50;
+        .btn-success {
+            background-color: #28a745;
+            border-color: #28a745;
         }
 
-        .btn-primary:hover {
-            background-color: #45a049;
-            border-color: #45a049;
+        .btn-success:hover {
+            background-color: #218838;
+            border-color: #1e7e34;
+        }
+
+        .btn-warning {
+            background-color: #ffc107;
+            border-color: #ffc107;
+        }
+
+        .btn-warning:hover {
+            background-color: #e0a800;
+            border-color: #d39e00;
         }
     </style>
 </head>
@@ -62,62 +71,42 @@ $tipos = $stmt->fetchAll(PDO::FETCH_ASSOC);
     <?php include '../templates/navbarAdmin.php'; ?>
     <div class="content">
         <div class="container">
-            <h1><i class="bi bi-cloud-arrow-up"></i> Subir Documento</h1>
-            <form id="uploadForm" action="upload.php" method="post" enctype="multipart/form-data">
+            <h1>Subir Documento</h1>
+            <form action="upload.php" method="POST" enctype="multipart/form-data">
                 <div class="mb-3">
-                    <label for="tipos" class="form-label">Tipo:</label>
+                    <label for="tipos" class="form-label">Tipo de Documento:</label>
                     <select name="tipos" id="tipos" class="form-select" required>
                         <option value="">-- Selecciona un Tipo --</option>
-                        <?php foreach ($tipos as $row): ?>
-                            <option value="<?= htmlspecialchars($row['prefijo']) ?>"><?= htmlspecialchars($row['nombre']) ?>
+                        <?php foreach ($tipos as $tipo): ?>
+                            <option value="<?= htmlspecialchars($tipo['prefijo']) ?>">
+                                <?= htmlspecialchars($tipo['nombre']) ?>
                             </option>
                         <?php endforeach; ?>
                     </select>
                 </div>
                 <div class="mb-3">
                     <label for="anno" class="form-label">Año:</label>
-                    <input type="date" name="anno" id="anno" class="form-control" required>
+                    <input type="text" name="anno" id="anno" class="form-control" required>
                 </div>
                 <div class="mb-3">
-                    <label for="numero">Número:</label>
-                    <input type="number" name="numero" id="numero" class="form-control" required>
+                    <label for="numero" class="form-label">Número:</label>
+                    <input type="text" name="numero" id="numero" class="form-control" required>
                 </div>
                 <div class="mb-3">
-                    <label for="descripcion">Descripción:</label>
+                    <label for="descripcion" class="form-label">Descripción:</label>
                     <input type="text" name="descripcion" id="descripcion" class="form-control" required>
                 </div>
                 <div class="mb-3">
-                    <label for="archivo" class="form-label">Archivo</label>
+                    <label for="archivo" class="form-label">Archivo:</label>
                     <input type="file" name="archivo" id="archivo" class="form-control" required>
                 </div>
                 <div class="modal-footer d-grid gap-2 d-md-flex justify-content-md-end">
-                    <button type="submit" class="btn btn-primary">Subir</button> <br>
+                    <button type="submit" class="btn btn-success">Subir Documento</button>
                     <a type="button" href="index.php" class="btn btn-warning">Volver al Inicio</a>
                 </div>
             </form>
         </div>
     </div>
-
-    <script>
-        document.getElementById('uploadForm').addEventListener('submit', function (event) {
-            event.preventDefault(); // Evita el envío del formulario por defecto
-            var form = this;
-            var formData = new FormData(form);
-
-            fetch(form.action, {
-                method: form.method,
-                body: formData
-            }).then(response => response.text())
-                .then(data => {
-                    // Redirigir a la página principal después de subir el documento
-                    window.location.href = 'index.php';
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    alert('Error al subir el archivo');
-                });
-        });
-    </script>
 </body>
 
 </html>

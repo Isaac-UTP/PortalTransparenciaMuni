@@ -3,11 +3,13 @@ require_once '../connection/db.php';
 
 // Verificar si se envió el formulario
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $codigo = $_POST['codigo'] ?? '';
     $nombre = $_POST['nombre'] ?? '';
     $prefijo = $_POST['prefijo'] ?? '';
-    if ($nombre && $prefijo) {
-        $sql = "INSERT INTO tipos (nombre, prefijo) VALUES (:nombre, :prefijo)";
+    if ($codigo && $nombre && $prefijo) {
+        $sql = "INSERT INTO tipos (codigo, nombre, prefijo) VALUES (:codigo, :nombre, :prefijo)";
         $stmt = $pdo->prepare($sql);
+        $stmt->bindParam(':codigo', $codigo);
         $stmt->bindParam(':nombre', $nombre);
         $stmt->bindParam(':prefijo', $prefijo);
         if ($stmt->execute()) {
@@ -85,6 +87,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <div class="container">
             <h1>Crear Categoría</h1>
             <form action="" method="POST">
+                <div class="mb-3">
+                    <label for="codigo" class="form-label">Código de la Categoría:</label>
+                    <input type="text" name="codigo" id="codigo" class="form-control" required>
+                </div>
                 <div class="mb-3">
                     <label for="nombre" class="form-label">Nombre de la Categoría:</label>
                     <input type="text" name="nombre" id="nombre" class="form-control" required>

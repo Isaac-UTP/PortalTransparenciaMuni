@@ -26,13 +26,14 @@
 
     .sidebar .nav-link:hover {
         background-color: #FFC107;
-        border-radius: 5px;
+        border-radius: 5px; /* Añadir bordes redondeados */
     }
 
     .content {
         margin-left: 250px;
         /* Ajusta el margen izquierdo para que el contenido no quede oculto */
         padding: 20px;
+        /* Añadir relleno */
     }
 
     .sidebar img {

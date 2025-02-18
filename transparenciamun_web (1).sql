@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 5.0.2
+-- version 5.2.1
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 22-01-2025 a las 16:00:40
--- Versión del servidor: 10.4.11-MariaDB
--- Versión de PHP: 7.4.4
+-- Tiempo de generación: 01-02-2025 a las 22:09:06
+-- Versión del servidor: 10.4.32-MariaDB
+-- Versión de PHP: 8.2.12
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -18,7 +18,7 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Base de datos: `transparenciamun_web`
+-- Base de datos: `transparenciamun_web2`
 --
 
 -- --------------------------------------------------------
@@ -29,21 +29,16 @@ SET time_zone = "+00:00";
 
 CREATE TABLE `annos` (
   `id` int(10) UNSIGNED NOT NULL,
-  `anno` date NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+  `anno` char(4) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Volcado de datos para la tabla `annos`
 --
 
 INSERT INTO `annos` (`id`, `anno`) VALUES
-(1, '0000-00-00'),
-(6, '2024-12-17'),
-(7, '2025-01-11'),
-(2, '2025-01-13'),
-(3, '2025-01-14'),
-(4, '2025-01-15'),
-(5, '2025-01-16');
+(1, '2024'),
+(2, '2025');
 
 -- --------------------------------------------------------
 
@@ -53,30 +48,30 @@ INSERT INTO `annos` (`id`, `anno`) VALUES
 
 CREATE TABLE `documentos` (
   `id` int(10) UNSIGNED NOT NULL,
-  `tipos` char(4) NOT NULL,
-  `anno` date NOT NULL,
-  `numero` int(10) UNSIGNED NOT NULL,
-  `descripcion` varchar(255) NOT NULL,
-  `link` varchar(255) NOT NULL,
-  `anio` int(11) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+  `tipo` char(2) NOT NULL,
+  `anno` char(4) NOT NULL,
+  `NUMERO` int(10) UNSIGNED NOT NULL,
+  `fecha` date NOT NULL,
+  `descripcion` varchar(255) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Volcado de datos para la tabla `documentos`
 --
 
-INSERT INTO `documentos` (`id`, `tipos`, `anno`, `numero`, `descripcion`, `link`, `anio`) VALUES
-(5, 'RA', '0000-00-00', 1, 'P', '../uploads/Carta para prácticas pre empresa pública.pdf', NULL),
-(6, 'RA', '2025-01-13', 12, 'Articulos de papeleria', '../uploads/S17_s2.pdf', 2025),
-(7, 'RA', '2025-01-13', 2, 'delegar', '../uploads/Carta para prácticas pre empresa pública.pdf', 2025),
-(8, 'RA', '2025-01-14', 3, 'autorizar', '../uploads/S15_s1.pdf', 2025),
-(9, 'RA', '0000-00-00', 4, 'autorizar2', '../uploads/S15_s2.pdf', NULL),
-(10, 'RA', '0000-00-00', 5, 'Articulos de papeleria2', '../uploads/iiii.pdf', NULL),
-(11, 'RA', '0000-00-00', 6, 'Articulos de papeleria3', '../uploads/aaaa.pdf', NULL),
-(12, 'OM', '2025-01-15', 6, 'autorizar3', '../uploads/S17_s1 - Material.pdf', 2025),
-(13, 'RA', '2025-01-16', 16, 'PRORROGAR LA ENCARGATURA DEL PUESTO DE AUXILIAR COACTIVO DE LA GERENCIA DE EJECUTORIA', '../uploads/RA_16_2025_MDNCH.pdf', 2025),
-(14, 'RG', '2024-12-17', 1061, 'APROBAR, EL PLAN DE TRABAJO:\"ECO DORADO FEST 2025\", POR EL MONTO ASCENDENTE', '../uploads/1061.pdf', 2024),
-(15, 'RG', '2025-01-11', 14, 'APROBAR, EL PLAN DE TRABAJO: \"SERVICIO DE CONSULTORIO EN NUTRICION DIRIGIDO A BENEFICIARIOS DEL PROGRAMA VASO DE LECHE\"', '../uploads/20250113_014.pdf', 2025);
+INSERT INTO `documentos` (`id`, `tipo`, `anno`, `NUMERO`, `fecha`, `descripcion`) VALUES
+(5, 'RA', '2024', 1, '2024-12-17', 'Descripción por defecto'),
+(6, 'RA', '2025', 12, '2025-01-13', 'Descripción por defecto'),
+(7, 'RA', '2025', 2, '2025-01-13', 'Descripción por defecto'),
+(8, 'RA', '2025', 3, '2025-01-14', 'Descripción por defecto'),
+(9, 'RA', '2024', 4, '2024-12-17', 'Descripción por defecto'),
+(10, 'RA', '2024', 5, '2024-12-17', 'Descripción por defecto'),
+(11, 'RA', '2024', 6, '2024-12-17', 'Descripción por defecto'),
+(12, 'OM', '2025', 7, '2025-01-15', 'Descripción por defecto'),
+(13, 'RA', '2025', 16, '2025-01-16', 'Descripción por defecto'),
+(14, 'RG', '2024', 8, '2024-12-17', 'Descripción por defecto'),
+(15, 'RG', '2025', 14, '2025-01-11', 'Descripción por defecto'),
+(16, 'RA', '2024', 17, '2025-02-01', 'Descripción por defecto');
 
 -- --------------------------------------------------------
 
@@ -90,8 +85,18 @@ CREATE TABLE `mantenimiento` (
   `accion` varchar(100) NOT NULL,
   `fecha` date NOT NULL,
   `descripcion` varchar(255) DEFAULT NULL,
-  `link` varchar(255) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+  `link` varchar(255) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `mantenimiento`
+--
+
+INSERT INTO `mantenimiento` (`id`, `documento_id`, `accion`, `fecha`, `descripcion`, `link`) VALUES
+(1, 6, 'Actualización de datos', '2025-01-13', 'Corrección de fecha', '../uploads/S17_s2.pdf'),
+(2, 7, 'Modificación', '2025-01-13', 'Cambio de descripción', '../uploads/Carta.pdf'),
+(3, 8, 'Edición', '2025-01-14', 'Actualización de archivo', '../uploads/S15_s1.pdf'),
+(4, 16, 'Subida', '2025-02-01', 'aaaa probrando', '../uploads/S18. Informe SIDERPERU-DIAE.pdf');
 
 -- --------------------------------------------------------
 
@@ -103,8 +108,8 @@ CREATE TABLE `tipos` (
   `id` int(10) UNSIGNED NOT NULL,
   `codigo` char(20) NOT NULL,
   `nombre` varchar(45) NOT NULL,
-  `prefijo` char(4) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+  `prefijo` char(2) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Volcado de datos para la tabla `tipos`
@@ -124,10 +129,18 @@ INSERT INTO `tipos` (`id`, `codigo`, `nombre`, `prefijo`) VALUES
 --
 
 CREATE TABLE `usuarios` (
-  `id` int(11) NOT NULL,
+  `id` int(11) UNSIGNED NOT NULL,
   `username` varchar(255) NOT NULL,
   `password` varchar(255) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `usuarios`
+--
+
+INSERT INTO `usuarios` (`id`, `username`, `password`) VALUES
+(1, 'admin', 'adminpassword'),
+(2, 'usuario1', 'password123');
 
 --
 -- Índices para tablas volcadas
@@ -145,7 +158,7 @@ ALTER TABLE `annos`
 --
 ALTER TABLE `documentos`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `tipo` (`tipos`),
+  ADD KEY `tipo` (`tipo`),
   ADD KEY `anno` (`anno`);
 
 --
@@ -177,19 +190,19 @@ ALTER TABLE `usuarios`
 -- AUTO_INCREMENT de la tabla `annos`
 --
 ALTER TABLE `annos`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT de la tabla `documentos`
 --
 ALTER TABLE `documentos`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
 
 --
 -- AUTO_INCREMENT de la tabla `mantenimiento`
 --
 ALTER TABLE `mantenimiento`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT de la tabla `tipos`
@@ -201,7 +214,7 @@ ALTER TABLE `tipos`
 -- AUTO_INCREMENT de la tabla `usuarios`
 --
 ALTER TABLE `usuarios`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- Restricciones para tablas volcadas
@@ -211,7 +224,7 @@ ALTER TABLE `usuarios`
 -- Filtros para la tabla `documentos`
 --
 ALTER TABLE `documentos`
-  ADD CONSTRAINT `documentos_ibfk_1` FOREIGN KEY (`tipos`) REFERENCES `tipos` (`prefijo`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `documentos_ibfk_1` FOREIGN KEY (`tipo`) REFERENCES `tipos` (`prefijo`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `documentos_ibfk_2` FOREIGN KEY (`anno`) REFERENCES `annos` (`anno`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --

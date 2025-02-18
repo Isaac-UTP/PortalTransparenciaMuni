@@ -7,15 +7,16 @@ $searchYear = isset($_GET['anno']) ? $_GET['anno'] : '';
 
 // Construir la consulta SQL
 $sql = "
-    SELECT d.id, t.nombre AS tipos, d.anno, d.descripcion, d.numero, d.link 
+    SELECT d.id, t.nombre AS tipos, d.anno, d.numero, m.descripcion, m.link 
     FROM documentos d
-    INNER JOIN tipos t ON d.tipos = t.prefijo
-    WHERE d.descripcion LIKE :keyword";
+    INNER JOIN tipos t ON d.tipo = t.prefijo
+    LEFT JOIN mantenimiento m ON d.id = m.documento_id
+    WHERE m.descripcion LIKE :keyword";
 
 $params = [':keyword' => '%' . $searchKeyword . '%'];
 
 if (!empty($searchYear)) {
-    $sql .= " AND YEAR(d.anno) = :anno";
+    $sql .= " AND d.anno = :anno";
     $params[':anno'] = $searchYear;
 }
 

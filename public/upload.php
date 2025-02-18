@@ -1,6 +1,7 @@
 <?php
 require_once '../connection/db.php';
-//Los documentos que tengan el mismo nombre y ya esten en la base de datos no se subiran de nuevo y se ignorara la subida
+
+// Los documentos que tengan el mismo nombre y ya estén en la base de datos no se subirán de nuevo y se ignorará la subida
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     // Verificar si el archivo fue subido sin errores
     if (isset($_FILES['archivo']) && $_FILES['archivo']['error'] == 0) {
@@ -15,7 +16,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             die("Error: Por favor seleccione un formato de archivo válido.");
         }
 
-        // Verificar el tipos MIME del archivo
+        // Verificar el tipo MIME del archivo
         if (in_array($filetype, $allowed)) {
             // Verificar el tamaño del archivo - 5MB máximo
             $maxsize = 5 * 1024 * 1024;
@@ -23,56 +24,59 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 die("Error: El tamaño del archivo es mayor que el límite permitido.");
             }
 
+            // Obtener el tipo de documento
+            $tipos = $_POST['tipos'] ?? null;
+            if (!$tipos) {
+                die("Error: El tipo de documento es obligatorio.");
+            }
+
+            // Crear la carpeta si no existe
+            $uploadDir = "../uploads/$tipos/";
+            if (!is_dir($uploadDir)) {
+                mkdir($uploadDir, 0777, true);
+            }
+
             // Verificar si el archivo ya existe antes de subirlo
-            $uploadDir = "../uploads/";
             $rutaArchivo = $uploadDir . $filename;
             if (file_exists($rutaArchivo)) {
                 echo "El archivo ya existe y no se ha subido de nuevo.";
             } else {
                 if (move_uploaded_file($_FILES['archivo']['tmp_name'], $rutaArchivo)) {
                     // Insertar en la base de datos
-                    $tipos = $_POST['tipos'] ?? null;
                     $anno = $_POST['anno'] ?? null;
                     $numero = $_POST['numero'] ?? null;
                     $descripcion = $_POST['descripcion'] ?? null;
                     $link = $rutaArchivo;  // Ruta del archivo subido
 
                     // Validar los datos antes de insertarlos
-                    if (!$tipos || !$anno || !$descripcion || !$numero) {
+                    if (!$anno || !$descripcion || !$numero) {
                         die("Error: Todos los campos son obligatorios.");
                     }
 
-                    // Extraer el año de la fecha
-                    $anio = date('Y', strtotime($anno));
-
-                    // Verificar si el año existe en la tabla annos
-                    $sql = "SELECT COUNT(*) FROM annos WHERE anno = :anno";
-                    $stmt = $pdo->prepare($sql);
-                    $stmt->bindParam(':anno', $anno);
-                    $stmt->execute();
-                    $count = $stmt->fetchColumn();
-
-                    if ($count == 0) {
-                        // Insertar el año en la tabla annos
-                        $sql = "INSERT INTO annos (anno) VALUES (:anno)";
-                        $stmt = $pdo->prepare($sql);
-                        $stmt->bindParam(':anno', $anno);
-                        $stmt->execute();
-                    }
-
                     // Insertar el documento en la tabla documentos
-                    $sql = "INSERT INTO documentos (tipos, anno, numero, descripcion, link, anio)
-                            VALUES (:tipos, :anno, :numero, :descripcion, :link, :anio)";
+                    $sql = "INSERT INTO documentos (tipo, anno, numero, fecha)
+                            VALUES (:tipo, :anno, :numero, NOW())";
                     $stmt = $pdo->prepare($sql);
-                    $stmt->bindParam(':tipos', $tipos);
+                    $stmt->bindParam(':tipo', $tipos);
                     $stmt->bindParam(':anno', $anno);
                     $stmt->bindParam(':numero', $numero);
-                    $stmt->bindParam(':descripcion', $descripcion);
-                    $stmt->bindParam(':link', $link);
-                    $stmt->bindParam(':anio', $anio);
 
                     if ($stmt->execute()) {
-                        echo "El archivo fue subido exitosamente y registrado en la base de datos.";
+                        $documento_id = $pdo->lastInsertId();
+
+                        // Insertar en la tabla mantenimiento
+                        $sql = "INSERT INTO mantenimiento (documento_id, accion, fecha, descripcion, link)
+                                VALUES (:documento_id, 'Subida', NOW(), :descripcion, :link)";
+                        $stmt = $pdo->prepare($sql);
+                        $stmt->bindParam(':documento_id', $documento_id);
+                        $stmt->bindParam(':descripcion', $descripcion);
+                        $stmt->bindParam(':link', $link);
+
+                        if ($stmt->execute()) {
+                            echo "El archivo fue subido exitosamente y registrado en la base de datos.";
+                        } else {
+                            echo "Error al guardar los datos en la base de datos.";
+                        }
                     } else {
                         echo "Error al guardar los datos en la base de datos.";
                     }
