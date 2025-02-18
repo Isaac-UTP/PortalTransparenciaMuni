@@ -1,4 +1,5 @@
 <?php
+session_start();
 require_once '../connection/db.php';
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
@@ -11,7 +12,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $stmt->bindParam(':password', $password);
 
     if ($stmt->execute()) {
-        echo "Usuario registrado exitosamente.";
+        // Establecer la sesión con el nombre de usuario
+        $_SESSION['username'] = $username;
+        // Redirigir a indexAdmin.php
+        header('Location: ../public/indexAdmin.php');
+        exit();
     } else {
         echo "Error al registrar el usuario.";
     }
