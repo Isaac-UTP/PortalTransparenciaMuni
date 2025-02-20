@@ -7,7 +7,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $nombre = $_POST['nombre'] ?? '';
     $prefijo = $_POST['prefijo'] ?? '';
     if ($codigo && $nombre && $prefijo) {
-        $sql = "INSERT INTO tipos (codigo, nombre, prefijo) VALUES (:codigo, :nombre, :prefijo)";
+        $sql = "INSERT INTO tipos (codigo, nombre, prefijo, estado) VALUES (:codigo, :nombre, :prefijo, 'activo')";
         $stmt = $pdo->prepare($sql);
         $stmt->bindParam(':codigo', $codigo);
         $stmt->bindParam(':nombre', $nombre);

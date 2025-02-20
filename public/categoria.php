@@ -2,7 +2,7 @@
 require_once '../connection/db.php';
 
 // Obtener las categorías desde la base de datos
-$sql = "SELECT id, codigo, nombre, prefijo FROM tipos";
+$sql = "SELECT id, codigo, nombre, prefijo, estado FROM tipos";
 $stmt = $pdo->query($sql);
 $categorias = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
@@ -97,6 +97,8 @@ $paginacion = generarPaginacion($totalPages, $page);
                                         <th>Código</th>
                                         <th>Nombre</th>
                                         <th>Prefijo</th>
+                                        <th>Estado</th>
+                                        <th>Acciones</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -106,6 +108,16 @@ $paginacion = generarPaginacion($totalPages, $page);
                                             <td><?= htmlspecialchars($categoria['codigo']) ?></td>
                                             <td><?= htmlspecialchars($categoria['nombre']) ?></td>
                                             <td><?= htmlspecialchars($categoria['prefijo']) ?></td>
+                                            <td><?= htmlspecialchars($categoria['estado']) ?></td>
+                                            <td>
+                                                <?php if ($categoria['estado'] == 'activo'): ?>
+                                                    <a href="cambiar_estado.php?id=<?= $categoria['id'] ?>&estado=inactivo"
+                                                        class="btn btn-danger btn-sm">Apagar</a>
+                                                <?php else: ?>
+                                                    <a href="cambiar_estado.php?id=<?= $categoria['id'] ?>&estado=activo"
+                                                        class="btn btn-success btn-sm">Encender</a>
+                                                <?php endif; ?>
+                                            </td>
                                         </tr>
                                     <?php endforeach; ?>
                                 </tbody>
