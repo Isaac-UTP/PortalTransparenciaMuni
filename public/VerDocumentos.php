@@ -149,6 +149,7 @@ $documentos = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                                     class="fa-solid fa-down-long"></i></a>
                                         </th>
                                         <th>Enlace</th>
+                                        <th>Acciones</th>
                                     </tr>
                                 </thead>
                                 <tbody id="documentosTableBody">
@@ -160,6 +161,15 @@ $documentos = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                             <td><?= htmlspecialchars($documento['descripcion']) ?></td>
                                             <td><a href="<?= htmlspecialchars($documento['link']) ?>" target="_blank"
                                                     class="btn btn-warning btn-xs"><i class="fa-solid fa-download"></i></a>
+                                            </td>
+                                            <td>
+                                                <a href="editar_documento.php?id=<?= $documento['id'] ?>"
+                                                    class="btn btn-primary btn-xs Btn">
+                                                    <svg class="svg" viewBox="0 0 512 512">
+                                                        <path
+                                                            d="M362.7 19.3c-25.7 0-51.4 9.8-71 29.3L250.3 90 422 261.7l41.4-41.4c39-39 39-102.2 0-141.2l-21.9-21.9c-19.5-19.5-45.2-29.3-70.9-29.3zM229.7 110.3L19.3 320.7c-5.8 5.8-9.3 13.6-10.6 21.8L.1 478.1c-1.3 8.5 1.6 17.1 7.7 23.2s14.7 9 23.2 7.7l135.6-8.6c8.2-1.3 16-4.8 21.8-10.6l210.4-210.4L229.7 110.3z" />
+                                                    </svg>
+                                                </a>
                                             </td>
                                         </tr>
                                     <?php endforeach; ?>
@@ -184,16 +194,7 @@ $documentos = $stmt->fetchAll(PDO::FETCH_ASSOC);
             </div>
         </div>
     </div>
-    <script>
-        // Código JavaScript para actualizar la tabla dinámicamente si es necesario
-        document.getElementById('tipo').addEventListener('change', function () {
-            this.form.submit();
-        });
-        document.getElementById('anio').addEventListener('change', function () {
-            this.form.submit();
-        });
-    </script>
-
+    <script src="js/ver_documentos.js"></script>
 </body>
 
 </html>

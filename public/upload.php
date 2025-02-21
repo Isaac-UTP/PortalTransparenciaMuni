@@ -1,6 +1,6 @@
 <?php
 require_once '../connection/db.php';
-
+ 
 // Los documentos que tengan el mismo nombre y ya estén en la base de datos no se subirán de nuevo y se ignorará la subida
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     // Verificar si el archivo fue subido sin errores
@@ -24,14 +24,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 die("Error: El tamaño del archivo es mayor que el límite permitido.");
             }
 
-            // Obtener los datos del formulario
+            // Obtener el tipo de documento
             $tipos = $_POST['tipos'] ?? null;
-            $anno = $_POST['anno'] ?? null;
-            $numero = $_POST['numero'] ?? null;
-            $descripcion = $_POST['descripcion'] ?? null;
-
-            if (!$tipos || !$anno || !$numero || !$descripcion) {
-                die("Error: Todos los campos son obligatorios.");
+            if (!$tipos) {
+                die("Error: El tipo de documento es obligatorio.");
             }
 
             // Crear la carpeta si no existe
@@ -47,16 +43,23 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             } else {
                 if (move_uploaded_file($_FILES['archivo']['tmp_name'], $rutaArchivo)) {
                     // Insertar en la base de datos
+                    $anno = $_POST['anno'] ?? null;
+                    $numero = $_POST['numero'] ?? null;
+                    $descripcion = $_POST['descripcion'] ?? null;
                     $link = $rutaArchivo;  // Ruta del archivo subido
 
+                    // Validar los datos antes de insertarlos
+                    if (!$anno || !$descripcion || !$numero) {
+                        die("Error: Todos los campos son obligatorios.");
+                    }
+
                     // Insertar el documento en la tabla documentos
-                    $sql = "INSERT INTO documentos (tipo, anno, numero, fecha, descripcion)
-                            VALUES (:tipo, :anno, :numero, NOW(), :descripcion)";
+                    $sql = "INSERT INTO documentos (tipo, anno, numero, fecha)
+                            VALUES (:tipo, :anno, :numero, NOW())";
                     $stmt = $pdo->prepare($sql);
                     $stmt->bindParam(':tipo', $tipos);
                     $stmt->bindParam(':anno', $anno);
                     $stmt->bindParam(':numero', $numero);
-                    $stmt->bindParam(':descripcion', $descripcion);
 
                     if ($stmt->execute()) {
                         $documento_id = $pdo->lastInsertId();
