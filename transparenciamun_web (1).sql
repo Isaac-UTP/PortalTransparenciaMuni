@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 01-02-2025 a las 22:09:06
+-- Tiempo de generación: 21-02-2025 a las 14:36:39
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -71,7 +71,8 @@ INSERT INTO `documentos` (`id`, `tipo`, `anno`, `NUMERO`, `fecha`, `descripcion`
 (13, 'RA', '2025', 16, '2025-01-16', 'Descripción por defecto'),
 (14, 'RG', '2024', 8, '2024-12-17', 'Descripción por defecto'),
 (15, 'RG', '2025', 14, '2025-01-11', 'Descripción por defecto'),
-(16, 'RA', '2024', 17, '2025-02-01', 'Descripción por defecto');
+(16, 'RA', '2024', 17, '2025-02-01', 'Descripción por defecto'),
+(17, 'RA', '2025', 18, '2025-02-18', '');
 
 -- --------------------------------------------------------
 
@@ -96,7 +97,8 @@ INSERT INTO `mantenimiento` (`id`, `documento_id`, `accion`, `fecha`, `descripci
 (1, 6, 'Actualización de datos', '2025-01-13', 'Corrección de fecha', '../uploads/S17_s2.pdf'),
 (2, 7, 'Modificación', '2025-01-13', 'Cambio de descripción', '../uploads/Carta.pdf'),
 (3, 8, 'Edición', '2025-01-14', 'Actualización de archivo', '../uploads/S15_s1.pdf'),
-(4, 16, 'Subida', '2025-02-01', 'aaaa probrando', '../uploads/S18. Informe SIDERPERU-DIAE.pdf');
+(4, 16, 'Subida', '2025-02-01', 'aaaa probrando', '../uploads/S18. Informe SIDERPERU-DIAE.pdf'),
+(5, 17, 'Subida', '2025-02-18', 'Articulos de papeleria 2', '../uploads/RA/Paleta de colores.pdf');
 
 -- --------------------------------------------------------
 
@@ -108,19 +110,21 @@ CREATE TABLE `tipos` (
   `id` int(10) UNSIGNED NOT NULL,
   `codigo` char(20) NOT NULL,
   `nombre` varchar(45) NOT NULL,
-  `prefijo` char(2) NOT NULL
+  `prefijo` char(2) NOT NULL,
+  `estado` enum('activo','inactivo') NOT NULL DEFAULT 'activo'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Volcado de datos para la tabla `tipos`
 --
 
-INSERT INTO `tipos` (`id`, `codigo`, `nombre`, `prefijo`) VALUES
-(1, '', 'RESOLUCIONES DE ALCALDIA', 'RA'),
-(2, '', 'ORDENANZA MUNICIPAL', 'OM'),
-(3, '', 'DECRETOS ALCALDIA', 'DA'),
-(4, '', 'ACUERDOS CONSEJO', 'AC'),
-(5, '', 'RESOLUCIONES GERENCIALES', 'RG');
+INSERT INTO `tipos` (`id`, `codigo`, `nombre`, `prefijo`, `estado`) VALUES
+(1, '', 'RESOLUCIONES DE ALCALDIA', 'RA', 'activo'),
+(2, '', 'ORDENANZA MUNICIPAL', 'OM', 'activo'),
+(3, '', 'DECRETOS ALCALDIA', 'DA', 'activo'),
+(4, '', 'ACUERDOS CONSEJO', 'AC', 'activo'),
+(5, '', 'RESOLUCIONES GERENCIALES', 'RG', 'activo'),
+(6, '10', 'Prueba', 'Pr', 'activo');
 
 -- --------------------------------------------------------
 
@@ -140,7 +144,9 @@ CREATE TABLE `usuarios` (
 
 INSERT INTO `usuarios` (`id`, `username`, `password`) VALUES
 (1, 'admin', 'adminpassword'),
-(2, 'usuario1', 'password123');
+(2, 'usuario1', 'password123'),
+(3, 'Isaac', '12345'),
+(5, 'Isaac2', '12345');
 
 --
 -- Índices para tablas volcadas
@@ -196,25 +202,25 @@ ALTER TABLE `annos`
 -- AUTO_INCREMENT de la tabla `documentos`
 --
 ALTER TABLE `documentos`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
 
 --
 -- AUTO_INCREMENT de la tabla `mantenimiento`
 --
 ALTER TABLE `mantenimiento`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT de la tabla `tipos`
 --
 ALTER TABLE `tipos`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT de la tabla `usuarios`
 --
 ALTER TABLE `usuarios`
-  MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- Restricciones para tablas volcadas
