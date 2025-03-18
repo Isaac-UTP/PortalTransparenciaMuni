@@ -12,11 +12,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stmt->bindParam(':codigo', $codigo);
         $stmt->bindParam(':nombre', $nombre);
         $stmt->bindParam(':prefijo', $prefijo);
-        if ($stmt->execute()) {
-            echo "Categoría creada exitosamente.";
-        } else {
-            echo "Error al crear la categoría.";
-        }
     }
 }
 ?>
@@ -57,7 +52,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 </div>
                 <div class="modal-footer d-grid gap-2 d-md-flex justify-content-md-end">
                     <button type="submit" class="btn btn-success">Crear Categoría</button>
-                    <a type="button" href="index.php" class="btn btn-warning">Volver al Inicio</a>
+                    <a type="button" href="indexAdmin.php" class="btn btn-warning">Volver al Inicio</a>
                 </div>
             </form>
         </div>

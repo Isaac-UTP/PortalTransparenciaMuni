@@ -45,7 +45,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $stmt->bindParam(':id', $documento_id);
 
     if ($stmt->execute()) {
-        echo "El documento fue actualizado exitosamente.";
+        header("Location: confirmacion.php?redirect=indexAdmin.php");
+        exit();
     } else {
         echo "Error al actualizar los datos en la base de datos.";
     }

@@ -58,7 +58,7 @@ $tipos = $stmt->fetchAll(PDO::FETCH_ASSOC); // Obtener los resultados de la quer
                 </div>
                 <div class="modal-footer d-grid gap-2 d-md-flex justify-content-md-end">
                     <button type="submit" class="btn btn-success">Subir Documento</button>
-                    <a type="button" href="index.php" class="btn btn-warning">Volver al Inicio</a>
+                    <a type="button" href="indexAdmin.php" class="btn btn-warning">Volver al Inicio</a>
                 </div>
             </form>
         </div>

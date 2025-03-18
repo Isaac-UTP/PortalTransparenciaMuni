@@ -74,7 +74,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                         $stmt->bindParam(':link', $link);
 
                         if ($stmt->execute()) {
-                            echo "El archivo fue subido exitosamente y registrado en la base de datos.";
+                            header("Location: confirmacion.php?redirect=indexAdmin.php");
+                            exit();
                         } else {
                             echo "Error al guardar los datos en la base de datos.";
                         }
