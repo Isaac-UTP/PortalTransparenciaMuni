@@ -2,9 +2,9 @@
 require_once '../connection/db.php';
 
 // Obtener los tipos activos desde la base de datos
-$sql = "SELECT prefijo, nombre FROM tipos WHERE estado = 'activo'";
-$stmt = $pdo->query($sql);
-$tipos = $stmt->fetchAll(PDO::FETCH_ASSOC);
+$sql = "SELECT prefijo, nombre FROM tipos WHERE estado = 'activo'"; // Query para obtener los tipos activos
+$stmt = $pdo->query($sql); // Ejecutar la query
+$tipos = $stmt->fetchAll(PDO::FETCH_ASSOC); // Obtener los resultados de la query
 ?>
 
 <!DOCTYPE html>

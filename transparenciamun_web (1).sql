@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 21-02-2025 a las 14:36:39
+-- Tiempo de generación: 18-03-2025 a las 03:16:50
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -72,7 +72,10 @@ INSERT INTO `documentos` (`id`, `tipo`, `anno`, `NUMERO`, `fecha`, `descripcion`
 (14, 'RG', '2024', 8, '2024-12-17', 'Descripción por defecto'),
 (15, 'RG', '2025', 14, '2025-01-11', 'Descripción por defecto'),
 (16, 'RA', '2024', 17, '2025-02-01', 'Descripción por defecto'),
-(17, 'RA', '2025', 18, '2025-02-18', '');
+(17, 'RA', '2025', 18, '2025-02-18', 'PRUEBA'),
+(18, 'RG', '2024', 1079, '2025-02-21', 'DESIGNAR, AL COMITÉ DE RECEPCIÓN DE LA OBRA'),
+(19, 'AC', '2025', 19, '2025-02-21', 'prueba 2'),
+(20, 'RA', '2025', 321, '2025-03-17', '');
 
 -- --------------------------------------------------------
 
@@ -98,7 +101,10 @@ INSERT INTO `mantenimiento` (`id`, `documento_id`, `accion`, `fecha`, `descripci
 (2, 7, 'Modificación', '2025-01-13', 'Cambio de descripción', '../uploads/Carta.pdf'),
 (3, 8, 'Edición', '2025-01-14', 'Actualización de archivo', '../uploads/S15_s1.pdf'),
 (4, 16, 'Subida', '2025-02-01', 'aaaa probrando', '../uploads/S18. Informe SIDERPERU-DIAE.pdf'),
-(5, 17, 'Subida', '2025-02-18', 'Articulos de papeleria 2', '../uploads/RA/Paleta de colores.pdf');
+(5, 17, 'Subida', '2025-02-18', 'Articulos de papeleria 2', '../uploads/RA/Paleta de colores.pdf'),
+(6, 18, 'Subida', '2025-02-21', 'DESIGNAR, AL COMITÉ DE RECEPCIÓN DE LA OBRA', '../uploads/RG/Paleta de colores.pdf'),
+(7, 19, 'Subida', '2025-02-21', 'prueba 2', '../uploads/AC/Paleta de colores (1).pdf'),
+(8, 20, 'Subida', '2025-03-17', 'dxsssss', '../uploads/RA/angular-cheat-sheet.pdf');
 
 -- --------------------------------------------------------
 
@@ -124,7 +130,7 @@ INSERT INTO `tipos` (`id`, `codigo`, `nombre`, `prefijo`, `estado`) VALUES
 (3, '', 'DECRETOS ALCALDIA', 'DA', 'activo'),
 (4, '', 'ACUERDOS CONSEJO', 'AC', 'activo'),
 (5, '', 'RESOLUCIONES GERENCIALES', 'RG', 'activo'),
-(6, '10', 'Prueba', 'Pr', 'activo');
+(6, '10', 'Prueba', 'Pr', 'inactivo');
 
 -- --------------------------------------------------------
 
@@ -202,13 +208,13 @@ ALTER TABLE `annos`
 -- AUTO_INCREMENT de la tabla `documentos`
 --
 ALTER TABLE `documentos`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
 
 --
 -- AUTO_INCREMENT de la tabla `mantenimiento`
 --
 ALTER TABLE `mantenimiento`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT de la tabla `tipos`
