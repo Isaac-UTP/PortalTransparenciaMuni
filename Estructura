@@ -1,13 +1,49 @@
-/proyecto
-    /config          <- Actualmente no tiene nada
-    /login           <- Archivos para el login
-    /public          <- Archivos accesibles al público (index.php, estilos, scripts).
-        /css         <- Hojas de estilo (style.css, etc.).
-        /js          <- Archivos JavaScript (funciones.js, etc.).
-        /uploads     <- Carpeta para guardar los archivos subidos.
-    /connection        <- Archivos PHP comunes (conexión a BD).
-    /templates       <- Heater para la vista admin y el header para el publico general
-    /config          <- Configuraciones (credenciales de BD, constantes, etc.).
-    /uploads         <- archivos subidos a traves de la bd o pagina web? (donde cada carpeta esta para cada categoria usando como nombre su prefijo)
-    /img             <- imagenes utilizadas
-    index.php        <- Archivo principal (enrutador).
+Directory structure:
+└── isaac-utp-portaltransparenciamuni/
+    ├── Estructura
+    ├── PortalTransparenciaDiagramaBD.drawio
+    ├── README.txt
+    ├── transparenciamun_web (1).sql
+    ├── config/
+    │   └── 1
+    ├── connection/
+    │   └── db.php
+    ├── login/
+    │   ├── login.html
+    │   ├── login.php
+    │   └── register.php
+    ├── public/
+    │   ├── VerDocumentos.php
+    │   ├── cambiar_estado.php
+    │   ├── categoria.php
+    │   ├── crear_categoria.php
+    │   ├── editar_documento.php
+    │   ├── get_documentos.php
+    │   ├── index.php
+    │   ├── indexAdmin.php
+    │   ├── prueba.php
+    │   ├── subir_documento.php
+    │   ├── update_documento.php
+    │   ├── upload.php
+    │   ├── usuarios.php
+    │   ├── css/
+    │   │   ├── categoria.css
+    │   │   ├── crear_categoria.css
+    │   │   ├── editar_documento.css
+    │   │   ├── login.css
+    │   │   ├── modal.css
+    │   │   ├── style.css
+    │   │   ├── subir_documento.css
+    │   │   └── ver_documentos.css
+    │   ├── img/
+    │   └── js/
+    │       ├── login.js
+    │       ├── modal.js
+    │       └── ver_documentos.js
+    ├── templates/
+    │   ├── navbar.php
+    │   └── navbarAdmin.php
+    └── uploads/
+        ├── AC/
+        ├── RA/
+        └── RG/
