@@ -2,105 +2,98 @@
 require_once '../connection/db.php';
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    // Verificar si el archivo fue subido correctamente
-    if (!isset($_FILES['archivo'])) {
-        header('Location: subir_documento.php?error=no_file');
-        exit();
-    }
-
-    $archivo = $_FILES['archivo'];
-
-    // Verificar errores de subida
-    if ($archivo['error'] !== UPLOAD_ERR_OK) {
-        header('Location: subir_documento.php?error=upload_error');
-        exit();
-    }
-
-    // Validar tipo de archivo
-    $allowed = ['pdf' => 'application/pdf'];
-    $filename = $archivo['name'];
-    $filetype = $archivo['type'];
-    $ext = pathinfo($filename, PATHINFO_EXTENSION);
-
-    if (!array_key_exists($ext, $allowed)) {
-        header('Location: subir_documento.php?error=invalid_format');
-        exit();
-    }
-
-    // Validar tamaño (5MB máximo)
-    $maxsize = 5 * 1024 * 1024;
-    if ($archivo['size'] > $maxsize) {
-        header('Location: subir_documento.php?error=file_size');
-        exit();
-    }
-
-    // Obtener datos del formulario
-    $tipos = $_POST['tipos'] ?? null;
-    $anno = $_POST['anno'] ?? null;
-    $numero = $_POST['numero'] ?? null;
-    $descripcion = $_POST['descripcion'] ?? null;
 
     // Validar campos obligatorios
-    if (!$tipos || !$anno || !$numero || !$descripcion) {
-        header('Location: subir_documento.php?error=missing_fields');
-        exit();
+    $required = ['tipos', 'anno', 'numero', 'descripcion'];
+    foreach ($required as $field) {
+        if (empty($_POST[$field])) {
+            die("Error: El campo $field es requerido.");
+        }
     }
 
+    // Validar archivo
+    if (!isset($_FILES['archivo']) || $_FILES['archivo']['error'] !== UPLOAD_ERR_OK) {
+        die("Error: Archivo inválido o no subido.");
+    }
+
+    $allowed = ['pdf' => 'application/pdf'];
+    $filename = basename($_FILES['archivo']['name']);
+    $filetype = $_FILES['archivo']['type'];
+    $filesize = $_FILES['archivo']['size'];
+    $ext = strtolower(pathinfo($filename, PATHINFO_EXTENSION));
+
+    // Validar tipo de archivo
+    if (!array_key_exists($ext, $allowed) || !in_array($filetype, $allowed)) {
+        die("Error: Solo se permiten archivos PDF.");
+    }
+
+    // Tamaño máximo 10MB
+    if ($filesize > 10 * 1024 * 1024) {
+        die("Error: El archivo excede el límite de 10MB.");
+    }
+
+    // Sanitizar nombre de archivo
+    $safe_filename = preg_replace('/[^a-zA-Z0-9_.-]/', '_', $filename);
+    $tipos = $_POST['tipos'];
+    $uploadDir = "../uploads/$tipos/";
+    $rutaWeb = "uploads/$tipos/$safe_filename"; // Ruta accesible desde navegador
+
     try {
+        $pdo->beginTransaction();
+
+        // Verificar si la categoría existe
+        $stmt = $pdo->prepare("SELECT prefijo FROM tipos WHERE prefijo = :prefijo");
+        $stmt->execute([':prefijo' => $tipos]);
+        if (!$stmt->fetch()) {
+            throw new Exception("Categoría inválida.");
+        }
+
         // Crear directorio si no existe
-        $uploadDir = $_SERVER['DOCUMENT_ROOT'] . '/PortalTransparenciaMuni/uploads/' . $tipos . '/';
         if (!is_dir($uploadDir)) {
-            mkdir($uploadDir, 0777, true);
+            if (!mkdir($uploadDir, 0755, true)) {
+                throw new Exception("Error al crear directorio.");
+            }
         }
 
-        // Mover archivo subido
-        $rutaArchivo = $uploadDir . $filename;
-
-        if (file_exists($rutaArchivo)) {
-            header('Location: subir_documento.php?error=file_exists');
-            exit();
+        // Mover archivo
+        $rutaCompleta = $uploadDir . $safe_filename;
+        if (!move_uploaded_file($_FILES['archivo']['tmp_name'], $rutaCompleta)) {
+            throw new Exception("Error al subir el archivo.");
         }
 
-        if (!move_uploaded_file($archivo['tmp_name'], $rutaArchivo)) {
-            header('Location: subir_documento.php?error=upload_failed');
-            exit();
-        }
-
-        // Insertar en documentos
+        // Insertar documento
         $sql = "INSERT INTO documentos (tipo, anno, numero, fecha, descripcion)
                 VALUES (:tipo, :anno, :numero, NOW(), :descripcion)";
         $stmt = $pdo->prepare($sql);
         $stmt->execute([
             ':tipo' => $tipos,
-            ':anno' => $anno,
-            ':numero' => $numero,
-            ':descripcion' => $descripcion
+            ':anno' => $_POST['anno'],
+            ':numero' => $_POST['numero'],
+            ':descripcion' => $_POST['descripcion']
         ]);
-
         $documento_id = $pdo->lastInsertId();
 
-        // Insertar en mantenimiento
-        $relativePath = 'uploads/' . $tipos . '/' . $filename;
+        // Registrar en mantenimiento
         $sql = "INSERT INTO mantenimiento (documento_id, accion, fecha, descripcion, link)
                 VALUES (:documento_id, 'Subida', NOW(), :descripcion, :link)";
         $stmt = $pdo->prepare($sql);
         $stmt->execute([
             ':documento_id' => $documento_id,
-            ':descripcion' => $descripcion,
-            ':link' => $relativePath
+            ':descripcion' => $_POST['descripcion'],
+            ':link' => $rutaWeb
         ]);
 
-        // Redirección exitosa
-        header('Location: indexAdmin.php');
+        $pdo->commit();
+        header("Location: subir_documento.php?success=1");
         exit();
 
     } catch (PDOException $e) {
-        error_log("Error en upload.php: " . $e->getMessage());
-        header('Location: subir_documento.php?error=database_error');
-        exit();
+        $pdo->rollBack();
+        @unlink($rutaCompleta); // Eliminar archivo subido en caso de error
+        die("Error de base de datos: " . $e->getMessage());
+    } catch (Exception $e) {
+        $pdo->rollBack();
+        @unlink($rutaCompleta);
+        die($e->getMessage());
     }
-} else {
-    header('Location: subir_documento.php');
-    exit();
 }
-?>
