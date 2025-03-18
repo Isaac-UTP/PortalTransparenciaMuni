@@ -1,11 +1,13 @@
 /proyecto
+    /config          <- Actualmente no tiene nada
+    /login           <- Archivos para el login
     /public          <- Archivos accesibles al público (index.php, estilos, scripts).
         /css         <- Hojas de estilo (style.css, etc.).
         /js          <- Archivos JavaScript (funciones.js, etc.).
         /uploads     <- Carpeta para guardar los archivos subidos.
     /connection        <- Archivos PHP comunes (conexión a BD).
-    /templates       <- Vistas HTML que serán incluidas dinámicamente.
+    /templates       <- Heater para la vista admin y el header para el publico general
     /config          <- Configuraciones (credenciales de BD, constantes, etc.).
-    /uploads         <- archivos subidos a traves de la bd o pagina web?
+    /uploads         <- archivos subidos a traves de la bd o pagina web? (donde cada carpeta esta para cada categoria usando como nombre su prefijo)
     /img             <- imagenes utilizadas
     index.php        <- Archivo principal (enrutador).
