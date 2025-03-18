@@ -1,4 +1,12 @@
 <?php
+session_start();
+
+if (!isset($_SESSION['username'])) {
+    header("Location: ../login/login.html");
+    exit();
+}
+?>
+<?php
 require_once '../connection/db.php';
 
 // Obtener los tipos activos desde la base de datos
@@ -24,7 +32,7 @@ $sqlCount = "
     LEFT JOIN mantenimiento m ON d.id = m.documento_id
     WHERE (:tipo = '' OR d.tipo = :tipo)
     AND (:anno = '' OR d.anno = :anno)
-    AND (:keyword = '' OR m.descripcion LIKE :keyword)";
+    AND (:keyword = '' OR d.descripcion LIKE :keyword)";
 $stmtCount = $pdo->prepare($sqlCount);
 $stmtCount->bindValue(':tipo', $searchTipo);
 $stmtCount->bindValue(':anno', $searchAnno);
@@ -41,7 +49,7 @@ $sql = "
     LEFT JOIN mantenimiento m ON d.id = m.documento_id
     WHERE (:tipo = '' OR d.tipo = :tipo)
     AND (:anno = '' OR d.anno = :anno)
-    AND (:keyword = '' OR m.descripcion LIKE :keyword)
+    AND (:keyword = '' OR d.descripcion LIKE :keyword)
     ORDER BY $orderBy $orderDir
     LIMIT :limit OFFSET :offset";
 $stmt = $pdo->prepare($sql);
@@ -76,7 +84,7 @@ $documentos = $stmt->fetchAll(PDO::FETCH_ASSOC);
 </head>
 
 <body>
-    <?php include '../templates/navbarAdmin.php'; ?>
+    <?php include_once '../templates/navbarAdmin.php'; ?>
     <div class="content">
         <div class="container">
             <div class="row mt-4">
@@ -120,34 +128,10 @@ $documentos = $stmt->fetchAll(PDO::FETCH_ASSOC);
                             <table class="table table-striped table-bordered" style="font-size:12px;">
                                 <thead>
                                     <tr>
-                                        <th>
-                                            Tipo
-                                            <a href="?order_by=t.nombre&order_dir=ASC"><i
-                                                    class="fa-solid fa-up-long"></i></a>
-                                            <a href="?order_by=t.nombre&order_dir=DESC"><i
-                                                    class="fa-solid fa-down-long"></i></a>
-                                        </th>
-                                        <th>
-                                            Año
-                                            <a href="?order_by=d.anno&order_dir=ASC"><i
-                                                    class="fa-solid fa-up-long"></i></a>
-                                            <a href="?order_by=d.anno&order_dir=DESC"><i
-                                                    class="fa-solid fa-down-long"></i></a>
-                                        </th>
-                                        <th>
-                                            Número
-                                            <a href="?order_by=d.numero&order_dir=ASC"><i
-                                                    class="fa-solid fa-up-long"></i></a>
-                                            <a href="?order_by=d.numero&order_dir=DESC"><i
-                                                    class="fa-solid fa-down-long"></i></a>
-                                        </th>
-                                        <th>
-                                            Descripción
-                                            <a href="?order_by=m.descripcion&order_dir=ASC"><i
-                                                    class="fa-solid fa-up-long"></i></a>
-                                            <a href="?order_by=m.descripcion&order_dir=DESC"><i
-                                                    class="fa-solid fa-down-long"></i></a>
-                                        </th>
+                                        <th>Tipo</th>
+                                        <th>Año</th>
+                                        <th>Número</th>
+                                        <th>Descripción</th>
                                         <th>Enlace</th>
                                         <th>Acciones</th>
                                     </tr>
@@ -159,9 +143,10 @@ $documentos = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                             <td><?= htmlspecialchars($documento['anno']) ?></td>
                                             <td><?= htmlspecialchars($documento['numero']) ?></td>
                                             <td><?= htmlspecialchars($documento['descripcion']) ?></td>
-                                            <td><a href="<?= htmlspecialchars($documento['link']) ?>" target="_blank"
-                                                    class="btn btn-warning btn-xs"><i class="fa-solid fa-download"></i></a>
-                                            </td>
+                                            <td><a href="../<?= htmlspecialchars($documento['link']) ?>" target="_blank"
+                                                    class="btn btn-warning btn-xs">
+                                                    <i class="fa-solid fa-download"></i>
+                                                </a></td>
                                             <td>
                                                 <a href="editar_documento.php?id=<?= $documento['id'] ?>"
                                                     class="btn btn-primary btn-xs Btn">

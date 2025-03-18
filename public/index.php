@@ -24,7 +24,7 @@ $sqlCount = "
     LEFT JOIN mantenimiento m ON d.id = m.documento_id
     WHERE (:tipo = '' OR d.tipo = :tipo)
     AND (:anno = '' OR d.anno = :anno)
-    AND (:keyword = '' OR m.descripcion LIKE :keyword)";
+    AND (:keyword = '' OR d.descripcion LIKE :keyword)";
 $stmtCount = $pdo->prepare($sqlCount);
 $stmtCount->bindValue(':tipo', $searchTipo);
 $stmtCount->bindValue(':anno', $searchAnno);
@@ -35,13 +35,13 @@ $totalPages = ceil($totalRecords / $limit);
 
 // Obtener los documentos desde la base de datos con límites y desplazamientos
 $sql = "
-    SELECT d.id, t.nombre AS tipos, d.anno, d.numero, m.descripcion, m.link 
+    SELECT d.id, t.nombre AS tipos, d.anno, d.numero, d.descripcion, m.link 
     FROM documentos d
     INNER JOIN tipos t ON d.tipo = t.prefijo
     LEFT JOIN mantenimiento m ON d.id = m.documento_id
     WHERE (:tipo = '' OR d.tipo = :tipo)
     AND (:anno = '' OR d.anno = :anno)
-    AND (:keyword = '' OR m.descripcion LIKE :keyword)
+    AND (:keyword = '' OR d.descripcion LIKE :keyword)
     ORDER BY $orderBy $orderDir
     LIMIT :limit OFFSET :offset";
 $stmt = $pdo->prepare($sql);
@@ -152,8 +152,10 @@ $documentos = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                         <td><?= htmlspecialchars($documento['anno']) ?></td>
                                         <td><?= htmlspecialchars($documento['numero']) ?></td>
                                         <td><?= htmlspecialchars($documento['descripcion']) ?></td>
-                                        <td><a href="<?= htmlspecialchars($documento['link']) ?>" target="_blank"
-                                                class="btn btn-warning btn-xs"><i class="fa-solid fa-download"></i></a></td>
+                                        <td><a href="../<?= htmlspecialchars($documento['link']) ?>" target="_blank"
+                                                class="btn btn-warning btn-xs">
+                                                <i class="fa-solid fa-download"></i>
+                                            </a></td>
                                     </tr>
                                 <?php endforeach; ?>
                             </tbody>

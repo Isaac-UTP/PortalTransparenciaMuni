@@ -1,5 +1,12 @@
 <?php
 session_start();
+
+if (!isset($_SESSION['username'])) {
+    header("Location: ../login/login.html");
+    exit();
+}
+?>
+<?php
 require_once '../connection/db.php';
 
 if (!isset($_SESSION['username'])) {
@@ -30,7 +37,7 @@ $usuarios = $stmt->fetchAll(PDO::FETCH_ASSOC);
 </head>
 
 <body>
-    <?php include '../templates/navbarAdmin.php'; ?>
+    <?php include_once '../templates/navbarAdmin.php'; ?>
     <div class="content">
         <div class="container mt-5">
             <h2>Usuarios</h2>

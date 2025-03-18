@@ -1,4 +1,12 @@
 <?php
+session_start();
+
+if (!isset($_SESSION['username'])) {
+    header("Location: ../login/login.html");
+    exit();
+}
+?>
+<?php
 require_once '../connection/db.php';
 
 // Verificar si se ha proporcionado un ID de documento
@@ -45,7 +53,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $stmt->bindParam(':id', $documento_id);
 
     if ($stmt->execute()) {
-        echo "El documento fue actualizado exitosamente.";
+        header("Location: confirmacion.php?redirect=indexAdmin.php");
+        exit();
     } else {
         echo "Error al actualizar los datos en la base de datos.";
     }
@@ -69,7 +78,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 </head>
 
 <body>
-    <?php include '../templates/navbarAdmin.php'; ?>
+    <?php include_once '../templates/navbarAdmin.php'; ?>
     <div class="content">
         <div class="container">
             <h1>Editar Documento</h1>
