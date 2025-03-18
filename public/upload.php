@@ -1,6 +1,6 @@
 <?php
 require_once '../connection/db.php';
- 
+
 // Los documentos que tengan el mismo nombre y ya estén en la base de datos no se subirán de nuevo y se ignorará la subida
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     // Verificar si el archivo fue subido sin errores
@@ -54,19 +54,20 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     }
 
                     // Insertar el documento en la tabla documentos
-                    $sql = "INSERT INTO documentos (tipo, anno, numero, fecha)
-                            VALUES (:tipo, :anno, :numero, NOW())";
+                    $sql = "INSERT INTO documentos (tipo, anno, numero, fecha, descripcion)
+                        VALUES (:tipo, :anno, :numero, NOW(), :descripcion)";
                     $stmt = $pdo->prepare($sql);
                     $stmt->bindParam(':tipo', $tipos);
                     $stmt->bindParam(':anno', $anno);
                     $stmt->bindParam(':numero', $numero);
+                    $stmt->bindParam(':descripcion', $descripcion);
 
                     if ($stmt->execute()) {
                         $documento_id = $pdo->lastInsertId();
 
                         // Insertar en la tabla mantenimiento
                         $sql = "INSERT INTO mantenimiento (documento_id, accion, fecha, descripcion, link)
-                                VALUES (:documento_id, 'Subida', NOW(), :descripcion, :link)";
+        VALUES (:documento_id, 'Creación', NOW(), 'Documento subido inicialmente', :link)";
                         $stmt = $pdo->prepare($sql);
                         $stmt->bindParam(':documento_id', $documento_id);
                         $stmt->bindParam(':descripcion', $descripcion);
