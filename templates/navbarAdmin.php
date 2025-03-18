@@ -1,6 +1,3 @@
-<?php
-session_start();
-?>
 <!-- filepath: /C:/xampp/htdocs/prueba/templates/navbarAdmin.php -->
 <style>
     .sidebar {
@@ -9,9 +6,17 @@ session_start();
         padding: 15px;
         height: 100vh;
         position: fixed;
+        left: 0;
+        top: 0;
+        overflow-y: auto;
+        z-index: 1000;
         border-right: 2px solid #D1D1D1;
-        display: flex;
-        flex-direction: column;
+    }
+
+    .content {
+        margin-left: 250px;
+        padding: 20px;
+        margin-top: 0;
     }
 
     .sidebar .nav-link {
@@ -27,32 +32,27 @@ session_start();
         border-radius: 5px;
     }
 
-    .content {
-        margin-left: 250px;
-        padding: 20px;
-    }
-
-    .sidebar img {
-        display: block;
-        margin: 0 auto 20px;
-        max-width: 100%;
-        height: auto;
-    }
-
     .dropdown-menu {
         background-color: white;
         border: 1px solid #ddd;
         box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-        margin-left: 0.5rem;
+        margin-top: -5px;
+        margin-left: 0;
     }
 
     .dropdown-item {
         color: #333;
         padding: 8px 15px;
+        white-space: nowrap;
     }
 
     .dropdown-item:hover {
         background-color: #f8f9fa;
+    }
+
+    .dropdown-toggle::after {
+        vertical-align: middle;
+        margin-left: 0.5rem;
     }
 
     .user-info {
@@ -66,10 +66,22 @@ session_start();
         padding: 15px;
         box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     }
+
+    /* Eliminar espacio superior en todas las páginas */
+    body {
+        margin: 0;
+        padding-top: 0 !important;
+    }
+
+    /* Favicon (agregar esto en el head de todas las páginas) */
+    link[rel="icon"] {
+        type: image/x-icon;
+        href: "../public/img/logo_white.ico";
+    }
 </style>
 
 <div class="sidebar">
-    <img src="../public/img/logoOficial.png" alt="Logo" width="250" height="70">
+    <img src="../public/img/logoOficial.png" alt="Logo" width="210" height="70">
 
     <ul class="nav flex-column">
         <li class="nav-item">
@@ -78,6 +90,7 @@ session_start();
             </a>
         </li>
 
+        <!-- Menú Categorías -->
         <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" href="#" id="categoriaDropdown" role="button" data-bs-toggle="dropdown"
                 aria-expanded="false">
@@ -93,6 +106,7 @@ session_start();
             </ul>
         </li>
 
+        <!-- Menú Documentos -->
         <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" href="#" id="documentoDropdown" role="button" data-bs-toggle="dropdown"
                 aria-expanded="false">
@@ -142,3 +156,6 @@ session_start();
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"
     integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy"
     crossorigin="anonymous"></script>
+<!-- Scripts REQUERIDOS para el funcionamiento de los dropdowns -->
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"></script>

@@ -1,4 +1,12 @@
 <?php
+session_start();
+
+if (!isset($_SESSION['username'])) {
+    header("Location: ../login/login.html");
+    exit();
+}
+?>
+<?php
 require_once '../connection/db.php';
 
 // Obtener los tipos activos desde la base de datos
@@ -24,7 +32,7 @@ $tipos = $stmt->fetchAll(PDO::FETCH_ASSOC); // Obtener los resultados de la quer
 </head>
 
 <body>
-    <?php include '../templates/navbarAdmin.php'; ?>
+    <?php include_once '../templates/navbarAdmin.php'; ?>
     <div class="content">
         <div class="container">
             <h1>Subir Documento</h1>

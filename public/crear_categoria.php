@@ -1,4 +1,12 @@
 <?php
+session_start();
+
+if (!isset($_SESSION['username'])) {
+    header("Location: ../login/login.html");
+    exit();
+}
+?>
+<?php
 require_once '../connection/db.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -68,7 +76,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 </head>
 
 <body>
-    <?php include '../templates/navbarAdmin.php'; ?>
+    <?php include_once '../templates/navbarAdmin.php'; ?>
     <div class="content">
         <div class="container">
             <h1>Crear Categoría</h1>
