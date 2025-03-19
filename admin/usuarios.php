@@ -1,11 +1,13 @@
 <?php
 session_start();
+
 if (!isset($_SESSION['username'])) {
-    header('Location: /PORTALTRANSPARENCIAMUNI/login/login.html');
+    header("Location: ../login/login.html");
     exit();
 }
-
-require_once __DIR__ . '/../connection/db.php';
+?>
+<?php
+require_once '../connection/db.php';
 
 $username = $_SESSION['username'];
 
@@ -46,7 +48,16 @@ $usuarios = $stmt->fetchAll(PDO::FETCH_ASSOC);
                     <?php foreach ($usuarios as $usuario): ?>
                         <tr>
                             <td><?= htmlspecialchars($usuario['username']) ?></td>
-                            <td><?= $usuario['username'] == $username ? htmlspecialchars($usuario['password']) : '********' ?>
+                            <td>
+                                <?php if ($usuario['username'] == $username): ?>
+                                    <div class="password-container">
+                                        <input type="password" value="<?= htmlspecialchars($usuario['password']) ?>"
+                                            class="password-field" readonly>
+                                        <button class="toggle-password" onclick="togglePassword(this)">👁️</button>
+                                    </div>
+                                <?php else: ?>
+                                    ********
+                                <?php endif; ?>
                             </td>
                         </tr>
                     <?php endforeach; ?>
@@ -54,6 +65,37 @@ $usuarios = $stmt->fetchAll(PDO::FETCH_ASSOC);
             </table>
         </div>
     </div>
+
+    <!-- JavaScript -->
+    <script>
+        function togglePassword(button) {
+            const input = button.previousElementSibling;
+            input.type = input.type === 'password' ? 'text' : 'password';
+        }
+    </script>
+
+    <!-- CSS -->
+    <style>
+        .password-container {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .password-field {
+            border: none;
+            background: transparent;
+            width: 100px;
+            outline: none;
+        }
+
+        .toggle-password {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0;
+        }
+    </style>
 </body>
 
 </html>

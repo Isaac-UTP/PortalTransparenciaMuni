@@ -4,34 +4,17 @@ require_once '../connection/db.php';
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $username = $_POST['username'];
-    $password = $_POST['password'];
-
-    // Registrar:
-    $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
+    $password = $_POST['password']; // Texto plano
 
     $sql = "INSERT INTO usuarios (username, password) VALUES (:username, :password)";
     $stmt = $pdo->prepare($sql);
     $stmt->bindParam(':username', $username);
-    $stmt->bindParam(':password', $hashedPassword);
+    $stmt->bindParam(':password', $password); // Almacena en texto plano
 
     if ($stmt->execute()) {
-        // Validar:
-        $sql = "SELECT password FROM usuarios WHERE username = :username";
-        $stmt = $pdo->prepare($sql);
-        $stmt->bindParam(':username', $username);
-        $stmt->execute();
-        $hashedPasswordFromDB = $stmt->fetchColumn();
-
-        if (password_verify($password, $hashedPasswordFromDB)) {
-            // Acceso concedido
-            // Establecer la sesión con el nombre de usuario
-            $_SESSION['username'] = $username;
-            // Redirigir a indexAdmin.php
-            header('Location: /PORTALTRANSPARENCIAMUNI/admin/indexAdmin.php');
-            exit();
-        } else {
-            echo "Error al validar el usuario.";
-        }
+        $_SESSION['username'] = $username;
+        header('Location: ../admin/indexAdmin.php');
+        exit();
     } else {
         echo "Error al registrar el usuario.";
     }

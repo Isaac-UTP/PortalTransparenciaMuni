@@ -1,7 +1,7 @@
 <?php
 session_start();
 if (!isset($_SESSION['username'])) {
-    header('Location: /PORTALTRANSPARENCIAMUNI/login/login.html');
+    header('Location: ../login/login.html');
     exit();
 }
 
@@ -11,6 +11,7 @@ if (isset($_GET['id']) && isset($_GET['estado'])) {
     $id = $_GET['id'];
     $estado = $_GET['estado'];
 
+    // Cambia el nombre de la columna 'in' a 'id' si es necesario
     $sql = "UPDATE tipos SET estado = :estado WHERE id = :id";
     $stmt = $pdo->prepare($sql);
     $stmt->bindParam(':estado', $estado);
