@@ -4,6 +4,6 @@
 Require all denied
 </FilesMatch>
 
-<FilesMatch "(indexAdmin\.php|VerDocumentos\.php|categoria\.php|usuarios\.php|cambiar_estado\.php|subir_documento\.php|upload\.php|update_documento\.php)">
+<FilesMatch "(indexAdmin\.php|VerDocumentos\.php|categoria\.php|usuarios\.php|cambiar_estado\.php|subir_documento\.php|upload\.php|update_documento\.php|confirmacion\.php)">
 Require all granted
 </FilesMatch>

@@ -41,7 +41,7 @@ if (!isset($_SESSION['username'])) {
     <script>
         setTimeout(function () {
             window.location.href = "<?= $_GET['redirect'] ?? 'indexAdmin.php' ?>";
-        }, 5000);
+        }, 3000);
     </script>
 </head>
 
@@ -52,4 +52,5 @@ if (!isset($_SESSION['username'])) {
     </div>
 </body>
 
-</html></div>
+</html>
+</div>
