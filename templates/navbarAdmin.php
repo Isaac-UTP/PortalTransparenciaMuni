@@ -85,7 +85,7 @@
 
     <ul class="nav flex-column">
         <li class="nav-item">
-            <a class="nav-link" href="indexAdmin.php">
+            <a class="nav-link" href="../admin/indexAdmin.php">
                 <i class="fa-solid fa-house"></i> Inicio
             </a>
         </li>
@@ -97,10 +97,10 @@
                 <i class="fa-solid fa-list"></i> Categorías
             </a>
             <ul class="dropdown-menu" aria-labelledby="categoriaDropdown">
-                <li><a class="dropdown-item" href="crear_categoria.php">
+                <li><a class="dropdown-item" href="../admin/crear_categoria.php">
                         <i class="fa-solid fa-plus"></i> Nueva categoría
                     </a></li>
-                <li><a class="dropdown-item" href="categoria.php">
+                <li><a class="dropdown-item" href="../admin/categoria.php">
                         <i class="fa-solid fa-eye"></i> Ver categorías
                     </a></li>
             </ul>
@@ -113,17 +113,17 @@
                 <i class="fa-solid fa-file"></i> Documentos
             </a>
             <ul class="dropdown-menu" aria-labelledby="documentoDropdown">
-                <li><a class="dropdown-item" href="subir_documento.php">
+                <li><a class="dropdown-item" href="../admin/subir_documento.php">
                         <i class="fa-solid fa-upload"></i> Subir documento
                     </a></li>
-                <li><a class="dropdown-item" href="VerDocumentos.php">
+                <li><a class="dropdown-item" href="../admin/VerDocumentos.php">
                         <i class="fa-solid fa-list"></i> Ver documentos
                     </a></li>
             </ul>
         </li>
 
         <li class="nav-item">
-            <a class="nav-link" href="usuarios.php">
+            <a class="nav-link" href="../admin/usuarios.php">
                 <i class="fa-solid fa-users"></i> Usuarios
             </a>
         </li>

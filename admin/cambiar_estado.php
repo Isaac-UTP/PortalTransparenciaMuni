@@ -1,5 +1,11 @@
 <?php
-require_once '../connection/db.php';
+session_start();
+if (!isset($_SESSION['username'])) {
+    header('Location: /PORTALTRANSPARENCIAMUNI/login/login.html');
+    exit();
+}
+
+require_once __DIR__ . '/../connection/db.php';
 
 if (isset($_GET['id']) && isset($_GET['estado'])) {
     $id = $_GET['id'];

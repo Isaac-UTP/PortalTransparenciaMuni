@@ -1,3 +1,11 @@
+<?php
+session_start();
+if (!isset($_SESSION['username'])) {
+    header('Location: ../../login/login.html'); // Ajusta la ruta según tu estructura
+    exit();
+}
+?>
+
 <!DOCTYPE html>
 <html lang="es">
 
@@ -44,4 +52,4 @@
     </div>
 </body>
 
-</html>
+</html></div>

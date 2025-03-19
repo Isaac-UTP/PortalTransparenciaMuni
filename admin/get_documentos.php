@@ -1,5 +1,11 @@
 <?php
-require_once '../connection/db.php';
+session_start();
+if (!isset($_SESSION['username'])) {
+    header('Location: ../../login/login.html'); // Ajusta la ruta según tu estructura
+    exit();
+}
+
+require_once __DIR__ . '/../connection/db.php';
 
 // Obtener los parámetros de búsqueda
 $searchKeyword = isset($_GET['keyword']) ? $_GET['keyword'] : '';

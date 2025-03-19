@@ -1,13 +1,11 @@
 <?php
 session_start();
-
 if (!isset($_SESSION['username'])) {
-    header("Location: ../login/login.html");
+    header('Location: /PORTALTRANSPARENCIAMUNI/login/login.html');
     exit();
 }
-?>
-<?php
-require_once '../connection/db.php';
+
+require_once __DIR__ . '/../connection/db.php';
 
 // Obtener los tipos activos desde la base de datos
 $sql = "SELECT prefijo, nombre FROM tipos WHERE estado = 'activo'"; // Query para obtener los tipos activos
@@ -29,7 +27,7 @@ $tipos = $stmt->fetchAll(PDO::FETCH_ASSOC); // Obtener los resultados de la quer
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
         crossorigin="anonymous"></script>
-    <link rel="stylesheet" href="css/subir_documento.css">
+    <link rel="stylesheet" href="../public/css/subir_documento.css">
 </head>
 
 <body>

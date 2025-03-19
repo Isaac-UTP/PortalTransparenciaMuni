@@ -1,0 +1,8 @@
+# En /admin/.htaccess
+<FilesMatch "\.(php)$">
+    Require all denied
+</FilesMatch>
+
+<FilesMatch "(indexAdmin\.php|VerDocumentos\.php|categoria\.php|usuarios\.php)">
+    Require all granted
+</FilesMatch>

@@ -1,18 +1,11 @@
 <?php
 session_start();
-
 if (!isset($_SESSION['username'])) {
-    header("Location: ../login/login.html");
+    header('Location: /PORTALTRANSPARENCIAMUNI/login/login.html');
     exit();
 }
-?>
-<?php
-require_once '../connection/db.php';
 
-if (!isset($_SESSION['username'])) {
-    header('Location: ../login/login.html');
-    exit();
-}
+require_once __DIR__ . '/../connection/db.php';
 
 $username = $_SESSION['username'];
 
