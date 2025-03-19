@@ -132,22 +132,29 @@ $documentos = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                     </th>
                                     <th>
                                         Año
-                                        <a href="?order_by=d.anno&order_dir=ASC"><i class="fa-solid fa-up-long"></i></a>
-                                        <a href="?order_by=d.anno&order_dir=DESC"><i
+                                        <a
+                                            href="?order_by=d.anno&order_dir=ASC&tipo=<?= $searchTipo ?>&anno=<?= $searchAnno ?>&keyword=<?= $searchKeyword ?>"><i
+                                                class="fa-solid fa-up-long"></i></a>
+                                        <a
+                                            href="?order_by=d.anno&order_dir=DESC&tipo=<?= $searchTipo ?>&anno=<?= $searchAnno ?>&keyword=<?= $searchKeyword ?>"><i
                                                 class="fa-solid fa-down-long"></i></a>
                                     </th>
                                     <th>
                                         Número
-                                        <a href="?order_by=d.numero&order_dir=ASC"><i
+                                        <a
+                                            href="?order_by=d.numero&order_dir=ASC&tipo=<?= $searchTipo ?>&anno=<?= $searchAnno ?>&keyword=<?= $searchKeyword ?>"><i
                                                 class="fa-solid fa-up-long"></i></a>
-                                        <a href="?order_by=d.numero&order_dir=DESC"><i
+                                        <a
+                                            href="?order_by=d.numero&order_dir=DESC&tipo=<?= $searchTipo ?>&anno=<?= $searchAnno ?>&keyword=<?= $searchKeyword ?>"><i
                                                 class="fa-solid fa-down-long"></i></a>
                                     </th>
                                     <th>
                                         Descripción
-                                        <a href="?order_by=m.descripcion&order_dir=ASC"><i
+                                        <a
+                                            href="?order_by=m.descripcion&order_dir=ASC&tipo=<?= $searchTipo ?>&anno=<?= $searchAnno ?>&keyword=<?= $searchKeyword ?>"><i
                                                 class="fa-solid fa-up-long"></i></a>
-                                        <a href="?order_by=m.descripcion&order_dir=DESC"><i
+                                        <a
+                                            href="?order_by=m.descripcion&order_dir=DESC&tipo=<?= $searchTipo ?>&anno=<?= $searchAnno ?>&keyword=<?= $searchKeyword ?>"><i
                                                 class="fa-solid fa-down-long"></i></a>
                                     </th>
                                     <th>Enlace</th>
