@@ -99,7 +99,7 @@ $documentos = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                     <option value="">-- Selecciona una Categoría --</option>
                                     <?php foreach ($tipos as $row): ?>
                                         <option value="<?= htmlspecialchars($row['prefijo']) ?>"
-                                            <?= $searchTipo == $row['prefijo'] ? 'selected' : '' ?>>
+                                            <?= ($searchTipo == $row['prefijo'] || $row['prefijo'] == 'OM') ? 'selected' : '' ?>>
                                             <?= htmlspecialchars($row['nombre']) ?>
                                         </option>
                                     <?php endforeach; ?>

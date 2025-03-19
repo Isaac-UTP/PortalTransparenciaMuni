@@ -88,7 +88,10 @@ $documentos = $stmt->fetchAll(PDO::FETCH_ASSOC);
                             <select name="tipo" id="tipo" class="form-select">
                                 <option value="">-- Selecciona una Categoría --</option>
                                 <?php foreach ($tipos as $row): ?>
-                                    <option value="<?= htmlspecialchars($row['prefijo']) ?>" <?= $searchTipo == $row['prefijo'] ? 'selected' : '' ?>><?= htmlspecialchars($row['nombre']) ?></option>
+                                    <option value="<?= htmlspecialchars($row['prefijo']) ?>"
+                                        <?= ($searchTipo == $row['prefijo'] || $row['prefijo'] == 'OM') ? 'selected' : '' ?>>
+                                        <?= htmlspecialchars($row['nombre']) ?>
+                                    </option>
                                 <?php endforeach; ?>
                             </select>
                         </div>
@@ -118,10 +121,14 @@ $documentos = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                 <tr>
                                     <th>
                                         Tipo
-                                        <a href="?order_by=t.nombre&order_dir=ASC"><i
-                                                class="fa-solid fa-up-long"></i></a>
-                                        <a href="?order_by=t.nombre&order_dir=DESC"><i
-                                                class="fa-solid fa-down-long"></i></a>
+                                        <a
+                                            href="?order_by=t.nombre&order_dir=ASC&tipo=<?= $searchTipo ?>&anno=<?= $searchAnno ?>&keyword=<?= $searchKeyword ?>">
+                                            <i class="fa-solid fa-up-long"></i>
+                                        </a>
+                                        <a
+                                            href="?order_by=t.nombre&order_dir=DESC&tipo=<?= $searchTipo ?>&anno=<?= $searchAnno ?>&keyword=<?= $searchKeyword ?>">
+                                            <i class="fa-solid fa-down-long"></i>
+                                        </a>
                                     </th>
                                     <th>
                                         Año
