@@ -7,116 +7,113 @@ if (!isset($_SESSION['username'])) {
 
 require_once __DIR__ . '/../connection/db.php';
 
-// Verificar si se ha proporcionado un ID de documento
 if (!isset($_POST['id'])) {
     die("Error: ID de documento no proporcionado.");
 }
 
 $documento_id = $_POST['id'];
 
-// Obtener los datos del documento existente
-$sql = "SELECT * FROM documentos WHERE id = :id";
-$stmt = $pdo->prepare($sql);
-$stmt->bindParam(':id', $documento_id);
-$stmt->execute();
-$documento = $stmt->fetch(PDO::FETCH_ASSOC);
+try {
+    $pdo->beginTransaction();
 
-if (!$documento) {
-    die("Error: Documento no encontrado.");
-}
+    // 1. Obtener datos actuales del documento
+    $sqlDocumento = "SELECT tipo, anno, numero FROM documentos WHERE id = :id";
+    $stmtDocumento = $pdo->prepare($sqlDocumento);
+    $stmtDocumento->execute([':id' => $documento_id]);
+    $documentoActual = $stmtDocumento->fetch(PDO::FETCH_ASSOC);
 
-// Obtener los tipos activos desde la base de datos
-$sql = "SELECT prefijo, nombre FROM tipos WHERE estado = 'activo'";
-$stmt = $pdo->query($sql);
-$tipos = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    // 2. Determinar nuevos valores
+    $nuevoTipo = $_POST['tipos'];
+    $nuevoAnno = $_POST['anno'];
+    $nuevoNumero = $_POST['numero'];
+    $nuevaDescripcion = $_POST['descripcion'];
 
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    // Obtener los datos del formulario
-    $tipos = $_POST['tipos'] ?? null;
-    $anno = $_POST['anno'] ?? null;
-    $numero = $_POST['numero'] ?? null;
-    $descripcion = $_POST['descripcion'] ?? null;
+    // 3. Manejar archivo si se sube uno nuevo
+    $nuevaRutaArchivo = null;
+    if (!empty($_FILES['archivo']['name'])) {
+        // Validaciones del archivo
+        $allowed = ['pdf' => 'application/pdf'];
+        $filename = $_FILES['archivo']['name'];
+        $filetype = $_FILES['archivo']['type'];
+        $ext = pathinfo($filename, PATHINFO_EXTENSION);
 
-    if (!$tipos || !$anno || !$numero || !$descripcion) {
-        die("Error: Todos los campos son obligatorios.");
+        if (!array_key_exists($ext, $allowed) || !in_array($filetype, $allowed)) {
+            throw new Exception("Error: Solo se permiten archivos PDF.");
+        }
+
+        if ($_FILES['archivo']['size'] > 5 * 1024 * 1024) {
+            throw new Exception("Error: El archivo excede 5MB.");
+        }
+
+        // Construir nombre según convención
+        $nombreBase = "{$nuevoTipo}-{$nuevoNumero}-{$nuevoAnno}";
+        $nuevoNombreArchivo = "{$nombreBase}.pdf";
+
+        // Directorio destino
+        $uploadDir = $_SERVER['DOCUMENT_ROOT'] . "/PORTALTRANSPARENCIAMUNI/public/uploads/{$nuevoTipo}/{$nuevoAnno}/";
+
+        // Crear directorio si no existe
+        if (!is_dir($uploadDir)) {
+            mkdir($uploadDir, 0777, true);
+        }
+
+        // Eliminar archivo anterior si existe
+        $sqlMantenimiento = "SELECT link FROM mantenimiento WHERE documento_id = :id ORDER BY id DESC LIMIT 1";
+        $stmtMantenimiento = $pdo->prepare($sqlMantenimiento);
+        $stmtMantenimiento->execute([':id' => $documento_id]);
+        $archivoAnterior = $stmtMantenimiento->fetchColumn();
+
+        if ($archivoAnterior && file_exists($_SERVER['DOCUMENT_ROOT'] . "/PORTALTRANSPARENCIAMUNI/public/{$archivoAnterior}")) {
+            unlink($_SERVER['DOCUMENT_ROOT'] . "/PORTALTRANSPARENCIAMUNI/public/{$archivoAnterior}");
+        }
+
+        // Mover nuevo archivo
+        $rutaCompleta = $uploadDir . $nuevoNombreArchivo;
+
+        if (!move_uploaded_file($_FILES['archivo']['tmp_name'], $rutaCompleta)) {
+            throw new Exception("Error al subir el archivo.");
+        }
+
+        $nuevaRutaArchivo = "uploads/{$nuevoTipo}/{$nuevoAnno}/{$nuevoNombreArchivo}";
     }
 
-    // Actualizar los datos del documento en la base de datos
-    $sql = "UPDATE documentos SET tipo = :tipo, anno = :anno, numero = :numero, descripcion = :descripcion WHERE id = :id";
-    $stmt = $pdo->prepare($sql);
-    $stmt->bindParam(':tipo', $tipos);
-    $stmt->bindParam(':anno', $anno);
-    $stmt->bindParam(':numero', $numero);
-    $stmt->bindParam(':descripcion', $descripcion);
-    $stmt->bindParam(':id', $documento_id);
+    // 4. Actualizar documento en la base de datos
+    $sqlUpdateDocumento = "UPDATE documentos SET 
+        tipo = :tipo,
+        anno = :anno,
+        numero = :numero,
+        descripcion = :descripcion
+        WHERE id = :id";
 
-    if ($stmt->execute()) {
-        header("Location: confirmacion.php?redirect=indexAdmin.php");
-        exit();
-    } else {
-        echo "Error al actualizar los datos en la base de datos.";
+    $stmt = $pdo->prepare($sqlUpdateDocumento);
+    $stmt->execute([
+        ':tipo' => $nuevoTipo,
+        ':anno' => $nuevoAnno,
+        ':numero' => $nuevoNumero,
+        ':descripcion' => $nuevaDescripcion,
+        ':id' => $documento_id
+    ]);
+
+    // 5. Actualizar mantenimiento si hay nuevo archivo
+    if ($nuevaRutaArchivo) {
+        $sqlMantenimiento = "INSERT INTO mantenimiento 
+            (documento_id, accion, fecha, descripcion, link) 
+            VALUES (:documento_id, 'Actualización', NOW(), :descripcion, :link)";
+
+        $stmt = $pdo->prepare($sqlMantenimiento);
+        $stmt->execute([
+            ':documento_id' => $documento_id,
+            ':descripcion' => $nuevaDescripcion,
+            ':link' => $nuevaRutaArchivo
+        ]);
     }
+
+    $pdo->commit();
+    header("Location: confirmacion.php?redirect=VerDocumentos.php");
+    exit();
+
+} catch (Exception $e) {
+    $pdo->rollBack();
+    die("Error: " . $e->getMessage());
 }
 ?>
-
-<!DOCTYPE html>
-<html lang="es">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Editar Documento</title>
-    <link rel="icon" href="../public/img/logo_white.ico" type="image/x-icon">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
-        crossorigin="anonymous"></script>
-    <link rel="stylesheet" href="../public/css/editar_documento.css">
-</head>
-
-<body>
-    <?php include_once '../templates/navbarAdmin.php'; ?>
-    <div class="content">
-        <div class="container">
-            <h1>Editar Documento</h1>
-            <form action="" method="POST">
-                <input type="hidden" name="id" value="<?= htmlspecialchars($documento_id) ?>">
-                <div class="mb-3">
-                    <label for="tipos" class="form-label">Tipo de Documento:</label>
-                    <select name="tipos" id="tipos" class="form-select" required>
-                        <option value="">-- Selecciona un Tipo --</option>
-                        <?php foreach ($tipos as $tipo): ?>
-                            <option value="<?= htmlspecialchars($tipo['prefijo']) ?>"
-                                <?= $documento['tipo'] == $tipo['prefijo'] ? 'selected' : '' ?>>
-                                <?= htmlspecialchars($tipo['nombre']) ?>
-                            </option>
-                        <?php endforeach; ?>
-                    </select>
-                </div>
-                <div class="mb-3">
-                    <label for="anno" class="form-label">Año:</label>
-                    <input type="text" name="anno" id="anno" class="form-control"
-                        value="<?= htmlspecialchars($documento['anno']) ?>" required>
-                </div>
-                <div class="mb-3">
-                    <label for="numero" class="form-label">Número:</label>
-                    <input type="text" name="numero" id="numero" class="form-control"
-                        value="<?= htmlspecialchars($documento['NUMERO']) ?>" required>
-                </div>
-                <div class="mb-3">
-                    <label for="descripcion" class="form-label">Descripción:</label>
-                    <input type="text" name="descripcion" id="descripcion" class="form-control"
-                        value="<?= htmlspecialchars($documento['descripcion']) ?>" required>
-                </div>
-                <div class="modal-footer d-grid gap-2 d-md-flex justify-content-md-end">
-                    <button type="submit" class="btn btn-success">Actualizar Documento</button>
-                    <a type="button" href="VerDocumentos.php" class="btn btn-warning">Volver</a>
-                </div>
-            </form>
-        </div>
-    </div>
-</body>
-
-</html>
