@@ -169,8 +169,9 @@ $documentos = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                         <td><?= htmlspecialchars($documento['numero']) ?></td>
                                         <td><?= htmlspecialchars($documento['descripcion']) ?></td>
                                         <td>
-                                            <a href="<?= htmlspecialchars($documento['link']) ?>" target="_blank">
-                                                <i class="fa-solid fa-download"></i>
+                                            <a href="<?= htmlspecialchars($documento['link']) ?>" target="_blank"
+                                                class="btn btn-warning btn-xs">
+                                                <i class=" fa-solid fa-download"></i>
                                             </a>
                                         </td>
                                     </tr>

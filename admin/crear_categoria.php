@@ -36,7 +36,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         ]);
 
         // Crear directorio
-        $carpeta = "../uploads/$prefijo";
+        $carpeta = "./uploads/$prefijo";
         if (!file_exists($carpeta)) {
             if (!mkdir($carpeta, 0755, true)) {
                 throw new Exception("Error al crear la carpeta.");

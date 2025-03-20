@@ -1,4 +1,12 @@
 <?php
+session_start();
+
+if (!isset($_SESSION['username'])) {
+    header("Location: ../login/login.html");
+    exit();
+}
+?>
+<?php
 require_once '../connection/db.php';
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
@@ -41,7 +49,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
         // Crear estructura de carpetas DENTRO de public
         $tipos = $_POST['tipos'];
-        $uploadDir = __DIR__ . "/uploads/$tipos/$anno/"; // Ruta absoluta
+        $uploadDir = $_SERVER['DOCUMENT_ROOT'] . "/PORTALTRANSPARENCIAMUNI/public/uploads/$tipos/$anno/"; // Ruta absoluta
 
         if (!is_dir($uploadDir)) {
             mkdir($uploadDir, 0777, true); // Permisos de escritura
@@ -75,7 +83,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
         // Insertar en MANTENIMIENTO
         $documento_id = $pdo->lastInsertId();
-        $linkParaBD = "uploads/$tipos/$anno/$filename"; // Ruta relativa
+        $linkParaBD = "uploads/$tipos/$anno/" . $filename; // Ruta relativa
 
         $sqlMantenimiento = "INSERT INTO mantenimiento 
             (documento_id, accion, fecha, descripcion, link) 

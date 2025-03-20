@@ -1,4 +1,12 @@
 <?php
+session_start();
+
+if (!isset($_SESSION['username'])) {
+    header("Location: ../login/login.html");
+    exit();
+}
+?>
+<?php
 require_once '../connection/db.php';
 
 // Obtener parámetros de búsqueda
@@ -115,7 +123,8 @@ $documentos = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                             <td><?= htmlspecialchars($documento['numero']) ?></td>
                                             <td><?= htmlspecialchars($documento['descripcion']) ?></td>
                                             <td>
-                                                <a href="<?= htmlspecialchars($documento['link']) ?>" target="_blank">
+                                                <a href="/PORTALTRANSPARENCIAMUNI/public/<?= htmlspecialchars($documento['link']) ?>"
+                                                    target="_blank" class="btn btn-warning btn-xs">
                                                     <i class="fa-solid fa-download"></i>
                                                 </a>
                                             </td>
