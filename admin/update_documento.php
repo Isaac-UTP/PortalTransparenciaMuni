@@ -28,6 +28,16 @@ try {
     $nuevoNumero = $_POST['numero'];
     $nuevaDescripcion = $_POST['descripcion'];
 
+    // Obtener nombre de la nueva categoría
+    $stmt = $pdo->prepare("SELECT nombre FROM tipos WHERE prefijo = :prefijo");
+    $stmt->execute([':prefijo' => $nuevoTipo]);
+    $nombreCategoria = $stmt->fetchColumn();
+    // Sanitizar el nombre de la categoría
+    $nombreSanitizado = preg_replace('/[^a-z0-9]/', '_', strtolower($nombreCategoria)); // Guiones bajos
+
+    // Ruta actualizada
+    $uploadDir = $_SERVER['DOCUMENT_ROOT'] . "/PORTALTRANSPARENCIAMUNI/public/archivo/$nombreSanitizado/$nuevoAnno/";
+
     // 3. Manejar archivo si se sube uno nuevo
     $nuevaRutaArchivo = null;
     if (!empty($_FILES['archivo']['name'])) {
@@ -48,9 +58,6 @@ try {
         // Construir nombre según convención
         $nombreBase = "{$nuevoTipo}-{$nuevoNumero}-{$nuevoAnno}";
         $nuevoNombreArchivo = "{$nombreBase}.pdf";
-
-        // Directorio destino
-        $uploadDir = $_SERVER['DOCUMENT_ROOT'] . "/PORTALTRANSPARENCIAMUNI/public/uploads/{$nuevoTipo}/{$nuevoAnno}/";
 
         // Crear directorio si no existe
         if (!is_dir($uploadDir)) {
@@ -74,7 +81,7 @@ try {
             throw new Exception("Error al subir el archivo.");
         }
 
-        $nuevaRutaArchivo = "uploads/{$nuevoTipo}/{$nuevoAnno}/{$nuevoNombreArchivo}";
+        $nuevaRutaArchivo = "archivo/{$nombreSanitizado}/{$nuevoAnno}/{$nuevoNombreArchivo}";
     }
 
     // 4. Actualizar documento en la base de datos

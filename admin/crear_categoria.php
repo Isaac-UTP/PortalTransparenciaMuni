@@ -22,6 +22,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         die("Error: El prefijo debe contener 2-5 letras mayúsculas.");
     }
 
+    // Obtener el nombre de la categoría y sanitizarlo
+    $nombreSanitizado = preg_replace('/[^a-z0-9]/', '_', strtolower($nombre)); // Guiones bajos y solo caracteres seguros
+
     try {
         $pdo->beginTransaction();
 
@@ -35,8 +38,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             ':prefijo' => $prefijo
         ]);
 
-        // Crear directorio
-        $carpeta = "./uploads/$prefijo";
+        // Crear carpeta con el nombre sanitizado
+        $carpeta = "./archivo/" . $nombreSanitizado;
         if (!file_exists($carpeta)) {
             if (!mkdir($carpeta, 0755, true)) {
                 throw new Exception("Error al crear la carpeta.");

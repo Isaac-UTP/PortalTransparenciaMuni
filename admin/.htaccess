@@ -8,7 +8,7 @@
     Require all granted
 </FilesMatch>
 
-# public/uploads/.htaccess
+# public/archivo/.htaccess
 <IfModule mod_headers.c>
     Header set Access-Control-Allow-Origin "*"
 </IfModule>

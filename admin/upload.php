@@ -47,9 +47,19 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             throw new Exception("Error: Año inválido. Ejemplo: 2024");
         }
 
-        // Crear estructura de carpetas DENTRO de public
+        // Obtener nombre de la categoría
         $tipos = $_POST['tipos'];
-        $uploadDir = $_SERVER['DOCUMENT_ROOT'] . "/PORTALTRANSPARENCIAMUNI/public/uploads/$tipos/$anno/"; // Ruta absoluta
+        $stmt = $pdo->prepare("SELECT nombre FROM tipos WHERE prefijo = :prefijo");
+        $stmt->execute([':prefijo' => $tipos]);
+        $nombreCategoria = $stmt->fetchColumn();
+        $nombreSanitizado = preg_replace('/[^a-z0-9]/', '_', strtolower($nombreCategoria)); // Usar guiones bajos
+
+        if (!$nombreCategoria) {
+            throw new Exception("Error: Categoría no encontrada.");
+        }
+
+        // Crear estructura de carpetas DENTRO de public
+        $uploadDir = $_SERVER['DOCUMENT_ROOT'] . "/PORTALTRANSPARENCIAMUNI/public/archivo/$nombreSanitizado/$anno/"; // Ruta absoluta
 
         if (!is_dir($uploadDir)) {
             mkdir($uploadDir, 0777, true); // Permisos de escritura
@@ -83,7 +93,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
         // Insertar en MANTENIMIENTO
         $documento_id = $pdo->lastInsertId();
-        $linkParaBD = "uploads/$tipos/$anno/" . $filename; // Ruta relativa
+        $linkParaBD = "archivo/$nombreSanitizado/$anno/" . $filename; // Ruta relativa
 
         $sqlMantenimiento = "INSERT INTO mantenimiento 
             (documento_id, accion, fecha, descripcion, link) 
@@ -111,3 +121,4 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         die($e->getMessage());
     }
 }
+?>
