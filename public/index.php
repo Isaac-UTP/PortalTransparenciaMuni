@@ -35,13 +35,14 @@ $totalPages = ceil($totalRecords / $limit);
 
 // Obtener los documentos desde la base de datos con límites y desplazamientos
 $sql = "
-    SELECT d.id, t.nombre AS tipos, d.anno, d.numero, d.descripcion, m.link 
+    SELECT d.id, t.nombre AS tipos, d.anno, d.numero, m.descripcion, 
+           CONCAT('../', m.link) AS link 
     FROM documentos d
     INNER JOIN tipos t ON d.tipo = t.prefijo
     LEFT JOIN mantenimiento m ON d.id = m.documento_id
     WHERE (:tipo = '' OR d.tipo = :tipo)
     AND (:anno = '' OR d.anno = :anno)
-    AND (:keyword = '' OR d.descripcion LIKE :keyword)
+    AND (:keyword = '' OR m.descripcion LIKE :keyword)
     ORDER BY $orderBy $orderDir
     LIMIT :limit OFFSET :offset";
 $stmt = $pdo->prepare($sql);

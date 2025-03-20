@@ -47,7 +47,7 @@ if (!isset($_SESSION['username'])) {
 
 <body>
     <div class="confirmation-box">
-        <h1>Operación exitosa</h1>
+        <h1>✅ Operación exitosa</h1>
         <p>Serás redirigido en 5 segundos...</p>
     </div>
 </body>

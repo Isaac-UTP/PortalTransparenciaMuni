@@ -51,7 +51,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             throw new Exception("Error: No se pudo guardar el archivo.");
         }
 
-        // Insertar en DOCUMENTOS (con descripción)
+        // Insertar en DOCUMENTOS
         $pdo->beginTransaction();
 
         $sqlDocumentos = "INSERT INTO documentos 
@@ -63,11 +63,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             ':tipo' => $tipos,
             ':anno' => $anno,
             ':numero' => $_POST['numero'],
-            ':descripcion' => $_POST['descripcion'] // <- Descripción aquí
+            ':descripcion' => $_POST['descripcion']
         ]);
 
-        // Insertar en MANTENIMIENTO
+        // Insertar en MANTENIMIENTO (ruta relativa desde raíz)
         $documento_id = $pdo->lastInsertId();
+        $linkParaBD = "uploads/$tipos/$anno/$filename"; // Ruta sin ../
 
         $sqlMantenimiento = "INSERT INTO mantenimiento 
             (documento_id, accion, fecha, descripcion, link)
@@ -77,13 +78,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $stmt->execute([
             ':documento_id' => $documento_id,
             ':descripcion' => $_POST['descripcion'],
-            ':link' => $rutaArchivo
+            ':link' => $linkParaBD
         ]);
 
         $pdo->commit();
 
-        // Redirección exitosa
-        header('Location: confirmacion.php');
+        header('Location: subido_exitoso.php');
         exit();
 
     } catch (Exception $e) {
