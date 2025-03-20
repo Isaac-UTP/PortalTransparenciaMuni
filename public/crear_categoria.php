@@ -1,22 +1,52 @@
 <?php
 require_once '../connection/db.php';
 
-// Verificar si se envió el formulario
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $codigo = $_POST['codigo'] ?? '';
     $nombre = $_POST['nombre'] ?? '';
-    $prefijo = $_POST['prefijo'] ?? '';
-    if ($codigo && $nombre && $prefijo) {
-        $sql = "INSERT INTO tipos (codigo, nombre, prefijo, estado) VALUES (:codigo, :nombre, :prefijo, 'activo')";
+    $prefijo = strtoupper(trim($_POST['prefijo'] ?? '')); // Normalizar prefijo
+
+    // Validar campos requeridos
+    if (empty($nombre) || empty($prefijo)) {
+        die("Error: Nombre y prefijo son obligatorios.");
+    }
+
+    // Validar formato del prefijo (solo letras, 2-5 caracteres)
+    if (!preg_match('/^[A-Z]{2,5}$/', $prefijo)) {
+        die("Error: El prefijo debe contener 2-5 letras mayúsculas.");
+    }
+
+    try {
+        $pdo->beginTransaction();
+
+        // Insertar categoría
+        $sql = "INSERT INTO tipos (codigo, nombre, prefijo, estado) 
+                VALUES (:codigo, :nombre, :prefijo, 'activo')";
         $stmt = $pdo->prepare($sql);
-        $stmt->bindParam(':codigo', $codigo);
-        $stmt->bindParam(':nombre', $nombre);
-        $stmt->bindParam(':prefijo', $prefijo);
-        if ($stmt->execute()) {
-            echo "Categoría creada exitosamente.";
-        } else {
-            echo "Error al crear la categoría.";
+        $stmt->execute([
+            ':codigo' => $codigo,
+            ':nombre' => $nombre,
+            ':prefijo' => $prefijo
+        ]);
+
+        // Crear directorio
+        $carpeta = "../uploads/$prefijo";
+        if (!file_exists($carpeta)) {
+            if (!mkdir($carpeta, 0755, true)) {
+                throw new Exception("Error al crear la carpeta.");
+            }
         }
+
+        $pdo->commit();
+        header("Location: categoria.php?success=1");
+        exit();
+
+    } catch (PDOException $e) {
+        $pdo->rollBack();
+        die("Error en base de datos: " . $e->getMessage());
+    } catch (Exception $e) {
+        $pdo->rollBack();
+        die($e->getMessage());
     }
 }
 ?>
@@ -57,7 +87,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 </div>
                 <div class="modal-footer d-grid gap-2 d-md-flex justify-content-md-end">
                     <button type="submit" class="btn btn-success">Crear Categoría</button>
-                    <a type="button" href="index.php" class="btn btn-warning">Volver al Inicio</a>
+                    <a type="button" href="indexAdmin.php" class="btn btn-warning">Volver al Inicio</a>
                 </div>
             </form>
         </div>

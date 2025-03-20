@@ -91,6 +91,9 @@
         <li class="nav-item">
             <a class="nav-link" href="usuarios.php"><i class="fa-solid fa-users"></i> Usuarios</a>
         </li>
+        <li class="nav-item">
+            <a class="nav-link" href="../login/logout.php"><i class="fa-solid fa-right-from-bracket"></i> Salir</a>
+        </li>
     </ul>
 </div>
 

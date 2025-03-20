@@ -58,11 +58,50 @@ $tipos = $stmt->fetchAll(PDO::FETCH_ASSOC); // Obtener los resultados de la quer
                 </div>
                 <div class="modal-footer d-grid gap-2 d-md-flex justify-content-md-end">
                     <button type="submit" class="btn btn-success">Subir Documento</button>
-                    <a type="button" href="index.php" class="btn btn-warning">Volver al Inicio</a>
+                    <a type="button" href="indexAdmin.php" class="btn btn-warning">Volver al Inicio</a>
                 </div>
             </form>
         </div>
     </div>
 </body>
+
+<!-- Modal de errores -->
+<div class="modal fade" id="errorModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title">Error</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <?php
+                $errorMessages = [
+                    'invalid_format' => 'Solo se permiten archivos PDF',
+                    'file_exists' => 'El archivo ya existe',
+                    'file_size' => 'El archivo supera el límite de 5MB',
+                    'missing_fields' => 'Todos los campos son obligatorios',
+                    'database_error' => 'Error en la base de datos',
+                    'upload_error' => 'Error al subir el archivo'
+                ];
+
+                if (isset($_GET['error'])) {
+                    echo $errorMessages[$_GET['error']] ?? 'Error desconocido';
+                }
+                ?>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const errorModal = new bootstrap.Modal(document.getElementById('errorModal'));
+
+        <?php if (isset($_GET['error'])): ?>
+            errorModal.show();
+            setTimeout(() => errorModal.hide(), 5000);
+        <?php endif; ?>
+    });
+</script>
 
 </html>
