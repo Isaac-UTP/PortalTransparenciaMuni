@@ -1,57 +1,24 @@
-Directory structure:
-└── isaac-utp-portaltransparenciamuni/
-    ├── Estructura
-    ├── PortalTransparenciaDiagramaBD.drawio
-    ├── README.txt
-    ├── transparenciamun_web (1).sql
-    ├── admin/
-    │   ├── VerDocumentos.php
-    │   ├── cambiar_estado.php
-    │   ├── categoria.php
-    │   ├── confirmacion.php
-    │   ├── crear_categoria.php
-    │   ├── editar_documento.php
-    │   ├── get_documentos.php
-    │   ├── indexAdmin.php
-    │   ├── subir_documento.php
-    │   ├── update_documento.php
-    │   ├── upload.php
-    │   ├── usuarios.php
-    │   ├── .htaccess
-    │   └── uploads/
-    │       ├── DA/
-    │       │   └── 2025/
-    │       └── RA/
-    │           └── 2025/
-    ├── connection/
-    │   └── db.php
-    ├── login/
-    │   ├── login.html
-    │   ├── login.php
-    │   ├── logout.php
-    │   └── register.php
-    ├── public/
-    │   ├── index.php
-    │   ├── css/
-    │   │   ├── categoria.css
-    │   │   ├── crear_categoria.css
-    │   │   ├── editar_documento.css
-    │   │   ├── login.css
-    │   │   ├── modal.css
-    │   │   ├── style.css
-    │   │   ├── subir_documento.css
-    │   │   └── ver_documentos.css
-    │   ├── img/
-    │   ├── js/
-    │   │   ├── login.js
-    │   │   ├── modal.js
-    │   │   └── ver_documentos.js
-    │   └── uploads/
-    │       ├── AC/
-    │       ├── DA/
-    │       ├── RA/
-    │       │   └── 2024/
-    │       └── RG/
-    └── templates/
-        ├── navbar.php
-        └── navbarAdmin.php
+## 📂 Estructura del Proyecto (Versión Actual)
+```bash
+isaac-utp-portaltransparenciamuni/
+├── archivo/                   # ★ Nueva carpeta raíz para documentos (antiguo uploads)
+│   ├── resoluciones_alcaldia/ # Ej: Carpeta creada automáticamente al registrar categoría
+│   │   └── 2024/             # Subcarpeta por año
+│   └── ordenanzas_municipales/ # Convención: nombre_categoria + guiones bajos (_)
+│
+├── admin/                     # Panel de administración
+│   ├── crear_categoria.php    # ★ Crea categorías y genera carpetas con nombre (no prefijo)
+│   ├── subir_documento.php    # Sube PDFs a /archivo/[nombre_categoria]/[año]/
+│   └── ... [otros archivos]   # Ver diagrama completo abajo
+│
+├── connection/
+│   └── db.php                 # Configuración de conexión a MySQL/MariaDB
+│
+├── public/                    # Frontend accesible
+│   ├── index.php              # Vista pública de documentos
+│   └── archivo/               # Enlace simbólico a la carpeta real de documentos
+│
+└── templates/                 # Componentes reutilizables
+    ├── navbar.php             # Barra de navegación pública
+    └── navbarAdmin.php        # Barra lateral del panel administrativo
+ 

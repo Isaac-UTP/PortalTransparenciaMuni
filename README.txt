@@ -1,92 +1,120 @@
-🌐 PORTAL DE TRANSPARENCIA MUNICIPAL - NUEVO CHIMBOTE 🏛️
+# 🏛️ Portal de Transparencia Municipal - Nuevo Chimbote
 
-================================================
-📋 DESCRIPCIÓN DEL PROYECTO
-================================================
-Sistema web para la gestión y publicación de documentos municipales 
-(RESOLUCIONES, ORDENANZAS, ACUERDOS, etc.) con:
-✅ Interfaz pública de consulta ciudadana
-🔐 Panel administrativo seguro
+**Sistema web para la gestión y publicación de documentos oficiales**  
+✅ Interfaz pública de consulta ciudadana | 🔐 Panel administrativo seguro | 📁 Gestión documental eficiente
 
-✨ PRINCIPALES CARACTERÍSTICAS:
-- 🗂️ Gestión categorizada de documentos
-- 📤 Sistema de subida de archivos PDF
-- 🔍 Búsqueda avanzada por múltiples filtros
-- 📊 Dashboard con estadísticas
-- 👥 Gestión de usuarios y permisos
-- 📆 Historial de mantenimiento de documentos
+---
 
-================================================
-🛠️ INSTALACIÓN Y CONFIGURACIÓN
-================================================
-📌 REQUISITOS:
-- PHP 7.4+ 🐘
-- MySQL 5.7+ 🗄️
-- Servidor web (Apache/Nginx) 🌍
-- Composer (opcional) 📦
+## 📋 Descripción del Proyecto
+Plataforma digital para administrar y publicar documentos municipales (Resoluciones, Ordenanzas, Acuerdos, etc.) con:
+- **Gestión categorizada:** Organización por tipos de documentos
+- **Sistema de archivos estructurado:** Almacenamiento seguro en carpetas por nombre de categoría y año
+- **Búsqueda avanzada:** Filtros por tipo, año y palabras clave
+- **Historial de cambios:** Registro detallado de modificaciones en documentos
+- **Control de acceso:** Autenticación de usuarios con privilegios administrativos
 
-🚀 PASOS DE INSTALACIÓN:
-1. Clonar repositorio:
-   git clone https://turepositorio.com/portal-transparencia.git
+---
 
-2. Crear base de datos:
-   CREATE DATABASE transparenciamun_web2;
+## 🚀 Características Principales
+| **Módulo**         | **Funcionalidades Clave**                                                                 |
+|---------------------|-------------------------------------------------------------------------------------------|
+| **Autenticación**   | Login seguro con sesiones • Registro de usuarios • Roles de acceso                        |
+| **Categorías**      | Creación/Edición de tipos documentales • Asociación automática de carpetas • Estados (Activo/Inactivo) |
+| **Documentos**      | Subida de PDFs con metadatos • Edición con histórico • Eliminación segura • Descarga pública |
+| **Usuarios**        | Administración de cuentas • Visualización controlada de credenciales                      |
+| **Infraestructura** | Estructura de archivos organizada • Protección contra inyecciones SQL • Validación de tipos de archivo |
 
-3. Importar estructura SQL:
-   mysql -u usuario -p transparenciamun_web2 < transparenciamun_web(1).sql
+---
+   
+🔧 Instalación y Configuración
 
-4. Configurar credenciales en:
-   /connection/db.php
+📌 Requisitos Previos
 
-5. Permisos de escritura:
-   chmod -R 755 uploads/
+Servidor Web: Apache/Nginx
 
-================================================
-📂 ESTRUCTURA DEL PROYECTO
-================================================
-/isaac-utp-portaltransparenciamuni/
-├── connection/    🔌 Conexión a BD
-├── public/        🌍 Archivos accesibles
-│   ├── css/       🎨 Estilos
-│   ├── js/        ⚙️ Scripts
-│   └── uploads/   📁 Documentos subidos
-├── login/         🔐 Autenticación
-├── templates/     🧩 Componentes reutilizables
-└── config/        ⚙️ Archivos de configuración
+PHP: 7.4+ con extensiones PDO y MySQL
 
-================================================
-🔒 SEGURIDAD IMPLEMENTADA
-================================================
-- 🛡️ Protección contra SQL Injection
-- 🔑 Autenticación con sesiones seguras
-- 📛 Validación de tipos de archivo
-- 🔄 Transacciones para operaciones críticas
-- 🗑️ Sanitización de entradas de usuario
+Base de Datos: MySQL 5.7+ o MariaDB 10.3+
 
-================================================
-👨💻 USO DEL SISTEMA
-================================================
-🔑 Acceso Administrativo:
-URL: /login/login.html
-Usuario: admin
-Contraseña: adminpassword
+Espacio en Disco: Suficiente para almacenar documentos PDF
 
-📌 Funcionalidades clave:
-1. Crear categoría → Genera carpeta automática 📂
-2. Subir documentos → Valida formato PDF ✅
-3. Editar metadatos → Mantiene histórico de cambios 📝
-4. Publicar/Archivar → Control de visibilidad 👁️
+🛠️ Pasos de Implementación
+Clonar repositorio:
 
-⚠️ IMPORTANTE:
-- No eliminar categorías con documentos asociados
-- Usar prefijos de 2-5 letras para categorías
-- Verificar permisos de la carpeta /uploads
+git clone https://turepositorio.com/portal-transparencia.git
+Configurar base de datos:
 
-================================================
-📄 LICENCIA
-================================================
-© 2025 Municipalidad de Nuevo Chimbote
-📧 Soporte: soporte@munichimbote.gob.pe
-🔧 Mantenido por: Equipo de Sistemas
-🪪 Creador: Isaac Ivanov Takamura Rojas
-高村
+CREATE DATABASE transparenciamun_web2;
+mysql -u usuario -p transparenciamun_web2 < transparenciamun_web(1).sql
+Actualizar conexión:
+
+// connection/db.php
+$host = "localhost";
+$dbname = "transparenciamun_web2";
+$user = "tu_usuario";
+$password = "tu_contraseña";
+
+Permisos de escritura:
+
+chmod -R 755 archivo/
+chown -R www-data:www-data archivo/
+
+🛡️ Arquitectura Clave
+
+Base de Datos (Diagrama Simplificado)
+sql
+Copy
+usuarios           documentos          mantenimiento         tipos
+---------         ------------        --------------        ------
+id               id                  id                    id
+username (UNIQUE) tipo (FK->tipos)    documento_id (FK)     nombre
+password          año                 accion               prefijo (UNIQUE)
+                  numero              fecha                estado
+                  descripcion         link                 
+Flujo de Subida de Documentos
+Usuario selecciona categoría existente
+
+Sistema valida formato PDF (<5MB)
+
+Crea estructura: /archivo/[nombre_categoria]/[año]/
+
+Guarda archivo con formato: [prefijo]-[numero]-[año].pdf
+
+Registra en tablas documentos y mantenimiento
+
+🚨 Consideraciones Importantes
+
+#!Nombres de Categoría:
+
+-Máximo 45 caracteres
+
+-Se convierten a minúsculas
+
+-Caracteres especiales se reemplazan por _ (Ej: "Acuerdos 2024" → acuerdos_2024)
+
+#!Seguridad:
+
+-Nunca editar manualmente archivos en /archivo
+
+-Cambiar credenciales predeterminadas (admin/adminpassword)
+
+-Mantener actualizado el .htaccess
+
+#!Mantenimiento:
+
+# Migrar documentos antiguos a nueva estructura:
+mv uploads/resoluciones/ archivo/resoluciones_alcaldia/
+📄 Licencia
+© 2024 Municipalidad Provincial del Santa - Nuevo Chimbote
+📧 Soporte Técnico: soporte@munichimbote.gob.pe
+👨💻 Mantenido por: Equipo de Sistemas | Creador: Isaac Ivanov Takamura Rojas
+
+Nota: Este documento se actualizó el 20/03/2024 con la nueva estructura de archivos y política de nomenclatura.
+
+**Principales mejoras:**  
+1. Eliminado todo lo relacionado al dashboard  
+2. Estructura de archivos actualizada con nueva nomenclatura  
+3. Explicación clara de la política de nombres de carpetas  
+4. Diagramas y tablas para mejor comprensión  
+5. Instrucciones de migración para mantenimiento  
+6. Destacados los cambios recientes con iconos (★)  
