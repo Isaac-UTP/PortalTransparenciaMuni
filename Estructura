@@ -4,28 +4,34 @@ Directory structure:
     ├── PortalTransparenciaDiagramaBD.drawio
     ├── README.txt
     ├── transparenciamun_web (1).sql
-    ├── config/
-    │   └── 1
+    ├── admin/
+    │   ├── VerDocumentos.php
+    │   ├── cambiar_estado.php
+    │   ├── categoria.php
+    │   ├── confirmacion.php
+    │   ├── crear_categoria.php
+    │   ├── editar_documento.php
+    │   ├── get_documentos.php
+    │   ├── indexAdmin.php
+    │   ├── subir_documento.php
+    │   ├── update_documento.php
+    │   ├── upload.php
+    │   ├── usuarios.php
+    │   ├── .htaccess
+    │   └── uploads/
+    │       ├── DA/
+    │       │   └── 2025/
+    │       └── RA/
+    │           └── 2025/
     ├── connection/
     │   └── db.php
     ├── login/
     │   ├── login.html
     │   ├── login.php
+    │   ├── logout.php
     │   └── register.php
     ├── public/
-    │   ├── VerDocumentos.php
-    │   ├── cambiar_estado.php
-    │   ├── categoria.php
-    │   ├── crear_categoria.php
-    │   ├── editar_documento.php
-    │   ├── get_documentos.php
     │   ├── index.php
-    │   ├── indexAdmin.php
-    │   ├── prueba.php
-    │   ├── subir_documento.php
-    │   ├── update_documento.php
-    │   ├── upload.php
-    │   ├── usuarios.php
     │   ├── css/
     │   │   ├── categoria.css
     │   │   ├── crear_categoria.css
@@ -36,14 +42,16 @@ Directory structure:
     │   │   ├── subir_documento.css
     │   │   └── ver_documentos.css
     │   ├── img/
-    │   └── js/
-    │       ├── login.js
-    │       ├── modal.js
-    │       └── ver_documentos.js
-    ├── templates/
-    │   ├── navbar.php
-    │   └── navbarAdmin.php
-    └── uploads/
-        ├── AC/
-        ├── RA/
-        └── RG/
+    │   ├── js/
+    │   │   ├── login.js
+    │   │   ├── modal.js
+    │   │   └── ver_documentos.js
+    │   └── uploads/
+    │       ├── AC/
+    │       ├── DA/
+    │       ├── RA/
+    │       │   └── 2024/
+    │       └── RG/
+    └── templates/
+        ├── navbar.php
+        └── navbarAdmin.php
