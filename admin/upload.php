@@ -13,7 +13,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
         // Validar archivo
         if (!isset($_FILES['archivo']) || $_FILES['archivo']['error'] != 0) {
-            throw new Exception("Error: Problema con el archivo subido.");
+            throw new Exception("Error: Seleccione un archivo válido.");
         }
 
         // Configuraciones del archivo
@@ -23,39 +23,46 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $filesize = $_FILES['archivo']['size'];
         $ext = pathinfo($filename, PATHINFO_EXTENSION);
 
-        // Validaciones
+        // Validar tipo de archivo
         if (!array_key_exists($ext, $allowed) || !in_array($filetype, $allowed)) {
             throw new Exception("Error: Solo se permiten archivos PDF.");
         }
 
+        // Validar tamaño (5MB máximo)
         if ($filesize > 5 * 1024 * 1024) {
             throw new Exception("Error: El archivo excede 5MB.");
         }
 
-        if (!preg_match('/^\d{4}$/', $_POST['anno'])) {
-            throw new Exception("Error: Año inválido (ej: 2024).");
+        // Validar año (4 dígitos)
+        $anno = $_POST['anno'];
+        if (!preg_match('/^\d{4}$/', $anno)) {
+            throw new Exception("Error: Año inválido. Ejemplo: 2024");
         }
 
-        // Crear estructura de carpetas
+        // Crear estructura de carpetas DENTRO de public
         $tipos = $_POST['tipos'];
-        $anno = $_POST['anno'];
-        $uploadDir = "../uploads/$tipos/$anno/";
+        $uploadDir = __DIR__ . "/uploads/$tipos/$anno/"; // Ruta absoluta
 
         if (!is_dir($uploadDir)) {
-            mkdir($uploadDir, 0777, true);
+            mkdir($uploadDir, 0777, true); // Permisos de escritura
         }
 
-        // Mover archivo
+        // Mover archivo al destino
         $rutaArchivo = $uploadDir . $filename;
+        if (file_exists($rutaArchivo)) {
+            throw new Exception("Error: El archivo ya existe.");
+        }
+
         if (!move_uploaded_file($_FILES['archivo']['tmp_name'], $rutaArchivo)) {
             throw new Exception("Error: No se pudo guardar el archivo.");
         }
 
-        // Insertar en DOCUMENTOS
+        // Iniciar transacción SQL
         $pdo->beginTransaction();
 
+        // Insertar en DOCUMENTOS (con descripción)
         $sqlDocumentos = "INSERT INTO documentos 
-            (tipo, anno, numero, descripcion, fecha)
+            (tipo, anno, numero, descripcion, fecha) 
             VALUES (:tipo, :anno, :numero, :descripcion, NOW())";
 
         $stmt = $pdo->prepare($sqlDocumentos);
@@ -66,12 +73,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             ':descripcion' => $_POST['descripcion']
         ]);
 
-        // Insertar en MANTENIMIENTO (ruta relativa desde raíz)
+        // Insertar en MANTENIMIENTO
         $documento_id = $pdo->lastInsertId();
-        $linkParaBD = "uploads/$tipos/$anno/$filename"; // Ruta sin ../
+        $linkParaBD = "uploads/$tipos/$anno/$filename"; // Ruta relativa
 
         $sqlMantenimiento = "INSERT INTO mantenimiento 
-            (documento_id, accion, fecha, descripcion, link)
+            (documento_id, accion, fecha, descripcion, link) 
             VALUES (:documento_id, 'Subida', NOW(), :descripcion, :link)";
 
         $stmt = $pdo->prepare($sqlMantenimiento);
@@ -81,12 +88,15 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             ':link' => $linkParaBD
         ]);
 
+        // Confirmar transacción
         $pdo->commit();
 
-        header('Location: subido_exitoso.php');
+        // Redirigir a confirmación
+        header('Location: confirmacion.php');
         exit();
 
     } catch (Exception $e) {
+        // Revertir cambios en caso de error
         if ($pdo->inTransaction()) {
             $pdo->rollBack();
         }

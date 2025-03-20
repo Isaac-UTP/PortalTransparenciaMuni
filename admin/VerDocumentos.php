@@ -1,56 +1,27 @@
 <?php
-session_start();
-if (!isset($_SESSION['username'])) {
-    header('Location: /PORTALTRANSPARENCIAMUNI/login/login.html');
-    exit();
-}
+require_once '../connection/db.php';
 
-require_once __DIR__ . '/../connection/db.php';
-
-// Obtener los tipos activos desde la base de datos
-$sql = "SELECT prefijo, nombre FROM tipos WHERE estado = 'activo'";
-$stmt = $pdo->query($sql);
-$tipos = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-// Obtener los parámetros de búsqueda y paginación
+// Obtener parámetros de búsqueda
 $searchTipo = $_GET['tipo'] ?? '';
 $searchAnno = $_GET['anno'] ?? '';
 $searchKeyword = $_GET['keyword'] ?? '';
-$orderBy = $_GET['order_by'] ?? 'd.id';
-$orderDir = $_GET['order_dir'] ?? 'DESC';
 $page = $_GET['page'] ?? 1;
 $limit = 10;
 $offset = ($page - 1) * $limit;
 
-// Contar el número total de registros
-$sqlCount = "
-    SELECT COUNT(*) 
-    FROM documentos d
-    INNER JOIN tipos t ON d.tipo = t.prefijo
-    LEFT JOIN mantenimiento m ON d.id = m.documento_id
-    WHERE (:tipo = '' OR d.tipo = :tipo)
-    AND (:anno = '' OR d.anno = :anno)
-    AND (:keyword = '' OR d.descripcion LIKE :keyword)";
-$stmtCount = $pdo->prepare($sqlCount);
-$stmtCount->bindValue(':tipo', $searchTipo);
-$stmtCount->bindValue(':anno', $searchAnno);
-$stmtCount->bindValue(':keyword', '%' . $searchKeyword . '%');
-$stmtCount->execute();
-$totalRecords = $stmtCount->fetchColumn();
-$totalPages = ceil($totalRecords / $limit);
-
-// Obtener los documentos desde la base de datos con límites y desplazamientos
+// Consulta SQL CORREGIDA
 $sql = "
     SELECT d.id, t.nombre AS tipos, d.anno, d.numero, d.descripcion, 
-           CONCAT('../', m.link) AS link 
+           m.link AS link 
     FROM documentos d
     INNER JOIN tipos t ON d.tipo = t.prefijo
     LEFT JOIN mantenimiento m ON d.id = m.documento_id
     WHERE (:tipo = '' OR d.tipo = :tipo)
     AND (:anno = '' OR d.anno = :anno)
     AND (:keyword = '' OR m.descripcion LIKE :keyword)
-    ORDER BY $orderBy $orderDir
+    ORDER BY d.id DESC
     LIMIT :limit OFFSET :offset";
+
 $stmt = $pdo->prepare($sql);
 $stmt->bindValue(':tipo', $searchTipo);
 $stmt->bindValue(':anno', $searchAnno);
@@ -143,10 +114,11 @@ $documentos = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                             <td><?= htmlspecialchars($documento['anno']) ?></td>
                                             <td><?= htmlspecialchars($documento['numero']) ?></td>
                                             <td><?= htmlspecialchars($documento['descripcion']) ?></td>
-                                            <td><a href="../<?= htmlspecialchars($documento['link']) ?>" target="_blank"
-                                                    class="btn btn-warning btn-xs">
+                                            <td>
+                                                <a href="<?= htmlspecialchars($documento['link']) ?>" target="_blank">
                                                     <i class="fa-solid fa-download"></i>
-                                                </a></td>
+                                                </a>
+                                            </td>
                                             <td>
                                                 <a href="editar_documento.php?id=<?= $documento['id'] ?>"
                                                     class="btn btn-primary btn-xs Btn">
