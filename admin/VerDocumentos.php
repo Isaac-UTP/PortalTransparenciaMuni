@@ -24,7 +24,7 @@ $offset = ($page - 1) * $limit;
 // Consulta SQL CORREGIDA
 $sql = "
     SELECT d.id, t.nombre AS tipos, d.anno, d.numero, 
-           COALESCE(m.descripcion, d.descripcion) AS descripcion,
+           d.descripcion AS descripcion_actual,
            m.link AS link 
     FROM documentos d
     INNER JOIN tipos t ON d.tipo = t.prefijo
@@ -39,7 +39,7 @@ $sql = "
     ) m ON d.id = m.documento_id
     WHERE (:tipo = '' OR d.tipo = :tipo)
     AND (:anno = '' OR d.anno = :anno)
-    AND (:keyword = '' OR COALESCE(m.descripcion, d.descripcion) LIKE :keyword)
+    AND (:keyword = '' OR d.descripcion LIKE :keyword)
     ORDER BY d.id DESC
     LIMIT :limit OFFSET :offset";
 
@@ -133,7 +133,7 @@ $documentos = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                             <td><?= htmlspecialchars($documento['tipos']) ?></td>
                                             <td><?= htmlspecialchars($documento['anno']) ?></td>
                                             <td><?= htmlspecialchars($documento['numero']) ?></td>
-                                            <td><?= htmlspecialchars($documento['descripcion']) ?></td>
+                                            <td><?= htmlspecialchars($documento['descripcion_actual']) ?></td>
                                             <td>
                                                 <a href="/PORTALTRANSPARENCIAMUNI/public/<?= htmlspecialchars($documento['link']) ?>"
                                                     target="_blank" class="btn btn-warning btn-xs">

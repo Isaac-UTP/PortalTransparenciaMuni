@@ -50,7 +50,7 @@ CREATE TABLE `documentos` (
   `id` int(10) UNSIGNED NOT NULL,
   `tipo` char(2) NOT NULL,
   `anno` char(4) NOT NULL,
-  `NUMERO` int(10) UNSIGNED NOT NULL,
+  `numero` int(10) UNSIGNED NOT NULL,
   `fecha` date NOT NULL,
   `descripcion` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -59,7 +59,7 @@ CREATE TABLE `documentos` (
 -- Volcado de datos para la tabla `documentos`
 --
 
-INSERT INTO `documentos` (`id`, `tipo`, `anno`, `NUMERO`, `fecha`, `descripcion`) VALUES
+INSERT INTO `documentos` (`id`, `tipo`, `anno`, `numero`, `fecha`, `descripcion`) VALUES
 (5, 'RA', '2024', 1, '2024-12-17', 'Descripción por defecto'),
 (6, 'RA', '2025', 12, '2025-01-13', 'Descripción por defecto'),
 (7, 'RA', '2025', 2, '2025-01-13', 'Descripción por defecto'),

@@ -102,18 +102,16 @@ try {
     ]);
 
     // 5. Actualizar mantenimiento si hay nuevo archivo
-    if ($nuevaRutaArchivo) {
-        $sqlMantenimiento = "INSERT INTO mantenimiento 
-            (documento_id, accion, fecha, descripcion, link) 
-            VALUES (:documento_id, 'Actualización', NOW(), :descripcion, :link)";
+    $sqlMantenimiento = "INSERT INTO mantenimiento 
+        (documento_id, accion, fecha, descripcion, link) 
+        VALUES (:documento_id, 'Actualización', NOW(), :descripcion, :link)";
 
-        $stmt = $pdo->prepare($sqlMantenimiento);
-        $stmt->execute([
-            ':documento_id' => $documento_id,
-            ':descripcion' => $nuevaDescripcion,
-            ':link' => $nuevaRutaArchivo
-        ]);
-    }
+    $stmt = $pdo->prepare($sqlMantenimiento);
+    $stmt->execute([
+        ':documento_id' => $documento_id,
+        ':descripcion' => $nuevaDescripcion,
+        ':link' => $nuevaRutaArchivo ?? $archivoAnterior // Mantiene el link anterior si no hay cambio
+    ]);
 
     $pdo->commit();
     header("Location: confirmacion.php?redirect=VerDocumentos.php");
