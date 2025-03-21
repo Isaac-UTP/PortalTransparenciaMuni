@@ -88,7 +88,7 @@ try {
     $sqlUpdateDocumento = "UPDATE documentos SET 
         tipo = :tipo,
         anno = :anno,
-        numero = :numero,
+        numero = :numero,  -- Cambiado a minúscula
         descripcion = :descripcion
         WHERE id = :id";
 

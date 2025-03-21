@@ -75,7 +75,7 @@ $tipos = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 <div class="mb-3">
                     <label for="numero" class="form-label">Número:</label>
                     <input type="text" name="numero" id="numero" class="form-control"
-                        value="<?= htmlspecialchars($documento['NUMERO']) ?>" required>
+                        value="<?= htmlspecialchars($documento['numero']) ?>" required>
                 </div>
                 <div class="mb-3">
                     <label for="descripcion" class="form-label">Descripción:</label>
