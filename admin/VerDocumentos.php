@@ -153,11 +153,10 @@ $documentos = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                     <?php endforeach; ?>
                                 </tbody>
                             </table>
-                            <!-- Paginación -->
                             <div class="d-flex justify-content-center">
                                 <nav aria-label="Page navigation">
                                     <ul class="pagination">
-                                        <?php for ($i = 1; $i <= $totalPages; $i++): ?>
+                                        <?php for ($i = 1; $i <= $page; $i++): ?>
                                             <li class="page-item <?= $i == $page ? 'active' : '' ?>">
                                                 <a class="page-link"
                                                     href="?page=<?= $i ?>&order_by=<?= $orderBy ?>&order_dir=<?= $orderDir ?>&tipo=<?= $searchTipo ?>&anno=<?= $searchAnno ?>&keyword=<?= $searchKeyword ?>"><?= $i ?></a>

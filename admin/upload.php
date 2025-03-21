@@ -65,8 +65,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             mkdir($uploadDir, 0777, true); // Permisos de escritura
         }
 
+        // Construir nombre según convención (AC_001_2023_MDNCH.pdf)
+        $nombreBase = "{$tipos}-{$_POST['numero']}-{$anno}";
+        $nuevoNombreArchivo = "{$nombreBase}_MDNCH.pdf"; // <- Agregar sufijo
+
         // Mover archivo al destino
-        $rutaArchivo = $uploadDir . $filename;
+        $rutaArchivo = $uploadDir . $nuevoNombreArchivo;
         if (file_exists($rutaArchivo)) {
             throw new Exception("Error: El archivo ya existe.");
         }
@@ -93,7 +97,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
         // Insertar en MANTENIMIENTO
         $documento_id = $pdo->lastInsertId();
-        $linkParaBD = "archivo/$nombreSanitizado/$anno/" . $filename; // Ruta relativa
+        $linkParaBD = "archivo/$nombreSanitizado/$anno/" . $nuevoNombreArchivo; // Ruta relativa
 
         $sqlMantenimiento = "INSERT INTO mantenimiento 
             (documento_id, accion, fecha, descripcion, link) 

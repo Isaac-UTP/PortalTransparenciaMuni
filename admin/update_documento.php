@@ -55,9 +55,9 @@ try {
             throw new Exception("Error: El archivo excede 5MB.");
         }
 
-        // Construir nombre según convención
+        // Construir nombre según convención (AC_001_2023_MDNCH.pdf)
         $nombreBase = "{$nuevoTipo}-{$nuevoNumero}-{$nuevoAnno}";
-        $nuevoNombreArchivo = "{$nombreBase}.pdf";
+        $nuevoNombreArchivo = "{$nombreBase}_MDNCH.pdf"; // <- Agregar sufijo
 
         // Crear directorio si no existe
         if (!is_dir($uploadDir)) {
