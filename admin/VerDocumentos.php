@@ -1,49 +1,48 @@
 <?php
-require_once '../connection/db.php';
+session_start();
 
-// Obtener los tipos activos desde la base de datos
-$sql = "SELECT prefijo, nombre FROM tipos WHERE estado = 'activo'";
+if (!isset($_SESSION['username'])) {
+    header("Location: ../login/login.html");
+    exit();
+}
+?>
+<?php
+require_once '../connection/db.php';
+// Obtener los tipos desde la base de datos
+$sql = "SELECT prefijo, nombre FROM tipos";
 $stmt = $pdo->query($sql);
 $tipos = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-// Obtener los parámetros de búsqueda y paginación
+// Obtener parámetros de búsqueda
 $searchTipo = $_GET['tipo'] ?? '';
 $searchAnno = $_GET['anno'] ?? '';
 $searchKeyword = $_GET['keyword'] ?? '';
-$orderBy = $_GET['order_by'] ?? 'd.id';
-$orderDir = $_GET['order_dir'] ?? 'DESC';
 $page = $_GET['page'] ?? 1;
 $limit = 10;
 $offset = ($page - 1) * $limit;
 
-// Contar el número total de registros
-$sqlCount = "
-    SELECT COUNT(*) 
-    FROM documentos d
-    INNER JOIN tipos t ON d.tipo = t.prefijo
-    LEFT JOIN mantenimiento m ON d.id = m.documento_id
-    WHERE (:tipo = '' OR d.tipo = :tipo)
-    AND (:anno = '' OR d.anno = :anno)
-    AND (:keyword = '' OR d.descripcion LIKE :keyword)";
-$stmtCount = $pdo->prepare($sqlCount);
-$stmtCount->bindValue(':tipo', $searchTipo);
-$stmtCount->bindValue(':anno', $searchAnno);
-$stmtCount->bindValue(':keyword', '%' . $searchKeyword . '%');
-$stmtCount->execute();
-$totalRecords = $stmtCount->fetchColumn();
-$totalPages = ceil($totalRecords / $limit);
-
-// Obtener los documentos desde la base de datos con límites y desplazamientos
+// Consulta SQL CORREGIDA
 $sql = "
-    SELECT d.id, t.nombre AS tipos, d.anno, d.numero, d.descripcion, m.link 
+    SELECT d.id, t.nombre AS tipos, d.anno, d.numero, 
+           d.descripcion AS descripcion_actual,
+           m.link AS link 
     FROM documentos d
     INNER JOIN tipos t ON d.tipo = t.prefijo
-    LEFT JOIN mantenimiento m ON d.id = m.documento_id
+    LEFT JOIN (
+        SELECT m1.documento_id, m1.descripcion, m1.link 
+        FROM mantenimiento m1
+        INNER JOIN (
+            SELECT documento_id, MAX(id) AS max_id 
+            FROM mantenimiento 
+            GROUP BY documento_id
+        ) m2 ON m1.documento_id = m2.documento_id AND m1.id = m2.max_id
+    ) m ON d.id = m.documento_id
     WHERE (:tipo = '' OR d.tipo = :tipo)
     AND (:anno = '' OR d.anno = :anno)
     AND (:keyword = '' OR d.descripcion LIKE :keyword)
-    ORDER BY $orderBy $orderDir
+    ORDER BY d.id DESC
     LIMIT :limit OFFSET :offset";
+
 $stmt = $pdo->prepare($sql);
 $stmt->bindValue(':tipo', $searchTipo);
 $stmt->bindValue(':anno', $searchAnno);
@@ -61,9 +60,9 @@ $documentos = $stmt->fetchAll(PDO::FETCH_ASSOC);
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Documentos Subidos</title>
+    <link rel="icon" href="../public/img/logo_white.ico" type="image/x-icon">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <link rel="stylesheet" href="css/style.css">
-    <link rel="stylesheet" href="css/ver_documentos.css">
+    <link rel="stylesheet" href="../public/css/ver_documentos.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
@@ -76,7 +75,7 @@ $documentos = $stmt->fetchAll(PDO::FETCH_ASSOC);
 </head>
 
 <body>
-    <?php include '../templates/navbarAdmin.php'; ?>
+    <?php include_once '../templates/navbarAdmin.php'; ?>
     <div class="content">
         <div class="container">
             <div class="row mt-4">
@@ -90,7 +89,7 @@ $documentos = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                     <option value="">-- Selecciona una Categoría --</option>
                                     <?php foreach ($tipos as $row): ?>
                                         <option value="<?= htmlspecialchars($row['prefijo']) ?>"
-                                            <?= $searchTipo == $row['prefijo'] ? 'selected' : '' ?>>
+                                            <?= ($searchTipo == $row['prefijo'] || $row['prefijo'] == 'OM') ? 'selected' : '' ?>>
                                             <?= htmlspecialchars($row['nombre']) ?>
                                         </option>
                                     <?php endforeach; ?>
@@ -134,11 +133,13 @@ $documentos = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                             <td><?= htmlspecialchars($documento['tipos']) ?></td>
                                             <td><?= htmlspecialchars($documento['anno']) ?></td>
                                             <td><?= htmlspecialchars($documento['numero']) ?></td>
-                                            <td><?= htmlspecialchars($documento['descripcion']) ?></td>
-                                            <td><a href="../<?= htmlspecialchars($documento['link']) ?>" target="_blank"
-                                                    class="btn btn-warning btn-xs">
+                                            <td><?= htmlspecialchars($documento['descripcion_actual']) ?></td>
+                                            <td>
+                                                <a href="/PORTALTRANSPARENCIAMUNI/public/<?= htmlspecialchars($documento['link']) ?>"
+                                                    target="_blank" class="btn btn-warning btn-xs">
                                                     <i class="fa-solid fa-download"></i>
-                                                </a></td>
+                                                </a>
+                                            </td>
                                             <td>
                                                 <a href="editar_documento.php?id=<?= $documento['id'] ?>"
                                                     class="btn btn-primary btn-xs Btn">
@@ -152,11 +153,10 @@ $documentos = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                     <?php endforeach; ?>
                                 </tbody>
                             </table>
-                            <!-- Paginación -->
                             <div class="d-flex justify-content-center">
                                 <nav aria-label="Page navigation">
                                     <ul class="pagination">
-                                        <?php for ($i = 1; $i <= $totalPages; $i++): ?>
+                                        <?php for ($i = 1; $i <= $page; $i++): ?>
                                             <li class="page-item <?= $i == $page ? 'active' : '' ?>">
                                                 <a class="page-link"
                                                     href="?page=<?= $i ?>&order_by=<?= $orderBy ?>&order_dir=<?= $orderDir ?>&tipo=<?= $searchTipo ?>&anno=<?= $searchAnno ?>&keyword=<?= $searchKeyword ?>"><?= $i ?></a>
@@ -171,7 +171,7 @@ $documentos = $stmt->fetchAll(PDO::FETCH_ASSOC);
             </div>
         </div>
     </div>
-    <script src="js/ver_documentos.js"></script>
+    <script src="../public/js/ver_documentos.js"></script>
 </body>
 
 </html>

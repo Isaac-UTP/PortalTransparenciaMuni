@@ -1,10 +1,17 @@
 <?php
-require_once '../connection/db.php';
+session_start();
+if (!isset($_SESSION['username'])) {
+    header('Location: ../login/login.html');
+    exit();
+}
+
+require_once __DIR__ . '/../connection/db.php';
 
 if (isset($_GET['id']) && isset($_GET['estado'])) {
     $id = $_GET['id'];
     $estado = $_GET['estado'];
 
+    // Cambia el nombre de la columna 'in' a 'id' si es necesario
     $sql = "UPDATE tipos SET estado = :estado WHERE id = :id";
     $stmt = $pdo->prepare($sql);
     $stmt->bindParam(':estado', $estado);

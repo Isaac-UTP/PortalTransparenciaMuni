@@ -1,13 +1,24 @@
-/proyecto
-    /config          <- Actualmente no tiene nada
-    /login           <- Archivos para el login
-    /public          <- Archivos accesibles al público (index.php, estilos, scripts).
-        /css         <- Hojas de estilo (style.css, etc.).
-        /js          <- Archivos JavaScript (funciones.js, etc.).
-        /uploads     <- Carpeta para guardar los archivos subidos.
-    /connection        <- Archivos PHP comunes (conexión a BD).
-    /templates       <- Heater para la vista admin y el header para el publico general
-    /config          <- Configuraciones (credenciales de BD, constantes, etc.).
-    /uploads         <- archivos subidos a traves de la bd o pagina web? (donde cada carpeta esta para cada categoria usando como nombre su prefijo)
-    /img             <- imagenes utilizadas
-    index.php        <- Archivo principal (enrutador).
+## 📂 Estructura del Proyecto (Versión Actual)
+```bash
+isaac-utp-portaltransparenciamuni/
+├── archivo/                   # ★ Nueva carpeta raíz para documentos (antiguo uploads)
+│   ├── resoluciones_alcaldia/ # Ej: Carpeta creada automáticamente al registrar categoría
+│   │   └── 2024/             # Subcarpeta por año
+│   └── ordenanzas_municipales/ # Convención: nombre_categoria + guiones bajos (_)
+│
+├── admin/                     # Panel de administración
+│   ├── crear_categoria.php    # ★ Crea categorías y genera carpetas con nombre (no prefijo)
+│   ├── subir_documento.php    # Sube PDFs a /archivo/[nombre_categoria]/[año]/
+│   └── ... [otros archivos]   # Ver diagrama completo abajo
+│
+├── connection/
+│   └── db.php                 # Configuración de conexión a MySQL/MariaDB
+│
+├── public/                    # Frontend accesible
+│   ├── index.php              # Vista pública de documentos
+│   └── archivo/               # Enlace simbólico a la carpeta real de documentos
+│
+└── templates/                 # Componentes reutilizables
+    ├── navbar.php             # Barra de navegación pública
+    └── navbarAdmin.php        # Barra lateral del panel administrativo
+ 

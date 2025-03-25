@@ -1,9 +1,18 @@
+<?php
+session_start();
+if (!isset($_SESSION['username'])) {
+    header('Location: ../../login/login.html'); // Ajusta la ruta según tu estructura
+    exit();
+}
+?>
+
 <!DOCTYPE html>
 <html lang="es">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="../public/img/logo_white.ico" type="image/x-icon">
     <title>Confirmación</title>
     <style>
         body {
@@ -32,15 +41,16 @@
     <script>
         setTimeout(function () {
             window.location.href = "<?= $_GET['redirect'] ?? 'indexAdmin.php' ?>";
-        }, 5000);
+        }, 3000);
     </script>
 </head>
 
 <body>
     <div class="confirmation-box">
-        <h1>Operación exitosa</h1>
+        <h1>✅ Operación exitosa</h1>
         <p>Serás redirigido en 5 segundos...</p>
     </div>
 </body>
 
 </html>
+</div>

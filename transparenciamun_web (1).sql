@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 18-03-2025 a las 03:16:50
+-- Tiempo de generación: 20-03-2025 a las 22:57:46
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -50,7 +50,7 @@ CREATE TABLE `documentos` (
   `id` int(10) UNSIGNED NOT NULL,
   `tipo` char(2) NOT NULL,
   `anno` char(4) NOT NULL,
-  `NUMERO` int(10) UNSIGNED NOT NULL,
+  `numero` int(10) UNSIGNED NOT NULL,
   `fecha` date NOT NULL,
   `descripcion` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -59,7 +59,7 @@ CREATE TABLE `documentos` (
 -- Volcado de datos para la tabla `documentos`
 --
 
-INSERT INTO `documentos` (`id`, `tipo`, `anno`, `NUMERO`, `fecha`, `descripcion`) VALUES
+INSERT INTO `documentos` (`id`, `tipo`, `anno`, `numero`, `fecha`, `descripcion`) VALUES
 (5, 'RA', '2024', 1, '2024-12-17', 'Descripción por defecto'),
 (6, 'RA', '2025', 12, '2025-01-13', 'Descripción por defecto'),
 (7, 'RA', '2025', 2, '2025-01-13', 'Descripción por defecto'),
@@ -75,7 +75,10 @@ INSERT INTO `documentos` (`id`, `tipo`, `anno`, `NUMERO`, `fecha`, `descripcion`
 (17, 'RA', '2025', 18, '2025-02-18', 'PRUEBA'),
 (18, 'RG', '2024', 1079, '2025-02-21', 'DESIGNAR, AL COMITÉ DE RECEPCIÓN DE LA OBRA'),
 (19, 'AC', '2025', 19, '2025-02-21', 'prueba 2'),
-(20, 'RA', '2025', 321, '2025-03-17', '');
+(21, 'RA', '2025', 19, '2025-03-17', 'qweasds'),
+(37, 'OM', '2025', 322, '2025-03-20', 'autorizar prueba 2'),
+(40, 'RA', '2025', 322, '2025-03-20', 'autorizar prueba 2'),
+(41, 'AA', '2024', 322, '2025-03-20', 'modificación 12:27');
 
 -- --------------------------------------------------------
 
@@ -104,7 +107,11 @@ INSERT INTO `mantenimiento` (`id`, `documento_id`, `accion`, `fecha`, `descripci
 (5, 17, 'Subida', '2025-02-18', 'Articulos de papeleria 2', '../uploads/RA/Paleta de colores.pdf'),
 (6, 18, 'Subida', '2025-02-21', 'DESIGNAR, AL COMITÉ DE RECEPCIÓN DE LA OBRA', '../uploads/RG/Paleta de colores.pdf'),
 (7, 19, 'Subida', '2025-02-21', 'prueba 2', '../uploads/AC/Paleta de colores (1).pdf'),
-(8, 20, 'Subida', '2025-03-17', 'dxsssss', '../uploads/RA/angular-cheat-sheet.pdf');
+(21, 37, 'Subida', '2025-03-20', 'autorizar prueba 2', 'uploads/OM/2025/3.pdf'),
+(24, 40, 'Subida', '2025-03-20', 'autorizar prueba 2', 'uploads/RA/2025/3.pdf'),
+(25, 41, 'Subida', '2025-03-20', 'autorizar prueba 2', 'uploads/AA/2025/3.pdf'),
+(26, 41, 'Actualización', '2025-03-20', 'modificación 12:27', 'uploads/AA/2024/67dc569417101.pdf'),
+(27, 41, 'Actualización', '2025-03-20', 'modificación 12:27', 'uploads/AA/2024/AA-322-2024.pdf');
 
 -- --------------------------------------------------------
 
@@ -130,7 +137,8 @@ INSERT INTO `tipos` (`id`, `codigo`, `nombre`, `prefijo`, `estado`) VALUES
 (3, '', 'DECRETOS ALCALDIA', 'DA', 'activo'),
 (4, '', 'ACUERDOS CONSEJO', 'AC', 'activo'),
 (5, '', 'RESOLUCIONES GERENCIALES', 'RG', 'activo'),
-(6, '10', 'Prueba', 'Pr', 'inactivo');
+(8, '10', 'Prueba', 'PR', 'inactivo'),
+(14, '2', 'AAra', 'AA', 'activo');
 
 -- --------------------------------------------------------
 
@@ -152,7 +160,10 @@ INSERT INTO `usuarios` (`id`, `username`, `password`) VALUES
 (1, 'admin', 'adminpassword'),
 (2, 'usuario1', 'password123'),
 (3, 'Isaac', '12345'),
-(5, 'Isaac2', '12345');
+(6, 'Isaac2', '12345'),
+(11, 'Isaac3', '1345'),
+(12, 'Isaac4', '12345'),
+(13, 'Isaac5', '12345');
 
 --
 -- Índices para tablas volcadas
@@ -208,25 +219,25 @@ ALTER TABLE `annos`
 -- AUTO_INCREMENT de la tabla `documentos`
 --
 ALTER TABLE `documentos`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=42;
 
 --
 -- AUTO_INCREMENT de la tabla `mantenimiento`
 --
 ALTER TABLE `mantenimiento`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=28;
 
 --
 -- AUTO_INCREMENT de la tabla `tipos`
 --
 ALTER TABLE `tipos`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
 
 --
 -- AUTO_INCREMENT de la tabla `usuarios`
 --
 ALTER TABLE `usuarios`
-  MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 
 --
 -- Restricciones para tablas volcadas
