@@ -2,10 +2,11 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100vh;
+    min-height: 98vh; /* Usar min-height en lugar de height */
     background-image: url('../img/2025PlazaMayorCopia2.png');
     background-size: cover;
     background-position: center;
+    background-repeat: no-repeat; /* Evitar repetición */
 }
 
 .card-switch {

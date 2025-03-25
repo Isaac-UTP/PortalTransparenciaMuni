@@ -1,5 +1,11 @@
 <?php
-require_once '../connection/db.php';
+session_start();
+if (!isset($_SESSION['username'])) {
+    header('Location: /PORTALTRANSPARENCIAMUNI/login/login.html');
+    exit();
+}
+
+require_once __DIR__ . '/../connection/db.php';
 
 // Obtener los tipos activos desde la base de datos
 $sql = "SELECT prefijo, nombre FROM tipos WHERE estado = 'activo'"; // Query para obtener los tipos activos
@@ -13,6 +19,7 @@ $tipos = $stmt->fetchAll(PDO::FETCH_ASSOC); // Obtener los resultados de la quer
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="../public/img/logo_white.ico" type="image/x-icon">
     <title>Subir Documento</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
@@ -20,11 +27,11 @@ $tipos = $stmt->fetchAll(PDO::FETCH_ASSOC); // Obtener los resultados de la quer
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
         crossorigin="anonymous"></script>
-    <link rel="stylesheet" href="css/subir_documento.css">
+    <link rel="stylesheet" href="../public/css/subir_documento.css">
 </head>
 
 <body>
-    <?php include '../templates/navbarAdmin.php'; ?>
+    <?php include_once '../templates/navbarAdmin.php'; ?>
     <div class="content">
         <div class="container">
             <h1>Subir Documento</h1>

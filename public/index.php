@@ -21,7 +21,15 @@ $sqlCount = "
     SELECT COUNT(*) 
     FROM documentos d
     INNER JOIN tipos t ON d.tipo = t.prefijo
-    LEFT JOIN mantenimiento m ON d.id = m.documento_id
+    LEFT JOIN (
+        SELECT m1.documento_id, m1.descripcion, m1.link 
+        FROM mantenimiento m1
+        INNER JOIN (
+            SELECT documento_id, MAX(id) AS max_id 
+            FROM mantenimiento 
+            GROUP BY documento_id
+        ) m2 ON m1.documento_id = m2.documento_id AND m1.id = m2.max_id
+    ) m ON d.id = m.documento_id
     WHERE (:tipo = '' OR d.tipo = :tipo)
     AND (:anno = '' OR d.anno = :anno)
     AND (:keyword = '' OR d.descripcion LIKE :keyword)";
@@ -35,10 +43,20 @@ $totalPages = ceil($totalRecords / $limit);
 
 // Obtener los documentos desde la base de datos con límites y desplazamientos
 $sql = "
-    SELECT d.id, t.nombre AS tipos, d.anno, d.numero, d.descripcion, m.link 
+    SELECT d.id, t.nombre AS tipos, d.anno, d.numero, 
+           d.descripcion AS descripcion_actual, 
+           m.link AS link 
     FROM documentos d
     INNER JOIN tipos t ON d.tipo = t.prefijo
-    LEFT JOIN mantenimiento m ON d.id = m.documento_id
+    LEFT JOIN (
+        SELECT m1.documento_id, m1.descripcion, m1.link 
+        FROM mantenimiento m1
+        INNER JOIN (
+            SELECT documento_id, MAX(id) AS max_id 
+            FROM mantenimiento 
+            GROUP BY documento_id
+        ) m2 ON m1.documento_id = m2.documento_id AND m1.id = m2.max_id
+    ) m ON d.id = m.documento_id
     WHERE (:tipo = '' OR d.tipo = :tipo)
     AND (:anno = '' OR d.anno = :anno)
     AND (:keyword = '' OR d.descripcion LIKE :keyword)
@@ -54,15 +72,16 @@ $stmt->execute();
 $documentos = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
 
+
 <!DOCTYPE html>
 <html lang="es">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="../public/img/logo_white.ico" type="image/x-icon">
     <title>Documentos Subidos</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <link rel="stylesheet" href="../public/css/styles.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
@@ -87,7 +106,10 @@ $documentos = $stmt->fetchAll(PDO::FETCH_ASSOC);
                             <select name="tipo" id="tipo" class="form-select">
                                 <option value="">-- Selecciona una Categoría --</option>
                                 <?php foreach ($tipos as $row): ?>
-                                    <option value="<?= htmlspecialchars($row['prefijo']) ?>" <?= $searchTipo == $row['prefijo'] ? 'selected' : '' ?>><?= htmlspecialchars($row['nombre']) ?></option>
+                                    <option value="<?= htmlspecialchars($row['prefijo']) ?>"
+                                        <?= ($searchTipo == $row['prefijo'] || $row['prefijo'] == 'OM') ? 'selected' : '' ?>>
+                                        <?= htmlspecialchars($row['nombre']) ?>
+                                    </option>
                                 <?php endforeach; ?>
                             </select>
                         </div>
@@ -117,29 +139,40 @@ $documentos = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                 <tr>
                                     <th>
                                         Tipo
-                                        <a href="?order_by=t.nombre&order_dir=ASC"><i
-                                                class="fa-solid fa-up-long"></i></a>
-                                        <a href="?order_by=t.nombre&order_dir=DESC"><i
-                                                class="fa-solid fa-down-long"></i></a>
+                                        <a
+                                            href="?order_by=t.nombre&order_dir=ASC&tipo=<?= $searchTipo ?>&anno=<?= $searchAnno ?>&keyword=<?= $searchKeyword ?>">
+                                            <i class="fa-solid fa-up-long"></i>
+                                        </a>
+                                        <a
+                                            href="?order_by=t.nombre&order_dir=DESC&tipo=<?= $searchTipo ?>&anno=<?= $searchAnno ?>&keyword=<?= $searchKeyword ?>">
+                                            <i class="fa-solid fa-down-long"></i>
+                                        </a>
                                     </th>
                                     <th>
                                         Año
-                                        <a href="?order_by=d.anno&order_dir=ASC"><i class="fa-solid fa-up-long"></i></a>
-                                        <a href="?order_by=d.anno&order_dir=DESC"><i
+                                        <a
+                                            href="?order_by=d.anno&order_dir=ASC&tipo=<?= $searchTipo ?>&anno=<?= $searchAnno ?>&keyword=<?= $searchKeyword ?>"><i
+                                                class="fa-solid fa-up-long"></i></a>
+                                        <a
+                                            href="?order_by=d.anno&order_dir=DESC&tipo=<?= $searchTipo ?>&anno=<?= $searchAnno ?>&keyword=<?= $searchKeyword ?>"><i
                                                 class="fa-solid fa-down-long"></i></a>
                                     </th>
                                     <th>
                                         Número
-                                        <a href="?order_by=d.numero&order_dir=ASC"><i
+                                        <a
+                                            href="?order_by=d.numero&order_dir=ASC&tipo=<?= $searchTipo ?>&anno=<?= $searchAnno ?>&keyword=<?= $searchKeyword ?>"><i
                                                 class="fa-solid fa-up-long"></i></a>
-                                        <a href="?order_by=d.numero&order_dir=DESC"><i
+                                        <a
+                                            href="?order_by=d.numero&order_dir=DESC&tipo=<?= $searchTipo ?>&anno=<?= $searchAnno ?>&keyword=<?= $searchKeyword ?>"><i
                                                 class="fa-solid fa-down-long"></i></a>
                                     </th>
                                     <th>
                                         Descripción
-                                        <a href="?order_by=m.descripcion&order_dir=ASC"><i
+                                        <a
+                                            href="?order_by=m.descripcion&order_dir=ASC&tipo=<?= $searchTipo ?>&anno=<?= $searchAnno ?>&keyword=<?= $searchKeyword ?>"><i
                                                 class="fa-solid fa-up-long"></i></a>
-                                        <a href="?order_by=m.descripcion&order_dir=DESC"><i
+                                        <a
+                                            href="?order_by=m.descripcion&order_dir=DESC&tipo=<?= $searchTipo ?>&anno=<?= $searchAnno ?>&keyword=<?= $searchKeyword ?>"><i
                                                 class="fa-solid fa-down-long"></i></a>
                                     </th>
                                     <th>Enlace</th>
@@ -151,11 +184,13 @@ $documentos = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                         <td><?= htmlspecialchars($documento['tipos']) ?></td>
                                         <td><?= htmlspecialchars($documento['anno']) ?></td>
                                         <td><?= htmlspecialchars($documento['numero']) ?></td>
-                                        <td><?= htmlspecialchars($documento['descripcion']) ?></td>
-                                        <td><a href="../<?= htmlspecialchars($documento['link']) ?>" target="_blank"
+                                        <td><?= htmlspecialchars($documento['descripcion_actual']) ?></td>
+                                        <td>
+                                            <a href="<?= htmlspecialchars($documento['link']) ?>" target="_blank"
                                                 class="btn btn-warning btn-xs">
-                                                <i class="fa-solid fa-download"></i>
-                                            </a></td>
+                                                <i class=" fa-solid fa-download"></i>
+                                            </a>
+                                        </td>
                                     </tr>
                                 <?php endforeach; ?>
                             </tbody>
