@@ -59,7 +59,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         }
 
         // Crear estructura de carpetas DENTRO de public
-        $uploadDir = $_SERVER['DOCUMENT_ROOT'] . "/PORTALTRANSPARENCIAMUNI/public/archivo/$nombreSanitizado/$anno/"; // Ruta absoluta
+        $uploadDir = $_SERVER['DOCUMENT_ROOT'] . "/archivos/$nombreSanitizado/$anno/"; // Ruta directa a la carpeta existente
 
         if (!is_dir($uploadDir)) {
             mkdir($uploadDir, 0777, true); // Permisos de escritura
@@ -97,7 +97,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
         // Insertar en MANTENIMIENTO
         $documento_id = $pdo->lastInsertId();
-        $linkParaBD = "archivo/$nombreSanitizado/$anno/" . $nuevoNombreArchivo; // Ruta relativa
+        $linkParaBD = "$nombreSanitizado/$anno/" . $nuevoNombreArchivo; // Elimina "archivo/" del path
 
         $sqlMantenimiento = "INSERT INTO mantenimiento 
             (documento_id, accion, fecha, descripcion, link) 

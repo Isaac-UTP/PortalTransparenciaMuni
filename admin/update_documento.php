@@ -36,7 +36,7 @@ try {
     $nombreSanitizado = preg_replace('/[^a-z0-9]/', '_', strtolower($nombreCategoria)); // Guiones bajos
 
     // Ruta actualizada
-    $uploadDir = $_SERVER['DOCUMENT_ROOT'] . "/PORTALTRANSPARENCIAMUNI/public/archivo/$nombreSanitizado/$nuevoAnno/";
+    $uploadDir = $_SERVER['DOCUMENT_ROOT'] . "/archivos/$nombreSanitizado/$nuevoAnno/";
 
     // 3. Manejar archivo si se sube uno nuevo
     $nuevaRutaArchivo = null;

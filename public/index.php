@@ -186,9 +186,9 @@ $documentos = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                         <td><?= htmlspecialchars($documento['numero']) ?></td>
                                         <td><?= htmlspecialchars($documento['descripcion_actual']) ?></td>
                                         <td>
-                                            <a href="<?= htmlspecialchars($documento['link']) ?>" target="_blank"
+                                            <a href="/archivos/<?= htmlspecialchars($documento['link']) ?>" target="_blank"
                                                 class="btn btn-warning btn-xs">
-                                                <i class=" fa-solid fa-download"></i>
+                                                <i class="fa-solid fa-download"></i>
                                             </a>
                                         </td>
                                     </tr>
@@ -199,12 +199,33 @@ $documentos = $stmt->fetchAll(PDO::FETCH_ASSOC);
                         <div class="d-flex justify-content-center">
                             <nav aria-label="Page navigation">
                                 <ul class="pagination">
-                                    <?php for ($i = 1; $i <= $totalPages; $i++): ?>
+                                    <?php
+                                    $maxVisiblePages = 5; // Número máximo de páginas visibles
+                                    $startPage = max(1, $page - floor($maxVisiblePages / 2));
+                                    $endPage = min($totalPages, $startPage + $maxVisiblePages - 1);
+
+                                    if ($startPage > 1): ?>
+                                        <li class="page-item">
+                                            <a class="page-link"
+                                                href="?page=1&order_by=<?= $orderBy ?>&order_dir=<?= $orderDir ?>&tipo=<?= $searchTipo ?>&anno=<?= $searchAnno ?>&keyword=<?= $searchKeyword ?>">Primera</a>
+                                        </li>
+                                        <li class="page-item disabled"><span class="page-link">...</span></li>
+                                    <?php endif; ?>
+
+                                    <?php for ($i = $startPage; $i <= $endPage; $i++): ?>
                                         <li class="page-item <?= $i == $page ? 'active' : '' ?>">
                                             <a class="page-link"
                                                 href="?page=<?= $i ?>&order_by=<?= $orderBy ?>&order_dir=<?= $orderDir ?>&tipo=<?= $searchTipo ?>&anno=<?= $searchAnno ?>&keyword=<?= $searchKeyword ?>"><?= $i ?></a>
                                         </li>
                                     <?php endfor; ?>
+
+                                    <?php if ($endPage < $totalPages): ?>
+                                        <li class="page-item disabled"><span class="page-link">...</span></li>
+                                        <li class="page-item">
+                                            <a class="page-link"
+                                                href="?page=<?= $totalPages ?>&order_by=<?= $orderBy ?>&order_dir=<?= $orderDir ?>&tipo=<?= $searchTipo ?>&anno=<?= $searchAnno ?>&keyword=<?= $searchKeyword ?>">Última</a>
+                                        </li>
+                                    <?php endif; ?>
                                 </ul>
                             </nav>
                         </div>

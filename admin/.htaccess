@@ -1,4 +1,8 @@
-# En /admin/.htaccess
+# En admin/.htaccess
+
+<IfModule mod_headers.c>
+    Header set Access-Control-Allow-Origin "*"
+</IfModule>
 
 <FilesMatch "\.(php)$">
     Require all denied
@@ -7,11 +11,6 @@
 <FilesMatch "(indexAdmin\.php|VerDocumentos\.php|categoria\.php|usuarios\.php|cambiar_estado\.php|subir_documento\.php|upload\.php|update_documento\.php|confirmacion\.php|editar_documento\.php)">
     Require all granted
 </FilesMatch>
-
-# public/archivo/.htaccess
-<IfModule mod_headers.c>
-    Header set Access-Control-Allow-Origin "*"
-</IfModule>
 
 <FilesMatch "\.pdf$">
     ForceType application/pdf
