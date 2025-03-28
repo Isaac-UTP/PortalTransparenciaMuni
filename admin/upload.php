@@ -37,7 +37,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         }
 
         // Validar tamaño (5MB máximo)
-        if ($filesize > 5 * 1024 * 1024) {
+        if ($filesize > 20 * 1024 * 1024) {
             throw new Exception("Error: El archivo excede 5MB.");
         }
 
@@ -66,7 +66,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         }
 
         // Construir nombre según convención (AC_001_2023_MDNCH.pdf)
-        $nombreBase = "{$tipos}-{$_POST['numero']}-{$anno}";
+        $nombreBase = "{$tipos}_{$_POST['numero']}_{$anno}"; // <- Guiones bajos
         $nuevoNombreArchivo = "{$nombreBase}_MDNCH.pdf"; // <- Agregar sufijo
 
         // Mover archivo al destino

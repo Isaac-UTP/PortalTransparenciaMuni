@@ -51,12 +51,12 @@ try {
             throw new Exception("Error: Solo se permiten archivos PDF.");
         }
 
-        if ($_FILES['archivo']['size'] > 5 * 1024 * 1024) {
+        if ($_FILES['archivo']['size'] > 20 * 1024 * 1024) {
             throw new Exception("Error: El archivo excede 5MB.");
         }
 
         // Construir nombre según convención (AC_001_2023_MDNCH.pdf)
-        $nombreBase = "{$nuevoTipo}-{$nuevoNumero}-{$nuevoAnno}";
+        $nombreBase = "{$nuevoTipo}_{$nuevoNumero}_{$nuevoAnno}"; // <- Guiones bajos
         $nuevoNombreArchivo = "{$nombreBase}_MDNCH.pdf"; // <- Agregar sufijo
 
         // Crear directorio si no existe
