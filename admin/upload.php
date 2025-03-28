@@ -25,19 +25,22 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         }
 
         // Configuraciones del archivo
-        $allowed = ['pdf' => 'application/pdf'];
+        $allowed = [
+            'pdf' => ['application/pdf', 'application/octet-stream'] // Permitir ambos tipos
+        ];
         $filename = $_FILES['archivo']['name'];
+        $filename = preg_replace('/[^a-z0-9_.-]/i', '_', $filename); // Reemplazar caracteres inválidos
         $filetype = $_FILES['archivo']['type'];
         $filesize = $_FILES['archivo']['size'];
-        $ext = pathinfo($filename, PATHINFO_EXTENSION);
+        $ext = strtolower(pathinfo($filename, PATHINFO_EXTENSION)); // Convertir extensión a minúsculas
 
         // Validar tipo de archivo
-        if (!array_key_exists($ext, $allowed) || !in_array($filetype, $allowed)) {
+        if (!array_key_exists($ext, $allowed) || !in_array($filetype, $allowed[$ext])) {
             throw new Exception("Error: Solo se permiten archivos PDF.");
         }
 
         // Validar tamaño (5MB máximo)
-        if ($filesize > 20 * 1024 * 1024) {
+        if ($filesize > 40 * 1024 * 1024) {
             throw new Exception("Error: El archivo excede 5MB.");
         }
 
