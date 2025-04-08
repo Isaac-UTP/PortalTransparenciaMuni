@@ -36,24 +36,14 @@ try {
     $nombreSanitizado = preg_replace('/[^a-z0-9]/', '_', strtolower($nombreCategoria)); // Guiones bajos
 
     // Ruta actualizada
-    $uploadDir = $_SERVER['DOCUMENT_ROOT'] . "/archivos/$nombreSanitizado/$nuevoAnno/";
+    $uploadDir = $_SERVER['DOCUMENT_ROOT'] . "/archivos/archivos/$nombreSanitizado/$nuevoAnno/";
 
     // 3. Manejar archivo si se sube uno nuevo
     $nuevaRutaArchivo = null;
     if (!empty($_FILES['archivo']['name'])) {
-        // Validaciones del archivo
-        $allowed = ['pdf' => 'application/pdf'];
         $filename = $_FILES['archivo']['name'];
-        $filetype = $_FILES['archivo']['type'];
         $ext = pathinfo($filename, PATHINFO_EXTENSION);
 
-        if (!array_key_exists($ext, $allowed) || !in_array($filetype, $allowed)) {
-            throw new Exception("Error: Solo se permiten archivos PDF.");
-        }
-
-        if ($_FILES['archivo']['size'] > 20 * 1024 * 1024) {
-            throw new Exception("Error: El archivo excede 5MB.");
-        }
 
         // Construir nombre según convención (AC_001_2023_MDNCH.pdf)
         $nombreBase = "{$nuevoTipo}_{$nuevoNumero}_{$nuevoAnno}"; // <- Guiones bajos

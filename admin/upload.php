@@ -25,24 +25,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         }
 
         // Configuraciones del archivo
-        $allowed = [
-            'pdf' => ['application/pdf', 'application/octet-stream'] // Permitir ambos tipos
-        ];
         $filename = $_FILES['archivo']['name'];
         $filename = preg_replace('/[^a-z0-9_.-]/i', '_', $filename); // Reemplazar caracteres inválidos
-        $filetype = $_FILES['archivo']['type'];
-        $filesize = $_FILES['archivo']['size'];
-        $ext = strtolower(pathinfo($filename, PATHINFO_EXTENSION)); // Convertir extensión a minúsculas
-
-        // Validar tipo de archivo
-        if (!array_key_exists($ext, $allowed) || !in_array($filetype, $allowed[$ext])) {
-            throw new Exception("Error: Solo se permiten archivos PDF.");
-        }
-
-        // Validar tamaño (5MB máximo)
-        if ($filesize > 40 * 1024 * 1024) {
-            throw new Exception("Error: El archivo excede 5MB.");
-        }
 
         // Validar año (4 dígitos)
         $anno = $_POST['anno'];
@@ -62,7 +46,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         }
 
         // Crear estructura de carpetas DENTRO de public
-        $uploadDir = $_SERVER['DOCUMENT_ROOT'] . "/archivos/$nombreSanitizado/$anno/"; // Ruta directa a la carpeta existente
+        $uploadDir = $_SERVER['DOCUMENT_ROOT'] . "/archivos/archivos/$nombreSanitizado/$anno/"; // Ruta directa a la carpeta existente
 
         if (!is_dir($uploadDir)) {
             mkdir($uploadDir, 0777, true); // Permisos de escritura

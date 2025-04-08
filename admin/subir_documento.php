@@ -80,22 +80,6 @@ $tipos = $stmt->fetchAll(PDO::FETCH_ASSOC); // Obtener los resultados de la quer
                 <h5 class="modal-title">Error</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
-            <div class="modal-body">
-                <?php
-                $errorMessages = [
-                    'invalid_format' => 'Solo se permiten archivos PDF',
-                    'file_exists' => 'El archivo ya existe',
-                    'file_size' => 'El archivo supera el límite de 5MB',
-                    'missing_fields' => 'Todos los campos son obligatorios',
-                    'database_error' => 'Error en la base de datos',
-                    'upload_error' => 'Error al subir el archivo'
-                ];
-
-                if (isset($_GET['error'])) {
-                    echo $errorMessages[$_GET['error']] ?? 'Error desconocido';
-                }
-                ?>
-            </div>
         </div>
     </div>
 </div>
