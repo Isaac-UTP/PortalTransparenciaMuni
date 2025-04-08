@@ -74,7 +74,6 @@ password          año                 accion               prefijo (UNIQUE)
 Flujo de Subida de Documentos
 Usuario selecciona categoría existente
 
-Sistema valida formato PDF (<5MB)
 
 Crea estructura: /archivo/[nombre_categoria]/[año]/
 
