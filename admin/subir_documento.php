@@ -59,14 +59,12 @@ $tipos = $stmt->fetchAll(PDO::FETCH_ASSOC); // Obtener los resultados de la quer
                     <label for="descripcion" class="form-label">Descripción:</label>
                     <input type="text" name="descripcion" id="descripcion" class="form-control" required>
                 </div>
-                <div class="mb-3">
-                    <label for="archivo" class="form-label">Archivo:</label>
-                    <input type="file" name="archivo" id="archivo" class="form-control" required>
-                </div>
+
                 <div class="modal-footer d-grid gap-2 d-md-flex justify-content-md-end">
                     <button type="submit" class="btn btn-success">Subir Documento</button>
                     <a type="button" href="indexAdmin.php" class="btn btn-warning">Volver al Inicio</a>
                 </div>
+
             </form>
         </div>
     </div>

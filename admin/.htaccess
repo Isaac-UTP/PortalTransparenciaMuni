@@ -1,12 +1,5 @@
 # En la raíz del proyecto (/public_html/.htaccess)
 
-<IfModule mod_rewrite.c>
-    RewriteEngine On
-    # Permitir acceso directo a archivos en /archivos/ y /archivos/archivos/
-    RewriteRule ^archivos/ - [L]
-    RewriteRule ^archivos/archivos/ - [L]
-</IfModule>
-
 # Si el módulo mod_headers está habilitado, permite que cualquier origen acceda a los recursos del servidor.
 <IfModule mod_headers.c>
     Header set Access-Control-Allow-Origin "*"

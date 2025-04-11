@@ -1,12 +1,10 @@
 <?php
 session_start();
-
 if (!isset($_SESSION['username'])) {
     header("Location: ../login/login.html");
     exit();
 }
-?>
-<?php
+
 require_once '../connection/db.php';
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
@@ -19,57 +17,35 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             }
         }
 
-        // Validar archivo
-        if (!isset($_FILES['archivo']) || $_FILES['archivo']['error'] != 0) {
-            throw new Exception("Error: Seleccione un archivo válido.");
-        }
-
-        // Configuraciones del archivo
-        $filename = $_FILES['archivo']['name'];
-        $filename = preg_replace('/[^a-z0-9_.-]/i', '_', $filename); // Reemplazar caracteres inválidos
+        $tipos = $_POST['tipos'];
+        $anno = $_POST['anno'];
+        $numero = $_POST['numero'];
+        $descripcion = $_POST['descripcion'];
 
         // Validar año (4 dígitos)
-        $anno = $_POST['anno'];
         if (!preg_match('/^\d{4}$/', $anno)) {
             throw new Exception("Error: Año inválido. Ejemplo: 2024");
         }
 
-        // Obtener nombre de la categoría
-        $tipos = $_POST['tipos'];
+        // Obtener nombre de categoría sanitizado
         $stmt = $pdo->prepare("SELECT nombre FROM tipos WHERE prefijo = :prefijo");
         $stmt->execute([':prefijo' => $tipos]);
         $nombreCategoria = $stmt->fetchColumn();
-        $nombreSanitizado = preg_replace('/[^a-z0-9]/', '_', strtolower($nombreCategoria)); // Usar guiones bajos
-
         if (!$nombreCategoria) {
-            throw new Exception("Error: Categoría no encontrada.");
+            throw new Exception("Error: Tipo no válido.");
         }
+        $nombreSanitizado = preg_replace('/[^a-z0-9]/', '_', strtolower($nombreCategoria));
 
-        // Crear estructura de carpetas DENTRO de public
-        $uploadDir = $_SERVER['DOCUMENT_ROOT'] . "/archivos/archivos/$nombreSanitizado/$anno/"; // Ruta directa a la carpeta existente
+        // Generar nombre de archivo según convención
+        $nombreBase = "{$tipos}_{$numero}_{$anno}";
+        $nombreArchivo = "{$nombreBase}_MDNCH.pdf"; // Sin subir el PDF
 
-        if (!is_dir($uploadDir)) {
-            mkdir($uploadDir, 0777, true); // Permisos de escritura
-        }
+        // Generar ruta del enlace (sin crear carpetas)
+        $linkParaBD = "archivos/{$nombreSanitizado}/{$anno}/{$nombreArchivo}";
 
-        // Construir nombre según convención (AC_001_2023_MDNCH.pdf)
-        $nombreBase = "{$tipos}_{$_POST['numero']}_{$anno}"; // <- Guiones bajos
-        $nuevoNombreArchivo = "{$nombreBase}_MDNCH.pdf"; // <- Agregar sufijo
-
-        // Mover archivo al destino
-        $rutaArchivo = $uploadDir . $nuevoNombreArchivo;
-        if (file_exists($rutaArchivo)) {
-            throw new Exception("Error: El archivo ya existe.");
-        }
-
-        if (!move_uploaded_file($_FILES['archivo']['tmp_name'], $rutaArchivo)) {
-            throw new Exception("Error: No se pudo guardar el archivo.");
-        }
-
-        // Iniciar transacción SQL
         $pdo->beginTransaction();
 
-        // Insertar en DOCUMENTOS (con descripción)
+        // Insertar en DOCUMENTOS
         $sqlDocumentos = "INSERT INTO documentos 
             (tipo, anno, numero, descripcion, fecha) 
             VALUES (:tipo, :anno, :numero, :descripcion, NOW())";
@@ -78,14 +54,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $stmt->execute([
             ':tipo' => $tipos,
             ':anno' => $anno,
-            ':numero' => $_POST['numero'],
-            ':descripcion' => $_POST['descripcion']
+            ':numero' => $numero,
+            ':descripcion' => $descripcion
         ]);
 
         // Insertar en MANTENIMIENTO
         $documento_id = $pdo->lastInsertId();
-        $linkParaBD = "$nombreSanitizado/$anno/" . $nuevoNombreArchivo; // Elimina "archivo/" del path
-
         $sqlMantenimiento = "INSERT INTO mantenimiento 
             (documento_id, accion, fecha, descripcion, link) 
             VALUES (:documento_id, 'Subida', NOW(), :descripcion, :link)";
@@ -93,23 +67,19 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $stmt = $pdo->prepare($sqlMantenimiento);
         $stmt->execute([
             ':documento_id' => $documento_id,
-            ':descripcion' => $_POST['descripcion'],
-            ':link' => $linkParaBD
+            ':descripcion' => $descripcion,
+            ':link' => $linkParaBD // Enlace generado automáticamente
         ]);
 
-        // Confirmar transacción
         $pdo->commit();
-
-        // Redirigir a confirmación
         header('Location: confirmacion.php');
         exit();
 
     } catch (Exception $e) {
-        // Revertir cambios en caso de error
         if ($pdo->inTransaction()) {
             $pdo->rollBack();
         }
-        die($e->getMessage());
+        die("Error: " . $e->getMessage());
     }
 }
 ?>

@@ -186,10 +186,13 @@ $documentos = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                         <td><?= htmlspecialchars($documento['numero']) ?></td>
                                         <td><?= htmlspecialchars($documento['descripcion_actual']) ?></td>
                                         <td>
+                                            
                                             <a href="/archivos/<?= htmlspecialchars($documento['link']) ?>" target="_blank"
                                                 class="btn btn-warning btn-xs">
                                                 <i class="fa-solid fa-download"></i>
                                             </a>
+                                           
+
                                         </td>
                                     </tr>
                                 <?php endforeach; ?>

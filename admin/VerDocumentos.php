@@ -162,12 +162,22 @@ $totalPages = ceil($totalDocuments / $limit);
                                             <td><?= htmlspecialchars($documento['anno']) ?></td>
                                             <td><?= htmlspecialchars($documento['numero']) ?></td>
                                             <td><?= htmlspecialchars($documento['descripcion_actual']) ?></td>
+
+
                                             <td>
-                                                <a href="/archivos/archivos/<?= htmlspecialchars($documento['link']) ?>"
+                                                <a href="/archivos/<?= htmlspecialchars($documento['link']) ?>"
                                                     target="_blank" class="btn btn-warning btn-xs">
                                                     <i class="fa-solid fa-download"></i>
                                                 </a>
                                             </td>
+
+                                            <!-- <td>
+                                                <a href="/archivos/<?= htmlspecialchars($documento['link']) ?>"
+                                                    target="_blank" class="btn btn-warning btn-xs">
+                                                    <i class="fa-solid fa-download"></i>
+                                                </a>
+                                            </td> -->
+
                                             <td>
                                                 <a href="editar_documento.php?id=<?= $documento['id'] ?>"
                                                     class="btn btn-primary btn-xs Btn">
@@ -187,14 +197,16 @@ $totalPages = ceil($totalDocuments / $limit);
                                         <!-- Botón para ir a la primera página -->
                                         <?php if ($page > 1): ?>
                                             <li class="page-item">
-                                                <a class="page-link" href="?page=1&tipo=<?= $searchTipo ?>&anno=<?= $searchAnno ?>&keyword=<?= $searchKeyword ?>">Primera</a>
+                                                <a class="page-link"
+                                                    href="?page=1&tipo=<?= $searchTipo ?>&anno=<?= $searchAnno ?>&keyword=<?= $searchKeyword ?>">Primera</a>
                                             </li>
                                         <?php endif; ?>
 
                                         <!-- Botón para ir a la página anterior -->
                                         <?php if ($page > 1): ?>
                                             <li class="page-item">
-                                                <a class="page-link" href="?page=<?= $page - 1 ?>&tipo=<?= $searchTipo ?>&anno=<?= $searchAnno ?>&keyword=<?= $searchKeyword ?>">&laquo;</a>
+                                                <a class="page-link"
+                                                    href="?page=<?= $page - 1 ?>&tipo=<?= $searchTipo ?>&anno=<?= $searchAnno ?>&keyword=<?= $searchKeyword ?>">&laquo;</a>
                                             </li>
                                         <?php endif; ?>
 
@@ -204,21 +216,24 @@ $totalPages = ceil($totalDocuments / $limit);
                                         $end = min($totalPages, $page + 2);
                                         for ($i = $start; $i <= $end; $i++): ?>
                                             <li class="page-item <?= $i == $page ? 'active' : '' ?>">
-                                                <a class="page-link" href="?page=<?= $i ?>&tipo=<?= $searchTipo ?>&anno=<?= $searchAnno ?>&keyword=<?= $searchKeyword ?>"><?= $i ?></a>
+                                                <a class="page-link"
+                                                    href="?page=<?= $i ?>&tipo=<?= $searchTipo ?>&anno=<?= $searchAnno ?>&keyword=<?= $searchKeyword ?>"><?= $i ?></a>
                                             </li>
                                         <?php endfor; ?>
 
                                         <!-- Botón para ir a la página siguiente -->
                                         <?php if ($page < $totalPages): ?>
                                             <li class="page-item">
-                                                <a class="page-link" href="?page=<?= $page + 1 ?>&tipo=<?= $searchTipo ?>&anno=<?= $searchAnno ?>&keyword=<?= $searchKeyword ?>">&raquo;</a>
+                                                <a class="page-link"
+                                                    href="?page=<?= $page + 1 ?>&tipo=<?= $searchTipo ?>&anno=<?= $searchAnno ?>&keyword=<?= $searchKeyword ?>">&raquo;</a>
                                             </li>
                                         <?php endif; ?>
 
                                         <!-- Botón para ir a la última página -->
                                         <?php if ($page < $totalPages): ?>
                                             <li class="page-item">
-                                                <a class="page-link" href="?page=<?= $totalPages ?>&tipo=<?= $searchTipo ?>&anno=<?= $searchAnno ?>&keyword=<?= $searchKeyword ?>">Última</a>
+                                                <a class="page-link"
+                                                    href="?page=<?= $totalPages ?>&tipo=<?= $searchTipo ?>&anno=<?= $searchAnno ?>&keyword=<?= $searchKeyword ?>">Última</a>
                                             </li>
                                         <?php endif; ?>
                                     </ul>
