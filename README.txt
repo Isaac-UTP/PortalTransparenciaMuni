@@ -117,3 +117,11 @@ Nota: Este documento se actualizó el 20/03/2024 con la nueva estructura de arch
 4. Diagramas y tablas para mejor comprensión  
 5. Instrucciones de migración para mantenimiento  
 6. Destacados los cambios recientes con iconos (★)  
+RECORDATORIO EN LA BASE DE DATOS SIEMPRE SE DEBE GUARDAR ASI EL LINK: archivos/resoluciones_de_alcaldia/2018/RA_193_2018_MDNCH.pdf
+SIEMPRE CON LA PALABRA archivos/ AL INICIO NO SE PUEDE Cambiar
+
+Y EN EL BOTON TAMBIEN SE DEBE AGREGAR AL LINK archivos/
+
+PARA QUE SE ABRA archivos/archivos/resoluciones_de_alcaldia/2018/RA_193_2018_MDNCH.pdf
+
+SIEMPRE SE ABRIRA ASI NO HAY OPCION DE CAMBIO
