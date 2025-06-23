@@ -22,30 +22,41 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $numero = $_POST['numero'];
         $descripcion = $_POST['descripcion'];
 
-        // Validar año (4 dígitos)
         if (!preg_match('/^\d{4}$/', $anno)) {
             throw new Exception("Error: Año inválido. Ejemplo: 2024");
         }
 
-        // Obtener nombre de categoría sanitizado
+        // Obtener nombre de categoría desde la base de datos
         $stmt = $pdo->prepare("SELECT nombre FROM tipos WHERE prefijo = :prefijo");
         $stmt->execute([':prefijo' => $tipos]);
         $nombreCategoria = $stmt->fetchColumn();
+
         if (!$nombreCategoria) {
-            throw new Exception("Error: Tipo no válido.");
+            throw new Exception("Error: Tipo de documento inválido.");
         }
+
+        // Sanear el nombre de la carpeta
         $nombreSanitizado = preg_replace('/[^a-z0-9]/', '_', strtolower($nombreCategoria));
-
-        // Generar nombre de archivo según convención
         $nombreBase = "{$tipos}_{$numero}_{$anno}";
-        $nombreArchivo = "{$nombreBase}_MDNCH.pdf"; // Sin subir el PDF
+        $nombreArchivo = "{$nombreBase}_MDNCH.pdf";
 
-        // Generar ruta del enlace (sin crear carpetas)
-        $linkParaBD = "archivos/{$nombreSanitizado}/{$anno}/{$nombreArchivo}";
+        // ===== CREACIÓN DE CARPETAS (sin subir archivo) =====
+        $basePath = $_SERVER['DOCUMENT_ROOT'] . "/PORTALTRANSPARENCIAMUNI/public/archivo";
+        $rutaCategoria = "$basePath/$nombreSanitizado";
+        $rutaAnno = "$rutaCategoria/$anno";
+
+        if (!is_dir($rutaAnno)) {
+            if (!mkdir($rutaAnno, 0755, true)) {
+                throw new Exception("Error: No se pudo crear la carpeta '$rutaAnno'. Verifica los permisos del servidor.");
+            }
+        }
+
+        // Registrar la ruta como si el archivo ya estuviera ahí (el ingeniero lo colocará manualmente)
+        $linkParaBD = "archivo/{$nombreSanitizado}/{$anno}/{$nombreArchivo}";
 
         $pdo->beginTransaction();
 
-        // Insertar en DOCUMENTOS
+        // Insertar en la tabla documentos
         $sqlDocumentos = "INSERT INTO documentos 
             (tipo, anno, numero, descripcion, fecha) 
             VALUES (:tipo, :anno, :numero, :descripcion, NOW())";
@@ -58,8 +69,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             ':descripcion' => $descripcion
         ]);
 
-        // Insertar en MANTENIMIENTO
         $documento_id = $pdo->lastInsertId();
+
+        // Insertar en la tabla mantenimiento
         $sqlMantenimiento = "INSERT INTO mantenimiento 
             (documento_id, accion, fecha, descripcion, link) 
             VALUES (:documento_id, 'Subida', NOW(), :descripcion, :link)";
@@ -68,7 +80,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $stmt->execute([
             ':documento_id' => $documento_id,
             ':descripcion' => $descripcion,
-            ':link' => $linkParaBD // Enlace generado automáticamente
+            ':link' => $linkParaBD
         ]);
 
         $pdo->commit();
