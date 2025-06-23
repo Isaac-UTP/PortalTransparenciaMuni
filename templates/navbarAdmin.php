@@ -1,37 +1,104 @@
-<!-- filepath: /C:/xampp/htdocs/prueba/templates/navbarAdmin.php -->
+<!-- filepath: /C:/xampp/htdocs/PortalTransparenciaMuni/templates/navbarAdmin.php -->
 <style>
+    /* Reset y fuente */
+    body {
+        margin: 0;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        padding-top: 0 !important;
+    }
+
+    /* Sidebar */
     .sidebar {
         width: 250px;
-        background-color: #F9F9F9;
-        padding: 15px;
         height: 100vh;
         position: fixed;
+        background-color: #fff;
+        border-right: 1px solid #ddd;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        padding: 20px 15px;
+        box-shadow: 2px 0 6px rgba(0, 0, 0, 0.03);
         left: 0;
         top: 0;
         overflow-y: auto;
         z-index: 1000;
-        border-right: 2px solid #D1D1D1;
     }
 
+    /* Logo */
+    .sidebar .logo {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-bottom: 30px;
+    }
+
+    /* Navegación */
+    .nav-section {
+        flex-grow: 1;
+    }
+
+    .nav-item {
+        display: flex;
+        align-items: center;
+        padding: 10px 12px;
+        color: #333;
+        text-decoration: none;
+        border-radius: 8px;
+        margin-bottom: 8px;
+        transition: background 0.2s;
+    }
+
+    .nav-item:hover {
+        background-color: #f2f2f2;
+    }
+
+    .nav-item i {
+        margin-right: 10px;
+        color: #555;
+    }
+
+    /* Submenú */
+    .submenu {
+        padding-left: 25px;
+        font-size: 0.95em;
+        color: #666;
+    }
+
+    /* Footer usuario */
+    .user-footer {
+        margin-top: 20px;
+        padding-top: 15px;
+        border-top: 1px solid #eee;
+        text-align: center;
+        font-size: 0.9em;
+        color: #666;
+    }
+
+    .logout-btn {
+        margin-top: 10px;
+        padding: 8px 12px;
+        background-color: #ffefef;
+        color: #d33;
+        border: 1px solid #f5c2c2;
+        border-radius: 6px;
+        text-decoration: none;
+        display: inline-block;
+        transition: background 0.2s;
+    }
+
+    .logout-btn:hover {
+        background-color: #ffdede;
+    }
+
+    /* Contenido principal - Mantenido del código original */
     .content {
         margin-left: 250px;
         padding: 20px;
         margin-top: 0;
     }
 
-    .sidebar .nav-link {
-        color: #333;
-        text-decoration: none;
-        padding: 10px;
-        display: block;
-        transition: all 0.3s ease;
-    }
-
-    .sidebar .nav-link:hover {
-        background-color: #FFC107;
-        border-radius: 5px;
-    }
-
+    /* Estilos para dropdown - Mantenidos del código original */
     .dropdown-menu {
         background-color: white;
         border: 1px solid #ddd;
@@ -54,36 +121,20 @@
         vertical-align: middle;
         margin-left: 0.5rem;
     }
-
-    .user-info {
-        margin-top: auto;
-        padding: 15px 0;
+     /* Estilo específico para los enlaces de la barra lateral */
+    .nav-link[href="../admin/indexAdmin.php"],
+    .nav-link[href="../admin/usuarios.php"],
+    .nav-link[aria-controls="documentoDropdown"],
+    .nav-link[aria-controls="categoriaDropdown"] {
+        color: #555555 !important;
     }
 
-    .user-card {
-        background: #fff;
-        border-radius: 8px;
-        padding: 15px;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    }
-
-    /* Eliminar espacio superior en todas las páginas */
-    body {
-        margin: 0;
-        padding-top: 0 !important;
-    }
-
-    /* Favicon (agregar esto en el head de todas las páginas) */
-    link[rel="icon"] {
-        type: image/x-icon;
-        href: "../public/img/logo_white.ico";
-    }
 </style>
 
 <div class="sidebar">
     <img src="../public/img/logoOficial.png" alt="Logo" width="210" height="70">
 
-    <ul class="nav flex-column">
+    <ul class="nav flex-column nav-section">
         <li class="nav-item">
             <a class="nav-link" href="../admin/indexAdmin.php">
                 <i class="fa-solid fa-house"></i> Inicio
@@ -91,16 +142,16 @@
         </li>
 
         <!-- Menú Categorías -->
-        <li class="nav-item dropdown">
+        <li class="nav-item dropdown nav-item">
             <a class="nav-link dropdown-toggle" href="#" id="categoriaDropdown" role="button" data-bs-toggle="dropdown"
                 aria-expanded="false">
                 <i class="fa-solid fa-list"></i> Categorías
             </a>
             <ul class="dropdown-menu" aria-labelledby="categoriaDropdown">
-                <li><a class="dropdown-item" href="../admin/crear_categoria.php">
+                <li><a class="dropdown-item nav-item submenu" href="../admin/crear_categoria.php">
                         <i class="fa-solid fa-plus"></i> Nueva categoría
                     </a></li>
-                <li><a class="dropdown-item" href="../admin/categoria.php">
+                <li><a class="dropdown-item nav-item submenu" href="../admin/categoria.php">
                         <i class="fa-solid fa-eye"></i> Ver categorías
                     </a></li>
             </ul>
@@ -130,7 +181,7 @@
     </ul>
 
     <!-- Sección de usuario -->
-    <div class="user-info">
+    <div class="user-info user-footer">
         <div class="user-card">
             <?php if (isset($_SESSION['username'])): ?>
                 <p class="mb-1"><i class="fa-solid fa-user"></i>
