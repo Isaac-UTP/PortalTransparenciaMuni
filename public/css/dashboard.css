@@ -1,0 +1,37 @@
+body {
+    font-family: 'Raleway', sans-serif;
+    background-color: #f8f9fa;
+}
+
+.content {
+    margin-left: 250px;
+    padding: 20px;
+}
+
+.container h2 {
+    color: #343a40;
+    margin-bottom: 30px;
+}
+
+h5 {
+    margin-bottom: 20px;
+    color: #495057;
+}
+
+.chart-wrapper {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 30px;
+    justify-content: space-between;
+}
+
+.chart-box {
+    background-color: #fff;
+    border: 1px solid #dee2e6;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.03);
+    flex: 1;
+    min-width: 300px;
+    max-width: 48%;
+}
