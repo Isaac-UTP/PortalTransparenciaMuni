@@ -1,127 +1,140 @@
 # 🏛️ Portal de Transparencia Municipal - Nuevo Chimbote
 
-**Sistema web para la gestión y publicación de documentos oficiales**  
-✅ Interfaz pública de consulta ciudadana | 🔐 Panel administrativo seguro | 📁 Gestión documental eficiente
+> Sistema web para la gestión, carga y consulta ciudadana de documentos oficiales municipales.
+
+📅 Última actualización: 23 de junio de 2025  
+👨‍💻 Desarrollado por: Isaac Ivanov Takamura Rojas  
+📧 Contacto soporte: soporte@munichimbote.gob.pe
 
 ---
 
-## 📋 Descripción del Proyecto
-Plataforma digital para administrar y publicar documentos municipales (Resoluciones, Ordenanzas, Acuerdos, etc.) con:
-- **Gestión categorizada:** Organización por tipos de documentos
-- **Sistema de archivos estructurado:** Almacenamiento seguro en carpetas por nombre de categoría y año
-- **Búsqueda avanzada:** Filtros por tipo, año y palabras clave
-- **Historial de cambios:** Registro detallado de modificaciones en documentos
-- **Control de acceso:** Autenticación de usuarios con privilegios administrativos
+## 📌 Descripción General
+
+Esta aplicación permite:
+- ✅ Publicar resoluciones, ordenanzas y otros documentos oficiales
+- 🔐 Administrar roles y usuarios autenticados
+- 🗂️ Organizar documentos por tipo y año
+- 📈 Visualizar estadísticas en el dashboard administrativo
+
+**Está dividida en dos áreas principales:**
+- `public/`: consulta ciudadana
+- `admin/`: panel administrativo con autenticación
 
 ---
 
-## 🚀 Características Principales
-| **Módulo**         | **Funcionalidades Clave**                                                                 |
-|---------------------|-------------------------------------------------------------------------------------------|
-| **Autenticación**   | Login seguro con sesiones • Registro de usuarios • Roles de acceso                        |
-| **Categorías**      | Creación/Edición de tipos documentales • Asociación automática de carpetas • Estados (Activo/Inactivo) |
-| **Documentos**      | Subida de PDFs con metadatos • Edición con histórico • Eliminación segura • Descarga pública |
-| **Usuarios**        | Administración de cuentas • Visualización controlada de credenciales                      |
-| **Infraestructura** | Estructura de archivos organizada • Protección contra inyecciones SQL • Validación de tipos de archivo |
+## 🧭 Estructura del Proyecto
+
+isaac-utp-portaltransparenciamuni/
+├── archivo/                # Carpeta real de PDFs, organizada por tipo/año
+├── admin/                  # Módulos administrativos (crear, editar, subir, listar, dashboard, usuarios)
+├── connection/             # Conexión a base de datos
+├── login/                  # Módulo de login y registro
+├── public/                 # Página de consulta pública
+├── templates/              # Barras de navegación pública y admin
 
 ---
-   
-🔧 Instalación y Configuración
 
-📌 Requisitos Previos
+## 🔧 Requisitos Técnicos
 
-Servidor Web: Apache/Nginx
+- **Servidor Web:** Apache con mod_rewrite habilitado
+- **PHP:** ≥ 7.4 (con PDO)
+- **Base de Datos:** MySQL 5.7+ o MariaDB
+- **Permisos:** Carpeta `archivo/` debe tener permisos de escritura (`chmod -R 755`)
 
-PHP: 7.4+ con extensiones PDO y MySQL
+---
 
-Base de Datos: MySQL 5.7+ o MariaDB 10.3+
+## ⚙️ Instalación
 
-Espacio en Disco: Suficiente para almacenar documentos PDF
+1. Clona el repositorio:
+   git clone https://turepositorio.com/portal-transparencia.git
 
-🛠️ Pasos de Implementación
-Clonar repositorio:
+2. Importa la base de datos:
+   mysql -u usuario -p transparenciamun_web3 < base.sql
 
-git clone https://turepositorio.com/portal-transparencia.git
-Configurar base de datos:
+3. Configura tu conexión en `connection/db.php`:
+   $host = "localhost";
+   $dbname = "transparenciamun_web3";
+   $user = "root";
+   $password = "";
 
-CREATE DATABASE transparenciamun_web2;
-mysql -u usuario -p transparenciamun_web2 < transparenciamun_web(1).sql
-Actualizar conexión:
+4. Da permisos a la carpeta:
+   chmod -R 755 public/archivo/
 
-// connection/db.php
-$host = "localhost";
-$dbname = "transparenciamun_web2";
-$user = "tu_usuario";
-$password = "tu_contraseña";
+---
 
-Permisos de escritura:
+## 📁 Estructura de Archivos
 
-chmod -R 755 archivo/
-chown -R www-data:www-data archivo/
+Cada documento se almacena así:
+/public/archivo/[nombre_categoria]/[año]/[prefijo]_[numero]_[año]_MDNCH.pdf
 
-🛡️ Arquitectura Clave
+⚠️ El campo `link` en la base de datos debe iniciar siempre con:
+archivo/[carpeta]/[año]/[nombre.pdf]
 
-Base de Datos (Diagrama Simplificado)
-sql
-Copy
-usuarios           documentos          mantenimiento         tipos
----------         ------------        --------------        ------
-id               id                  id                    id
-username (UNIQUE) tipo (FK->tipos)    documento_id (FK)     nombre
-password          año                 accion               prefijo (UNIQUE)
-                  numero              fecha                estado
-                  descripcion         link                 
-Flujo de Subida de Documentos
-Usuario selecciona categoría existente
+Ejemplo:
+archivo/resoluciones_alcaldia/2024/RA_001_2024_MDNCH.pdf
 
+---
 
-Crea estructura: /archivo/[nombre_categoria]/[año]/
+## 🔐 Seguridad y Buenas Prácticas
 
-Guarda archivo con formato: [prefijo]-[numero]-[año].pdf
+- Cambiar credenciales por defecto (`admin/adminpassword`)
+- No almacenar contraseñas en texto plano (⚠️ actualmente se hace, debe corregirse)
+- Evitar subir archivos directamente: se crean carpetas y se espera que el técnico cargue los PDFs
+- Nunca editar manualmente archivos en la carpeta `archivo/`
 
-Registra en tablas documentos y mantenimiento
+---
 
-🚨 Consideraciones Importantes
+## 🧩 Componentes Principales
 
-#!Nombres de Categoría:
+| Módulo           | Funcionalidad                                                                 |
+|------------------|-------------------------------------------------------------------------------|
+| Login            | `login.php`, `register.php`, sesiones con `$_SESSION`                        |
+| Crear Categoría  | `crear_categoria.php` - crea entrada en BD y carpeta real                    |
+| Subir Documento  | `upload.php` - crea carpetas pero no sube archivo                            |
+| Editar Documento | `editar_documento.php`, `update_documento.php` - actualiza metadatos         |
+| Listar Documentos| `VerDocumentos.php`, `index.php` - búsqueda por tipo, año y palabra clave    |
+| Dashboard Admin  | `indexAdmin.php` - gráficos con Chart.js                                     |
+| Usuarios         | `usuarios.php` - muestra usuarios y permite ver contraseña propia            |
 
--Máximo 45 caracteres
+---
 
--Se convierten a minúsculas
+## 🧱 Base de Datos (Resumen Tablas)
 
--Caracteres especiales se reemplazan por _ (Ej: "Acuerdos 2024" → acuerdos_2024)
+usuarios(id, username, password)
+tipos(id, nombre, prefijo, estado)
+documentos(id, tipo, anno, numero, descripcion, fecha)
+mantenimiento(id, documento_id, accion, fecha, descripcion, link)
 
-#!Seguridad:
+---
 
--Nunca editar manualmente archivos en /archivo
+## 📊 Funcionalidades del Panel Administrativo
 
--Cambiar credenciales predeterminadas (admin/adminpassword)
+- Crear, activar/desactivar y listar tipos documentales
+- Generar carpetas automáticamente
+- Listar, editar o filtrar documentos por tipo, año y palabras clave
+- Ver estadísticas de carga por mes y por tipo
 
--Mantener actualizado el .htaccess
+---
 
-#!Mantenimiento:
+## 🚨 Consideraciones Técnicas
 
-# Migrar documentos antiguos a nueva estructura:
-mv uploads/resoluciones/ archivo/resoluciones_alcaldia/
-📄 Licencia
-© 2024 Municipalidad Provincial del Santa - Nuevo Chimbote
-📧 Soporte Técnico: soporte@munichimbote.gob.pe
-👨💻 Mantenido por: Equipo de Sistemas | Creador: Isaac Ivanov Takamura Rojas
+- ✔ Todas las carpetas se crean bajo `public/archivo/`
+- ⚠ No se suben PDFs por el sistema (los sube el técnico manualmente)
+- 🛠 Se deben mantener actualizadas las reglas `.htaccess` y las validaciones de tipo de archivo
+- 📈 El dashboard solo considera documentos activos y del año actual
 
-Nota: Este documento se actualizó el 20/03/2024 con la nueva estructura de archivos y política de nomenclatura.
+---
 
-**Principales mejoras:**  
-1. Eliminado todo lo relacionado al dashboard  
-2. Estructura de archivos actualizada con nueva nomenclatura  
-3. Explicación clara de la política de nombres de carpetas  
-4. Diagramas y tablas para mejor comprensión  
-5. Instrucciones de migración para mantenimiento  
-6. Destacados los cambios recientes con iconos (★)  
-RECORDATORIO EN LA BASE DE DATOS SIEMPRE SE DEBE GUARDAR ASI EL LINK: archivos/resoluciones_de_alcaldia/2018/RA_193_2018_MDNCH.pdf
-SIEMPRE CON LA PALABRA archivos/ AL INICIO NO SE PUEDE Cambiar
+## 📝 Licencia y Mantenimiento
 
-Y EN EL BOTON TAMBIEN SE DEBE AGREGAR AL LINK archivos/
+**Licencia:** Propiedad de la Municipalidad Provincial del Santa  
+**Responsable del desarrollo:** Isaac Ivanov Takamura Rojas  
+**Soporte y futuras actualizaciones:** soporte@munichimbote.gob.pe
 
-PARA QUE SE ABRA archivos/archivos/resoluciones_de_alcaldia/2018/RA_193_2018_MDNCH.pdf
+---
 
-SIEMPRE SE ABRIRA ASI NO HAY OPCION DE CAMBIO
+## 📌 Notas Finales
+
+- El proyecto sigue activo, con opción de escalar a otros tipos de documento o integraciones más seguras.
+- Se recomienda migrar a almacenamiento cifrado y autenticación con hashing (ej. `password_hash()`).
+- Validar rutas y nombres con cuidado para evitar conflictos con el sistema de carpetas.
