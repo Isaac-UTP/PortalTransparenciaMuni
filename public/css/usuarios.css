@@ -1,4 +1,3 @@
-
 /* Estilo general del contenido */
 body {
     margin: 0;
@@ -42,7 +41,8 @@ table {
     border-collapse: collapse;
 }
 
-th, td {
+th,
+td {
     padding: 14px 20px;
     text-align: left;
 }
@@ -60,4 +60,54 @@ tr:nth-child(even) {
 
 tr:hover {
     background-color: #f3f7fb;
+}
+
+.user-card {
+    border-radius: 14px;
+    border: none;
+    background: #f8faff;
+    transition: box-shadow 0.2s;
+}
+
+.user-card:hover {
+    box-shadow: 0 6px 24px rgba(60, 120, 200, 0.10);
+    background: #f0f6ff;
+}
+
+.password-container {
+    display: flex;
+    align-items: center;
+}
+
+.toggle-password {
+    border: none;
+    background: none;
+    color: #555;
+    cursor: pointer;
+    font-size: 1.1em;
+    padding: 0 6px;
+}
+
+.toggle-password:focus {
+    outline: none;
+}
+
+input.password-field {
+    background: #e9ecef;
+    border: 1px solid #d0d7de;
+    border-radius: 6px;
+    padding: 2px 8px;
+    font-size: 1em;
+    width: 120px;
+}
+
+@media (max-width: 768px) {
+    .content {
+        margin-left: 0;
+        padding: 10px;
+    }
+}
+
+.icon-user {
+    color: #161717 !important;
 }
