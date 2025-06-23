@@ -1,0 +1,63 @@
+
+/* Estilo general del contenido */
+body {
+    margin: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f8f9fc;
+}
+
+.content {
+    margin-left: 250px;
+    padding: 30px;
+}
+
+/* Título */
+h2 {
+    color: #1a1a1a;
+    margin-bottom: 25px;
+}
+
+/* Caja de la tabla */
+.user-box {
+    background-color: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06);
+    overflow: hidden;
+}
+
+/* Cabecera de la tabla */
+.user-box h3 {
+    margin: 0;
+    padding: 16px 20px;
+    background: #e8f0ff;
+    border-bottom: 1px solid #dee2e6;
+    font-size: 18px;
+    font-weight: 600;
+    color: #333;
+}
+
+/* Tabla */
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th, td {
+    padding: 14px 20px;
+    text-align: left;
+}
+
+th {
+    background-color: #f9fafb;
+    color: #333;
+    font-weight: bold;
+    border-bottom: 1px solid #ddd;
+}
+
+tr:nth-child(even) {
+    background-color: #fefefe;
+}
+
+tr:hover {
+    background-color: #f3f7fb;
+}

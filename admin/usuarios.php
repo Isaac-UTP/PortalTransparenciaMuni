@@ -30,6 +30,8 @@ $usuarios = $stmt->fetchAll(PDO::FETCH_ASSOC);
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous">
         </script>
+    
+
 </head>
 
 <body>
@@ -74,28 +76,7 @@ $usuarios = $stmt->fetchAll(PDO::FETCH_ASSOC);
         }
     </script>
 
-    <!-- CSS -->
-    <style>
-        .password-container {
-            display: flex;
-            align-items: center;
-            gap: 5px;
-        }
-
-        .password-field {
-            border: none;
-            background: transparent;
-            width: 100px;
-            outline: none;
-        }
-
-        .toggle-password {
-            background: none;
-            border: none;
-            cursor: pointer;
-            padding: 0;
-        }
-    </style>
+<link rel="stylesheet" href="../public/css/usuarios.css">
 </body>
 
 </html>
