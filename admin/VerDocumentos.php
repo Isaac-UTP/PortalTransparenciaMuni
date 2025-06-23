@@ -117,7 +117,7 @@ $totalPages = ceil($totalDocuments / $limit);
                                     <option value="">-- Selecciona una Categoría --</option>
                                     <?php foreach ($tipos as $row): ?>
                                         <option value="<?= htmlspecialchars($row['prefijo']) ?>"
-                                            <?= ($searchTipo == $row['prefijo'] || $row['prefijo'] == 'OM') ? 'selected' : '' ?>>
+                                            <?= ($searchTipo == $row['prefijo']) ? 'selected' : '' ?> >
                                             <?= htmlspecialchars($row['nombre']) ?>
                                         </option>
                                     <?php endforeach; ?>
