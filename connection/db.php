@@ -1,7 +1,7 @@
 <?php
 // Archivo de Conexión a la BD
 $host = "localhost";
-$dbname = "transparenciamun_web2";
+$dbname = "transparenciamun_web3";
 $user = "root";
 $password = "";
 
