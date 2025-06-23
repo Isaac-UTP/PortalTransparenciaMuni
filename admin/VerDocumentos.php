@@ -21,7 +21,7 @@ $page = $_GET['page'] ?? 1;
 $limit = 10;
 $offset = ($page - 1) * $limit;
 
-// Consulta SQL CORREGIDA
+// Consulta SQL para obtener documentos
 $sql = "
     SELECT d.id, t.nombre AS tipos, d.anno, d.numero, 
            d.descripcion AS descripcion_actual,
@@ -51,6 +51,34 @@ $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
 $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
 $stmt->execute();
 $documentos = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+// Obtener el número total de documentos que coinciden con los filtros
+$countSql = "
+    SELECT COUNT(*) as total 
+    FROM documentos d
+    INNER JOIN tipos t ON d.tipo = t.prefijo
+    LEFT JOIN (
+        SELECT m1.documento_id, m1.descripcion, m1.link 
+        FROM mantenimiento m1
+        INNER JOIN (
+            SELECT documento_id, MAX(id) AS max_id 
+            FROM mantenimiento 
+            GROUP BY documento_id
+        ) m2 ON m1.documento_id = m2.documento_id AND m1.id = m2.max_id
+    ) m ON d.id = m.documento_id
+    WHERE (:tipo = '' OR d.tipo = :tipo)
+    AND (:anno = '' OR d.anno = :anno)
+    AND (:keyword = '' OR d.descripcion LIKE :keyword)";
+
+$countStmt = $pdo->prepare($countSql);
+$countStmt->bindValue(':tipo', $searchTipo);
+$countStmt->bindValue(':anno', $searchAnno);
+$countStmt->bindValue(':keyword', '%' . $searchKeyword . '%');
+$countStmt->execute();
+$totalDocuments = $countStmt->fetch(PDO::FETCH_ASSOC)['total'];
+
+// Calcular el número total de páginas
+$totalPages = ceil($totalDocuments / $limit);
 ?>
 
 <!DOCTYPE html>
@@ -134,12 +162,22 @@ $documentos = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                             <td><?= htmlspecialchars($documento['anno']) ?></td>
                                             <td><?= htmlspecialchars($documento['numero']) ?></td>
                                             <td><?= htmlspecialchars($documento['descripcion_actual']) ?></td>
+
+
                                             <td>
-                                                <a href="/PORTALTRANSPARENCIAMUNI/public/<?= htmlspecialchars($documento['link']) ?>"
+                                                <a href="/archivos/<?= htmlspecialchars($documento['link']) ?>"
                                                     target="_blank" class="btn btn-warning btn-xs">
                                                     <i class="fa-solid fa-download"></i>
                                                 </a>
                                             </td>
+
+                                            <!-- <td>
+                                                <a href="/archivos/<?= htmlspecialchars($documento['link']) ?>"
+                                                    target="_blank" class="btn btn-warning btn-xs">
+                                                    <i class="fa-solid fa-download"></i>
+                                                </a>
+                                            </td> -->
+
                                             <td>
                                                 <a href="editar_documento.php?id=<?= $documento['id'] ?>"
                                                     class="btn btn-primary btn-xs Btn">
@@ -156,12 +194,48 @@ $documentos = $stmt->fetchAll(PDO::FETCH_ASSOC);
                             <div class="d-flex justify-content-center">
                                 <nav aria-label="Page navigation">
                                     <ul class="pagination">
-                                        <?php for ($i = 1; $i <= $page; $i++): ?>
+                                        <!-- Botón para ir a la primera página -->
+                                        <?php if ($page > 1): ?>
+                                            <li class="page-item">
+                                                <a class="page-link"
+                                                    href="?page=1&tipo=<?= $searchTipo ?>&anno=<?= $searchAnno ?>&keyword=<?= $searchKeyword ?>">Primera</a>
+                                            </li>
+                                        <?php endif; ?>
+
+                                        <!-- Botón para ir a la página anterior -->
+                                        <?php if ($page > 1): ?>
+                                            <li class="page-item">
+                                                <a class="page-link"
+                                                    href="?page=<?= $page - 1 ?>&tipo=<?= $searchTipo ?>&anno=<?= $searchAnno ?>&keyword=<?= $searchKeyword ?>">&laquo;</a>
+                                            </li>
+                                        <?php endif; ?>
+
+                                        <!-- Números de página -->
+                                        <?php
+                                        $start = max(1, $page - 2);
+                                        $end = min($totalPages, $page + 2);
+                                        for ($i = $start; $i <= $end; $i++): ?>
                                             <li class="page-item <?= $i == $page ? 'active' : '' ?>">
                                                 <a class="page-link"
-                                                    href="?page=<?= $i ?>&order_by=<?= $orderBy ?>&order_dir=<?= $orderDir ?>&tipo=<?= $searchTipo ?>&anno=<?= $searchAnno ?>&keyword=<?= $searchKeyword ?>"><?= $i ?></a>
+                                                    href="?page=<?= $i ?>&tipo=<?= $searchTipo ?>&anno=<?= $searchAnno ?>&keyword=<?= $searchKeyword ?>"><?= $i ?></a>
                                             </li>
                                         <?php endfor; ?>
+
+                                        <!-- Botón para ir a la página siguiente -->
+                                        <?php if ($page < $totalPages): ?>
+                                            <li class="page-item">
+                                                <a class="page-link"
+                                                    href="?page=<?= $page + 1 ?>&tipo=<?= $searchTipo ?>&anno=<?= $searchAnno ?>&keyword=<?= $searchKeyword ?>">&raquo;</a>
+                                            </li>
+                                        <?php endif; ?>
+
+                                        <!-- Botón para ir a la última página -->
+                                        <?php if ($page < $totalPages): ?>
+                                            <li class="page-item">
+                                                <a class="page-link"
+                                                    href="?page=<?= $totalPages ?>&tipo=<?= $searchTipo ?>&anno=<?= $searchAnno ?>&keyword=<?= $searchKeyword ?>">Última</a>
+                                            </li>
+                                        <?php endif; ?>
                                     </ul>
                                 </nav>
                             </div>

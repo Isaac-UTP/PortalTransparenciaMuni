@@ -82,11 +82,7 @@ $tipos = $stmt->fetchAll(PDO::FETCH_ASSOC);
                     <input type="text" name="descripcion" id="descripcion" class="form-control"
                         value="<?= htmlspecialchars($documento['descripcion']) ?>" required>
                 </div>
-                <div class="mb-3">
-                    <label for="archivo" class="form-label">Archivo:</label>
-                    <input type="file" name="archivo" id="archivo" class="form-control">
-                    <small>Deja este campo vacío si no deseas cambiar el archivo.</small>
-                </div>
+                
                 <div class="modal-footer d-grid gap-2 d-md-flex justify-content-md-end">
                     <button type="submit" class="btn btn-success">Actualizar Documento</button>
                     <a type="button" href="VerDocumentos.php" class="btn btn-warning">Volver</a>

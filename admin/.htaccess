@@ -1,19 +1,21 @@
-# En /admin/.htaccess
+# En la raíz del proyecto (/public_html/.htaccess)
 
-<FilesMatch "\.(php)$">
-    Require all denied
-</FilesMatch>
-
-<FilesMatch "(indexAdmin\.php|VerDocumentos\.php|categoria\.php|usuarios\.php|cambiar_estado\.php|subir_documento\.php|upload\.php|update_documento\.php|confirmacion\.php|editar_documento\.php)">
-    Require all granted
-</FilesMatch>
-
-# public/archivo/.htaccess
+# Si el módulo mod_headers está habilitado, permite que cualquier origen acceda a los recursos del servidor.
 <IfModule mod_headers.c>
     Header set Access-Control-Allow-Origin "*"
 </IfModule>
 
+# Bloquea el acceso a todos los archivos con extensión .php por defecto.
+<FilesMatch "\.(php)$">
+    Require all denied
+</FilesMatch>
+
+# Permite el acceso únicamente a los archivos PHP específicos listados (como indexAdmin.php, VerDocumentos.php, etc.).
+<FilesMatch "(indexAdmin\.php|VerDocumentos\.php|categoria\.php|usuarios\.php|cambiar_estado\.php|subir_documento\.php|upload\.php|update_documento\.php|confirmacion\.php|editar_documento\.php)">
+    Require all granted
+</FilesMatch>
+
+# Configura los archivos con extensión .pdf para que se sirvan como documentos PDF y se abran en el navegador (inline).
 <FilesMatch "\.pdf$">
-    ForceType application/pdf
     Header set Content-Disposition inline
 </FilesMatch>

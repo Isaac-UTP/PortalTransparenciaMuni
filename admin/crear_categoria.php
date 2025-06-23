@@ -38,11 +38,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             ':prefijo' => $prefijo
         ]);
 
-        // Crear carpeta con el nombre sanitizado
-        $carpeta = "./archivo/" . $nombreSanitizado;
-        if (!file_exists($carpeta)) {
+        // En la sección donde se crea la carpeta (usando ruta absoluta):
+        $carpeta = $_SERVER['DOCUMENT_ROOT'] . "/PORTALTRANSPARENCIAMUNI/public/archivo/" . $nombreSanitizado;
+
+        // Verifica permisos y crea carpeta
+        if (!is_dir($carpeta)) {
             if (!mkdir($carpeta, 0755, true)) {
-                throw new Exception("Error al crear la carpeta.");
+                throw new Exception("Error: No se pudo crear la carpeta. Verifica los permisos en el servidor.");
+            }
+            // Verificación adicional
+            if (!is_dir($carpeta)) {
+                throw new Exception("Error: La carpeta no existe después de crearla.");
             }
         }
 
